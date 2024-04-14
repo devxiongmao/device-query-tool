@@ -105,6 +105,8 @@ GEM
       nio4r (~> 2.0)
     racc (1.7.3)
     rack (2.2.9)
+    rack-cors (2.0.2)
+      rack (>= 2.0.0)
     rack-test (2.1.0)
       rack (>= 1.3)
     rails (6.1.7.7)
@@ -147,7 +149,7 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    sqlite3 (1.7.3-x86_64-darwin)
+    sqlite3 (1.4.2)
     thor (1.3.1)
     timeout (0.4.1)
     tzinfo (2.0.6)
@@ -164,10 +166,11 @@ DEPENDENCIES
   bootsnap (>= 1.4.4)
   byebug
   listen (~> 3.3)
-  puma (~> 5.0)
-  rails (~> 6.1.7, >= 6.1.7.6)
+  puma
+  rack-cors
+  rails
   spring
-  sqlite3 (~> 1.4)
+  sqlite3 (~> 1.4.0)
   tzinfo-data
 
 RUBY VERSION
