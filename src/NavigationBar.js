@@ -5,8 +5,8 @@ const NavigationBar = () => {
         <nav className="navbar">
             <h1>Device Query Tool</h1>
             <div className="links">
-                <Link to="/devices">Device List</Link>
-                <Link to="/devices/new">Add Device</Link>
+                <Link to="/">Device List</Link>
+                <Link to="/new">Add Data</Link>
             </div>
         </nav>
 

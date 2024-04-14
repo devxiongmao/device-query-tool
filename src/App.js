@@ -1,8 +1,10 @@
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
 import HomePage from './HomePage';
 import NavigationBar from './NavigationBar';
 import NotFound from './NotFound';
-
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Create from './Create';
+import DeviceDetails from './DeviceDetails';
 
 
 function App() {
@@ -15,6 +17,12 @@ function App() {
           <Route exact path="/">
             <HomePage />
           </Route>
+          <Route path="/new">
+            <Create />
+          </Route>
+          <Route path="/devices/:id">
+              <DeviceDetails />
+            </Route>
           <Route path="*">
             <NotFound />
           </Route>
