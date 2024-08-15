@@ -10,14 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_04_14_182405) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_14_182405) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "devices", force: :cascade do |t|
     t.string "vendor"
     t.string "model_num"
     t.string "market_name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "softwares", force: :cascade do |t|
@@ -25,9 +27,9 @@ ActiveRecord::Schema.define(version: 2024_04_14_182405) do
     t.string "platform"
     t.integer "ptcrb"
     t.integer "svn"
-    t.integer "device_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "device_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["device_id"], name: "index_softwares_on_device_id"
   end
 
