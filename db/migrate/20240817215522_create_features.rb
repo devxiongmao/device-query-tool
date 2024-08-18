@@ -5,5 +5,7 @@ class CreateFeatures < ActiveRecord::Migration[7.1]
 
       t.timestamps
     end
+
+    Rake::Task['features:seed'].invoke
   end
 end
