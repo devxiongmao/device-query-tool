@@ -14,7 +14,7 @@ const EditSoftware = () => {
     const history = useHistory();
 
     const { data: software, isPending, error } = useFetch(
-        "http://localhost:3001/api/v1/devices/" + id + "/softwares/" + sid
+        process.env.REACT_APP_BE_URL + "/api/v1/devices/" + id + "/softwares/" + sid
         )
     
     useEffect(() => {
@@ -31,7 +31,7 @@ const EditSoftware = () => {
 
         const software = {name: softwareName, platform: platformName, svn: svnNum, ptcrb: ptrcbNum, device_id: id};
         setIsSoftwarePending(true);
-        fetch("http://localhost:3001/api/v1/devices/" + id + '/softwares/' + sid, {
+        fetch(process.env.REACT_APP_BE_URL + "/api/v1/devices/" + id + '/softwares/' + sid, {
             method: "PUT",
             headers: { "Content-Type": "application/json"},
             body: JSON.stringify(software)

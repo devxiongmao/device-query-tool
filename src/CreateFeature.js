@@ -7,7 +7,7 @@ const CreateFeature = () => {
     const [isPending, setIsPending ] = useState(false);
     const history = useHistory();
 
-    const { data: features, isFeatureListPending, error } = useFetch("http://localhost:3001/api/v1/features");
+    const { data: features, isFeatureListPending, error } = useFetch(process.env.REACT_APP_BE_URL + "/api/v1/features");
 
 
     const handleFeatureSubmit = (e) => {
@@ -15,7 +15,7 @@ const CreateFeature = () => {
 
         const feature = {name: featureName};
         setIsPending(true);
-        fetch("http://localhost:3001/api/v1/features", {
+        fetch(process.env.REACT_APP_BE_URL + "/api/v1/features", {
             method: "POST",
             headers: { "Content-Type": "application/json"},
             body: JSON.stringify(feature)
