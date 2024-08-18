@@ -1,4 +1,5 @@
 import useFetch from './useFetch';
+import { Link } from 'react-router-dom';
 
 const SoftwareList = ({deviceId}) => {
     const { data: softwares, isPending, error } = useFetch("http://localhost:3001/api/v1/devices/" + deviceId + '/softwares');
@@ -8,7 +9,9 @@ const SoftwareList = ({deviceId}) => {
             { error && <div>{ error }</div>}
             {softwares && softwares.map((software) => (
                 <div className="software-preview" key={software.id}>
-                    <h4>{software.name}</h4>
+                    <Link to={"/devices/" + deviceId + "/softwares/" + software.id + "/edit"}>
+                        <h4>{software.name}</h4>
+                    </Link>
                 </div>
             ))}
 

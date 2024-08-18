@@ -36,6 +36,7 @@ const Create = () => {
                     value={vendor}
                     onChange={(e) => setVendor(e.target.value)}>    
                 </input>
+                <br />
                 <label>Model Number</label>
                 <input
                     type="text"
@@ -43,6 +44,8 @@ const Create = () => {
                     value={modelNum}
                     onChange={(e) => setModelNum(e.target.value)}>    
                 </input>
+                <br />
+                
                 <label>Marketting Name</label>
                 <input
                     type="text"

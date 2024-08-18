@@ -4,6 +4,9 @@ import HomePage from './HomePage';
 import NavigationBar from './NavigationBar';
 import NotFound from './NotFound';
 import Create from './Create';
+import CreateSoftware from './CreateSoftware';
+import CreateFeature from './CreateFeature';
+import EditSoftware from './EditSoftware';
 import DeviceDetails from './DeviceDetails';
 
 
@@ -20,9 +23,18 @@ function App() {
           <Route path="/new">
             <Create />
           </Route>
+          <Route path="/devices/:id/softwares/:sid/edit">
+            <EditSoftware />
+          </Route>
+          <Route path="/devices/:id/softwares/new">
+            <CreateSoftware />
+          </Route>
           <Route path="/devices/:id">
-              <DeviceDetails />
-            </Route>
+            <DeviceDetails />
+          </Route>
+          <Route path="/features/new">
+            <CreateFeature />
+          </Route>
           <Route path="*">
             <NotFound />
           </Route>
