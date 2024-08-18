@@ -4,7 +4,7 @@ import DeviceList from './DeviceList';
 
 
 const HomePage = () => {
-    const { data: devices, isPending, error } = useFetch("http://localhost:3001/api/v1/devices")
+    const { data: devices, isPending, error } = useFetch(process.env.REACT_APP_BE_URL + "/api/v1/devices")
     return ( 
         <div className="home-page">
             {error && <div>{error}</div>}

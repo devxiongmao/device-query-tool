@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 const DeviceDetails = () => {
     const { id } = useParams();
-    const { data: device, isPending, error } = useFetch("http://localhost:3001/api/v1/devices/" + id);
+    const { data: device, isPending, error } = useFetch(process.env.REACT_APP_BE_URL + "/api/v1/devices/" + id);
 
     return ( 
         <div className="device-details">

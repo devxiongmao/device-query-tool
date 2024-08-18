@@ -13,7 +13,7 @@ const Create = () => {
 
         const device = {vendor: vendor, model_num: modelNum, market_name: marketName};
         setIsPending(true);
-        fetch("http://localhost:3001/api/v1/devices", {
+        fetch(process.env.REACT_APP_BE_URL + "/api/v1/devices", {
             method: "POST",
             headers: { "Content-Type": "application/json"},
             body: JSON.stringify(device)

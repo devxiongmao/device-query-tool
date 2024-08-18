@@ -2,7 +2,7 @@ import useFetch from './useFetch';
 import { Link } from 'react-router-dom';
 
 const SoftwareList = ({deviceId}) => {
-    const { data: softwares, isPending, error } = useFetch("http://localhost:3001/api/v1/devices/" + deviceId + '/softwares');
+    const { data: softwares, isPending, error } = useFetch(process.env.REACT_APP_BE_URL + "/api/v1/devices/" + deviceId + '/softwares');
     return ( 
         <div className="software-list">
             { isPending && <div>Loading...</div> }

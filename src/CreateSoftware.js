@@ -16,7 +16,7 @@ const CreateSoftware = () => {
 
         const software = {name: softwareName, platform: platformName, svn: svnNum, ptcrb: ptrcbNum, device_id: id};
         setIsPending(true);
-        fetch("http://localhost:3001/api/v1/devices/" + id + '/softwares', {
+        fetch(process.env.REACT_APP_BE_URL + "/api/v1/devices/" + id + '/softwares', {
             method: "POST",
             headers: { "Content-Type": "application/json"},
             body: JSON.stringify(software)
