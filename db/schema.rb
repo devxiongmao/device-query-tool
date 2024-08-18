@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_14_182405) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_17_220151) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -20,6 +20,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_14_182405) do
     t.string "market_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "features", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "software_features", force: :cascade do |t|
+    t.bigint "software_id", null: false
+    t.bigint "feature_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["feature_id"], name: "index_software_features_on_feature_id"
+    t.index ["software_id"], name: "index_software_features_on_software_id"
   end
 
   create_table "softwares", force: :cascade do |t|
@@ -33,5 +48,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_14_182405) do
     t.index ["device_id"], name: "index_softwares_on_device_id"
   end
 
+  add_foreign_key "software_features", "features"
+  add_foreign_key "software_features", "softwares"
   add_foreign_key "softwares", "devices"
 end
