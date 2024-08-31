@@ -1,17 +1,20 @@
 development:
   adapter: postgresql
-  host: localhost
-  database: dq_development
+  username: postgres
+  host: device_query_db
+  database: device_query_development
   port: 5432
 
 test:
   adapter: postgresql
+  username: postgres
   host: localhost
   database: dq_test
   port: 5432
 
 production:
   adapter: postgresql
+  username: postgres
   host: localhost
   database: dq_production
-  port: 5432c
+  port: 5432
