@@ -10,4 +10,15 @@ This tool allows users to query device RF capabilities. Curious to know if a pho
 
 # Starting your Dev
 
-1. Run `rails server -p 3001`
+## Running natively
+
+1. Run `make install`
+1. Run `make dev`
+
+
+## Runner via Docker
+
+Be sure you have [docker](https://www.docker.com/products/docker-desktop/) installed 
+
+1. Run `make docker-build`
+1. Run `make docker-dev`
