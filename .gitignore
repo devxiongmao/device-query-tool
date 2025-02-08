@@ -1,5 +1,0 @@
-.env
-*.swp
-device-query-tool-BE
-device-query-tool-FE
-docker-compose.yml
