@@ -1,0 +1,196 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Ensure we don't run duplicate workflows on the same PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  analyze_changes:
+    runs-on: ubuntu-latest
+    outputs:
+      backend_changes: ${{ steps.filter.outputs.backend }}
+      frontend_changes: ${{ steps.filter.outputs.frontend }}
+      dependency_changes: ${{ steps.filter.outputs.dependencies }}
+      has_labels: ${{ steps.determine-labels.outputs.has_labels }}
+      labels: ${{ steps.determine-labels.outputs.labels }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Needed for git history and better file change detection
+
+      - name: Filter changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+            docs:
+              - '**/*.md'
+              - '**/*.txt'
+              - '**/*.mermaid'
+              - 'docs/**'
+            migrations:
+              - 'backend/db/migrate/**'
+            dependencies:
+              - 'backend/Gemfile.lock'
+              - 'frontend/package.json'
+              - 'backend/Gemfile'
+              - 'frontend/pnpm-lock.yaml'
+            actions:
+              - '.github/workflows/**'
+              - '.github/dependabot.yml'
+
+      - name: Determine labels based on changes
+        id: determine-labels
+        run: |
+          # Create empty array to store labels
+          declare -a LABELS=()
+
+          if [[ "${{ steps.filter.outputs.backend }}" == "true" ]]; then
+            LABELS+=("backend")
+          fi
+
+          if [[ "${{ steps.filter.outputs.frontend }}" == "true" ]]; then
+            LABELS+=("frontend")
+          fi
+
+          if [[ "${{ steps.filter.outputs.migrations }}" == "true" ]]; then
+            LABELS+=("migration")
+          fi
+
+          if [[ "${{ steps.filter.outputs.dependencies }}" == "true" ]]; then
+            LABELS+=("dependencies")
+          fi
+
+          if [[ "${{ steps.filter.outputs.actions }}" == "true" ]]; then
+            LABELS+=("github_actions")
+          fi
+
+          if [[ "${{ steps.filter.outputs.docs }}" == "true" ]]; then
+            LABELS+=("documentation")
+          fi
+
+          if git log --pretty=%B ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} | grep -Eiq 'Add|add|create|Create'; then
+            LABELS+=("enhancement")
+          fi
+
+          if git log --pretty=%B ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} | grep -Eiq '\bfix(|es|ed|ing)\b'; then
+            LABELS+=("bug")
+          fi
+
+          if git log --pretty=%B ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} | grep -Eiq 'refactor|Refactor|Update|update'; then
+            LABELS+=("refactor")
+          fi
+
+          if [[ "${{ github.head_ref }}" == release-* ]]; then
+            LABELS+=("release")
+          fi
+
+          # Check if we have any labels
+          if [ ${#LABELS[@]} -eq 0 ]; then
+            echo "has_labels=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Use newline delimiter for multiline output
+          delimiter="$(openssl rand -hex 8)"
+          echo "has_labels=true" >> $GITHUB_OUTPUT
+          echo "labels<<$delimiter" >> $GITHUB_OUTPUT
+          for label in "${LABELS[@]}"; do
+            echo "$label" >> $GITHUB_OUTPUT
+          done
+          echo "$delimiter" >> $GITHUB_OUTPUT
+
+      - name: Add Labels to PR
+        if: github.event_name == 'pull_request' && steps.determine-labels.outputs.has_labels == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const labels = `${{ steps.determine-labels.outputs.labels }}`.trim().split('\n');
+              
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: labels
+            });
+
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    if: startsWith(github.head_ref, 'release-') && success()
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-tags: true
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Generate Changelog
+        run: |
+          make generate-changelog
+          echo "Changelog generated and updated."
+
+      - name: Determine Version Number
+        run: |
+          make determine-app-version
+          echo "App Version Determined."
+
+      - name: Commit Changelog and Version Updates
+        run: |
+          TAG_NAME="v$(cat VERSION)"
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add CHANGELOG.md VERSION
+          git commit -m "Release $TAG_NAME"
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
+          git push origin ${{ github.head_ref }}
+
+      - name: Read Changelog
+        id: read_changelog
+        run: |
+          echo "CHANGELOG_CONTENT<<EOF" >> $GITHUB_ENV
+          cat CHANGELOG.md >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          release_name: Release ${{ env.TAG_NAME }}
+          body: |
+            ## Changelog
+
+            ${{ env.CHANGELOG_CONTENT }}
+          draft: false
+          prerelease: false
