@@ -1,0 +1,40 @@
+erDiagram
+    DEVICES {
+        bigint id PK
+        string vendor
+        string model_num
+        string market_name
+        datetime created_at
+        datetime updated_at
+    }
+
+    SOFTWARES {
+        bigint id PK
+        string name
+        string platform
+        integer ptcrb
+        integer svn
+        bigint device_id FK
+        datetime created_at
+        datetime updated_at
+    }
+
+    FEATURES {
+        bigint id PK
+        string name
+        datetime created_at
+        datetime updated_at
+    }
+
+    SOFTWARE_FEATURES {
+        bigint id PK
+        bigint software_id FK
+        bigint feature_id FK
+        datetime created_at
+        datetime updated_at
+    }
+
+    DEVICES ||--o{ SOFTWARES : "has many"
+    SOFTWARES ||--o{ SOFTWARE_FEATURES : "has many"
+    FEATURES ||--o{ SOFTWARE_FEATURES : "has many"
+    SOFTWARES }o--o{ FEATURES : "many-to-many through software_features"
