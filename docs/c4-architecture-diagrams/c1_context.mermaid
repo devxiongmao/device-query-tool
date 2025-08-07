@@ -1,30 +1,16 @@
 C4Context
-    title System Context diagram for Truckin' Along
+    title System Context diagram for Device Query Tool
 
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
+    Person(engineer, "RF Engineer", "Engineers who need to query device capabilities for network planning and optimization")
 
-    Enterprise_Boundary(b0, "Truckin' Along Ecosystem") {
-        Person(customer, "Customer", "A customer of Truckin' Along who sends shipments")
-        Person(driver, "Truck Driver", "A driver of trucks for a trucking company")
-        Person(admin, "Truck Company Admin", "An admin for a trucking company")
-        
-        System(truckinAlongSystem, "Truckin' Along Platform", "Allows users to create shipments, track delivery of shipments, <br/>manage trucks, receive money from deliveries online")
+    Enterprise_Boundary(b0, "Telecommunications Device Ecosystem") {
+        System(deviceQuerySystem, "Device Query Tool", "Allows users to search devices by capabilities, view provider-specific features, <br/>and analyze device compatibility across telecom networks")
     }
 
-    System_Ext(geolocatorService, "Geolocation System", "The system used to transform addresses into latitudes and longitudes")
+    Rel(engineer, deviceQuerySystem, "Queries device capabilities for network planning", "HTTPS")
 
-    Rel(customer, truckinAlongSystem, "Uses to send shipments", "HTTPS")
-    Rel(driver, truckinAlongSystem, "Delivers shipments", "HTTPS")
-    Rel(admin, truckinAlongSystem, "Administers and supports", "HTTPS")
-    Rel(truckinAlongSystem, geolocatorService, "Converts addresses into coordinates using", "API")
-
-    UpdateElementStyle(truckinAlongSystem, $bgColor="#1168bd", $fontColor="#ffffff")
-    UpdateElementStyle(geolocatorService, $bgColor="#999999")
-    UpdateElementStyle(customer, $bgColor="#08427b")
-    UpdateElementStyle(driver, $bgColor="#08427b")
-    UpdateElementStyle(admin, $bgColor="#08427b")
+    UpdateElementStyle(deviceQuerySystem, $bgColor="#1168bd", $fontColor="#ffffff")
+    UpdateElementStyle(engineer, $bgColor="#08427b")
     
-    UpdateRelStyle(customer, truckinAlongSystem, $lineColor="blue", $textColor="blue")
-    UpdateRelStyle(driver, truckinAlongSystem, $lineColor="green", $textColor="green")
-    UpdateRelStyle(admin, truckinAlongSystem, $lineColor="purple", $textColor="purple")
-    UpdateRelStyle(truckinAlongSystem, geolocatorService, $lineColor="orange", $textColor="orange")
+    UpdateRelStyle(engineer, deviceQuerySystem, $lineColor="blue", $textColor="blue")
