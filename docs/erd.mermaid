@@ -1,0 +1,118 @@
+erDiagram
+    DEVICE {
+        bigint id PK
+        string vendor
+        string model_num
+        string market_name
+        date release_date
+        datetime created_at
+        datetime updated_at
+    }
+
+    SOFTWARE {
+        bigint id PK
+        string name
+        string platform
+        integer ptcrb
+        integer svn
+        string build_number
+        date release_date
+        bigint device_id FK
+        datetime created_at
+        datetime updated_at
+    }
+
+    PROVIDER {
+        int provider_id PK
+        string name
+        string country
+        string network_type
+    }
+
+    BAND {
+        int band_id PK
+        string band_number
+        string technology
+        string frequency_range
+        string band_class
+    }
+
+    FEATURE {
+        bigint id PK
+        string name
+        string description
+        datetime created_at
+        datetime updated_at
+    }
+
+    COMBO {
+        int combo_id PK
+        string name
+        string technology
+    }
+
+    DEVICE_SOFTWARE_BAND {
+        int device_id FK
+        int software_id FK
+        int band_id FK
+    }
+
+    DEVICE_SOFTWARE_COMBO {
+        int device_id FK
+        int software_id FK
+        int combo_id FK
+    }
+
+    COMBO_BAND {
+        int combo_id FK
+        int band_id FK
+        int position
+    }
+
+    PROVIDER_DEVICE_SOFTWARE_BAND {
+        int provider_id FK
+        int device_id FK
+        int software_id FK
+        int band_id FK
+    }
+
+    PROVIDER_DEVICE_SOFTWARE_COMBO {
+        int provider_id FK
+        int device_id FK
+        int software_id FK
+        int combo_id FK
+    }
+
+    DEVICE_SOFTWARE_PROVIDER_FEATURE {
+        int device_id FK
+        int software_id FK
+        int provider_id FK
+        int feature_id FK
+    }
+
+    DEVICE ||--o{ SOFTWARE : "has"
+    DEVICE ||--o{ DEVICE_SOFTWARE_BAND : "supports"
+    SOFTWARE ||--o{ DEVICE_SOFTWARE_BAND : "enables"
+    BAND ||--o{ DEVICE_SOFTWARE_BAND : "included_in"
+
+    DEVICE ||--o{ DEVICE_SOFTWARE_COMBO : "supports"
+    SOFTWARE ||--o{ DEVICE_SOFTWARE_COMBO : "enables"
+    COMBO ||--o{ DEVICE_SOFTWARE_COMBO : "available_on"
+
+    COMBO ||--o{ COMBO_BAND : "composed_of"
+    BAND ||--o{ COMBO_BAND : "part_of"
+
+    PROVIDER ||--o{ PROVIDER_DEVICE_SOFTWARE_BAND : "controls"
+    DEVICE ||--o{ PROVIDER_DEVICE_SOFTWARE_BAND : "restricted_by"
+    SOFTWARE ||--o{ PROVIDER_DEVICE_SOFTWARE_BAND : "limited_by"
+    BAND ||--o{ PROVIDER_DEVICE_SOFTWARE_BAND : "controlled_by"
+
+    PROVIDER ||--o{ PROVIDER_DEVICE_SOFTWARE_COMBO : "controls"
+    DEVICE ||--o{ PROVIDER_DEVICE_SOFTWARE_COMBO : "restricted_by"
+    SOFTWARE ||--o{ PROVIDER_DEVICE_SOFTWARE_COMBO : "limited_by"
+    COMBO ||--o{ PROVIDER_DEVICE_SOFTWARE_COMBO : "controlled_by"
+
+    DEVICE ||--o{ DEVICE_SOFTWARE_PROVIDER_FEATURE : "feature_on"
+    SOFTWARE ||--o{ DEVICE_SOFTWARE_PROVIDER_FEATURE : "feature_in"
+    PROVIDER ||--o{ DEVICE_SOFTWARE_PROVIDER_FEATURE : "enables_feature"
+    FEATURE ||--o{ DEVICE_SOFTWARE_PROVIDER_FEATURE : "enabled_by"

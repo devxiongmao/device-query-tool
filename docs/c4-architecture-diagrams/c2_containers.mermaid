@@ -1,0 +1,33 @@
+C4Container
+    title Container diagram for Device Query Tool
+
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
+
+    Person(engineer, "RF Engineer", "Engineers who need to query device capabilities for network planning and optimization", $tags="user")
+
+    Container_Boundary(c1, "Device Query Tool System") {
+        Container(webApp, "Web Frontend", "React, JavaScript", "Provides the device query interface and capability visualization", $tags="primary")
+        Container(apiApp, "API Application", "Django, Python", "Handles device queries, capability searches, and data management", $tags="primary")
+        ContainerDb(database, "Database", "PostgreSQL", "Stores device data, software versions, provider capabilities, bands, and features")
+        Container(cache, "Cache", "Redis", "Caches frequently accessed device capabilities and search results for performance")
+    }
+    
+    Rel(engineer, webApp, "Queries device capabilities and views results", "HTTPS")
+    
+    Rel(webApp, apiApp, "Makes API calls to", "REST/JSON")
+    Rel_Back(database, apiApp, "Reads from and writes to", "Django ORM")
+    
+    Rel(apiApp, cache, "Caches query results", "Redis Protocol")
+    Rel_Back(cache, apiApp, "Retrieves cached data", "Redis Protocol")
+    
+    UpdateRelStyle(engineer, webApp, $offsetY="-20")
+    UpdateRelStyle(webApp, apiApp, $offsetY="0")
+    UpdateRelStyle(apiApp, database, $offsetX="-20")
+    UpdateRelStyle(apiApp, cache, $offsetX="20")
+    
+    UpdateElementStyle(webApp, $bgColor="#3B7EA1", $fontColor="#ffffff")
+    UpdateElementStyle(apiApp, $bgColor="#3B7EA1", $fontColor="#ffffff")
+    UpdateElementStyle(database, $bgColor="#408E3A", $fontColor="#ffffff")
+    UpdateElementStyle(cache, $bgColor="#FF6B35", $fontColor="#ffffff")
+    
+    UpdateElementStyle(engineer, $bgColor="#08427B")

@@ -1,0 +1,16 @@
+C4Context
+    title System Context diagram for Device Query Tool
+
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
+    Person(engineer, "RF Engineer", "Engineers who need to query device capabilities for network planning and optimization")
+
+    Enterprise_Boundary(b0, "Telecommunications Device Ecosystem") {
+        System(deviceQuerySystem, "Device Query Tool", "Allows users to search devices by capabilities, view provider-specific features, <br/>and analyze device compatibility across telecom networks")
+    }
+
+    Rel(engineer, deviceQuerySystem, "Queries device capabilities for network planning", "HTTPS")
+
+    UpdateElementStyle(deviceQuerySystem, $bgColor="#1168bd", $fontColor="#ffffff")
+    UpdateElementStyle(engineer, $bgColor="#08427b")
+    
+    UpdateRelStyle(engineer, deviceQuerySystem, $lineColor="blue", $textColor="blue")
