@@ -1,0 +1,52 @@
+## Changelog
+### (Initial Release)
+
+- NO-JIRA: Fix issue with create-release job (#9) (a7ade1c) by Jon
+- XMDEV-458: Create react with bun package (#7) (bc84fcc) by Jon
+- XMDEV-517: Refactor scripts folder into gh workflow (#6) (a46930b) by Jon
+- XMDEV-457: Create basic hono backend API (#5) (01d1ccb) by Jon
+- XMDEV-456: Add documentation folder (#4) (4ec3963) by Jon
+- XMDEV-455: Adds centralized .github folder (#3) (5e82bfb) by Jon
+- Merge pull request #2 from devxiongmao/merge-backend (6aa5524) by Jon
+- XMDEV-131: Merges BE repo into main while preserving history (86b4223) by Jon Psaila
+- Add Frontend (2477d79) by Jon
+- XMDEV-130: Merges FE repo into main while preserving history (779b284) by Jon Psaila
+- Move frontend files into frontend/ directory (4642bd5) by Jon Psaila
+- Fixes conflicts (e090d67) by Jon Psaila
+- Move backend files into backend/ directory (b765da2) by Jon Psaila
+- fixes conflicts (47de918) by Jon Psaila
+- Merge pull request #6 from devxiongmao/jp-docker (0d55acb) by Jon
+- XMDEV-12: Dockerize FE Repo (8c89c61) by Jon Psaila
+- Merge pull request #6 from devxiongmao/jp-docker (7f3e836) by Jon
+- XMDEV-11: Dockerize BE Repo (4fad662) by Jon Psaila
+- Merge pull request #5 from devxiongmao/jp-make (e4d7aef) by Jon
+- XMDEV-8: Adds makefile with install and dev targets (32e65f9) by Jon Psaila
+- Merge pull request #5 from devxiongmao/jp-make (ea443a1) by Jon
+- XMDEV-8: Adds makefile with install and dev targets (8611f38) by Jon Psaila
+- Merge pull request #4 from devxiongmao/jp-add-envs (0c8d2fb) by Jon
+- Merge pull request #4 from devxiongmao/jp-rake-task (71d29be) by Jon
+- XMDEV-6: Adds features rake task to seed features. Adds validation to preserve feature uniqueness (e787d65) by Jon Psaila
+- XMDEV-7: Updates all URLs to use env variable in .env file (REACT_APP_BE_URL) (78c8b27) by Jon Psaila
+- Merge pull request #3 from devxiongmao/jp-test (8f593c2) by Jon
+- Merge pull request #3 from devxiongmao/jp-test (13b650b) by Jon
+- XMDEV-5: Adds readme instructions for installation and dev setup (1ba64d5) by Jon Psaila
+- XMDEV-3: Adds pull request template (c28e93f) by Jon Psaila
+- XMDEV-3: Adds pull request template (b074ac1) by Jon Psaila
+- Merge pull request #2 from devxiongmao/jp-test (6f83073) by Jon
+- Merge pull request #2 from devxiongmao/jp-test (245d088) by Jon
+- XMDEV-2: Adds groundwork for features and revamped software model create/update (a78c679) by Jon Psaila
+- XMDEV-2: Adds groundwork for features and revamped software model create/update (d4f9b58) by Jon Psaila
+- Merge pull request #1 from devxiongmao/jp-test (850713a) by Jon
+- Upgrades to Rails 7 and migrates to postgres (833a30f) by Jon Psaila
+- Merge pull request #1 from devxiongmao/jp-test (147ccd4) by Jon
+- Update README to include installation and dev start instructions (dc4a623) by Jon Psaila
+- Preliminary working build. Updates for adding devices and viewing devices and associated softwares (fa3a9e5) by Jon Psaila
+- Adds preliminary API for adding devices and viewing softwares (c88fa37) by Jon Psaila
+- Adds skeleton rails API (61e1df6) by Jon Psaila
+- Adds HomePage, NavigationBar and NotFound components as well as adds react-router-dom@5 (2115c2a) by Jon Psaila
+- Initialized the react app (f898438) by Jon Psaila
+- Adds gitignore file to prevent tracking changes in BE and FE repos (884b253) by Jon Psaila
+- Initial commit (e4ca279) by Jon
+- Initial commit (df24bd0) by Jon
+- Initial commit (9920b7e) by Jon
+
