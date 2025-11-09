@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "strict": true, // Enables all strict type-checking options to catch bugs at compile time
+    "module": "ESNext", // Uses the latest ES module syntax
+    "target": "ESNext", // Targets the latest ES features
+    "moduleResolution": "bundler", // Uses Bun's module resolution strategy
+    "esModuleInterop": true, // Enables compatibility with CommonJS and ES modules
+    "allowSyntheticDefaultImports": true, // Allows importing modules with default exports
+    "skipLibCheck": true, // Skips type checking of declaration files (.d.ts files).
+    "resolveJsonModule": true, // Allows importing JSON files
+    "lib": ["ESNext"], // Uses the latest JS standard library
+    "types": ["bun-types"], // Uses Bun's built-in types
+    "isolatedModules": true, // Critical for Bun since it transpiles TypeScript file-by-file. Prevents merging declarations into a single module
+    "allowImportingTsExtensions": true, // Allows importing .ts files directly
+    "noEmit": true, // Prevents emitting compiled output since Bun runs TypeScript directly
+    "forceConsistentCasingInFileNames": true // Enforces consistent casing in file names
+  }
+}
