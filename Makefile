@@ -1,7 +1,10 @@
-.PHONY: determine-app-version
-determine-app-version:
-	ruby script/determine_app_version.rb
+.PHONY: start-frontend
+start-frontend:
+	cd packages/frontend && bun dev
 
-.PHONY: generate-changelog
-generate-changelog:
-	ruby script/generate_changelog.rb
+.PHONY: start-backend
+start-backend:
+	cd packages/backend && bun dev
+
+.PHONY: start-all
+start-all: start-frontend start-backend
