@@ -1,11 +1,25 @@
 To install dependencies:
+
 ```sh
 bun install
 ```
 
-To run:
+To typecheck:
+
 ```sh
-bun run dev
+bun typecheck
+```
+
+To test:
+
+```sh
+bun test
+```
+
+To run:
+
+```sh
+bun dev
 ```
 
 open http://localhost:3000
