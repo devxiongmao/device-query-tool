@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
 
 jobs:
@@ -146,24 +146,45 @@ jobs:
 
       - name: Generate Changelog and Version
         run: |
-          # Generate changelog
-          LATEST_TAG=$(git describe --tags --abbrev=0)
-          CHANGELOG=$(git log "${LATEST_TAG}..HEAD" --pretty=format:"- %s (%h) by %an")
+          # Get the latest tag, or use initial version if no tags exist
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
 
+          if [ -z "$LATEST_TAG" ]; then
+            # No tags exist yet, generate changelog from all commits
+            CHANGELOG=$(git log --pretty=format:"- %s (%h) by %an")
+            COMPARE_RANGE="(Initial Release)"
+          else
+            # Tags exist, generate changelog from latest tag to HEAD
+            CHANGELOG=$(git log "${LATEST_TAG}..HEAD" --pretty=format:"- %s (%h) by %an")
+            COMPARE_RANGE="From $LATEST_TAG to HEAD"
+          fi
+
+          # Only create changelog if there are commits
           if [ -n "$CHANGELOG" ]; then
             echo "## Changelog" > CHANGELOG.md
-            echo "### From $LATEST_TAG to HEAD" >> CHANGELOG.md
+            echo "### $COMPARE_RANGE" >> CHANGELOG.md
             echo "" >> CHANGELOG.md
             echo "$CHANGELOG" >> CHANGELOG.md
             echo "" >> CHANGELOG.md
+          else
+            echo "No changes to document" > CHANGELOG.md
           fi
 
           # Determine version
           CURRENT_VERSION=$(cat VERSION 2>/dev/null || echo "0.0.0")
-          COMMITS=$(git log "v${CURRENT_VERSION}..HEAD" --pretty=format:"%s")
+
+          # Get commits for version bump determination
+          if [ -z "$LATEST_TAG" ]; then
+            # No tags, get all commits
+            COMMITS=$(git log --pretty=format:"%s")
+          else
+            # Get commits since last tag
+            COMMITS=$(git log "${LATEST_TAG}..HEAD" --pretty=format:"%s")
+          fi
 
           IFS='.' read -r major minor patch <<< "$CURRENT_VERSION"
 
+          # Determine version bump based on commit messages
           if echo "$COMMITS" | grep -qi '\(breaking\|major\)'; then
             major=$((major + 1))
             minor=0
