@@ -1,10 +1,10 @@
-# User Journey: Querying for Device Capability
+# User Journey: Querying by RF Capability
 
 ## Persona
 
 **Name:** John Doe
 **Role:** First time visitor
-**Goal:** Wants to quickly get an understanding of the capability associated with a given device
+**Goal:** Wants to quickly get an understanding of the devices that comply with a given query
 
 ---
 
@@ -22,13 +22,13 @@ The user understands that this tool is useful for querying devices and capabilit
 
 2. **Submitting query parameters**
 
-   - The user, through the UI, enters in the query filters that they want
+   - The user, through the UI, enters in the query filters that they want related to the RF capability
    - The user, through the UI, enters in the data columns they want returned for their given query
    - Once ready, the user clicks _Submit_
 
 3. **Observing the results**
 
-   - Results are returned in the page wherein the users can observe them.
+   - Devices that support the query are returned
 
 4. **Optional Step: Clearing the form**
 
