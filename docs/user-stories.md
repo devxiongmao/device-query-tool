@@ -6,6 +6,8 @@
 
 1. As a standard user of this tool, I want to be able to query for a specific device, and see all capabilities that that device has including all features, bands, and combos for a unique telecom provider (Telus, Rogers, etc) to answer customer requests, or select specific devices for testing
 
+1. As a standard user of this tool, in all queries I construct on this page, I want to be abe to specify which fields are returned related to the device
+
 
 ## Capability Querying Page
 
