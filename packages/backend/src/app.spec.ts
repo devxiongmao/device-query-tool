@@ -103,7 +103,7 @@ describe('Hono Application', () => {
       const res = await app.request('/health');
       const data = (await res.json()) as HealthResponse;
 
-      expect(data.database).toBe('not connected yet');
+      expect(data.database).toBe('connected');
     });
 
     it('should return JSON content type', async () => {
