@@ -316,7 +316,7 @@ describe('env.ts', () => {
       // Act
       try {
         loadEnv();
-      } catch (_error) {
+      } catch (error) {
         // Expected to throw
       }
 
