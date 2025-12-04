@@ -129,10 +129,37 @@ jobs:
               labels: labels
             });
 
+  prep_backend:
+    name: Lint and Type Check Backend
+    runs-on: ubuntu-latest
+    needs: [analyze_changes]
+    if: needs.analyze_changes.outputs.backend_changes == 'true'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        working-directory: packages/backend
+        run: bun install --frozen-lockfile
+
+      - name: Run ESLint
+        working-directory: packages/backend
+        run: bun lint
+
+      - name: Run Type Check
+        working-directory: packages/backend
+        run: bun typecheck
+
   create-release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
-    needs: [analyze_changes]
+    needs: [analyze_changes, prep_backend]
 
     if: startsWith(github.head_ref, 'release-') && success()
 
