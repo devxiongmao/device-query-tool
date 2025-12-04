@@ -15,6 +15,13 @@
     "isolatedModules": true, // Critical for Bun since it transpiles TypeScript file-by-file. Prevents merging declarations into a single module
     "allowImportingTsExtensions": true, // Allows importing .ts files directly
     "noEmit": true, // Prevents emitting compiled output since Bun runs TypeScript directly
-    "forceConsistentCasingInFileNames": true // Enforces consistent casing in file names
+    "forceConsistentCasingInFileNames": true, // Enforces consistent casing in file names
+
+    // Linting rules
+    
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
   }
 }
