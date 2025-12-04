@@ -1,5 +1,5 @@
 {
-  "id": "0066d0d4-5c7a-4f7a-8fb0-b4652d145014",
+  "id": "ab38a875-cbc1-4e3a-80fc-9c1d924401ca",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -257,7 +257,44 @@
           "notNull": true
         }
       },
-      "indexes": {},
+      "indexes": {
+        "idx_dsb_device_software": {
+          "name": "idx_dsb_device_software",
+          "columns": [
+            {
+              "expression": "device_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "software_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_dsb_band_lookup": {
+          "name": "idx_dsb_band_lookup",
+          "columns": [
+            {
+              "expression": "band_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "DEVICE_SOFTWARE_BAND_device_id_DEVICE_id_fk": {
           "name": "DEVICE_SOFTWARE_BAND_device_id_DEVICE_id_fk",
@@ -337,7 +374,44 @@
           "notNull": true
         }
       },
-      "indexes": {},
+      "indexes": {
+        "idx_dsc_device_software": {
+          "name": "idx_dsc_device_software",
+          "columns": [
+            {
+              "expression": "device_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "software_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_dsc_combo_lookup": {
+          "name": "idx_dsc_combo_lookup",
+          "columns": [
+            {
+              "expression": "combo_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "DEVICE_SOFTWARE_COMBO_device_id_DEVICE_id_fk": {
           "name": "DEVICE_SOFTWARE_COMBO_device_id_DEVICE_id_fk",
@@ -423,7 +497,56 @@
           "notNull": true
         }
       },
-      "indexes": {},
+      "indexes": {
+        "idx_dspf_lookup": {
+          "name": "idx_dspf_lookup",
+          "columns": [
+            {
+              "expression": "device_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "software_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "provider_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "feature_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_dspf_feature_lookup": {
+          "name": "idx_dspf_feature_lookup",
+          "columns": [
+            {
+              "expression": "feature_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "DEVICE_SOFTWARE_PROVIDER_FEATURE_device_id_DEVICE_id_fk": {
           "name": "DEVICE_SOFTWARE_PROVIDER_FEATURE_device_id_DEVICE_id_fk",
@@ -627,7 +750,50 @@
           "notNull": true
         }
       },
-      "indexes": {},
+      "indexes": {
+        "idx_pdsb_provider_lookup": {
+          "name": "idx_pdsb_provider_lookup",
+          "columns": [
+            {
+              "expression": "provider_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "band_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_pdsb_device_software": {
+          "name": "idx_pdsb_device_software",
+          "columns": [
+            {
+              "expression": "device_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "software_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "PROVIDER_DEVICE_SOFTWARE_BAND_provider_id_PROVIDER_provider_id_fk": {
           "name": "PROVIDER_DEVICE_SOFTWARE_BAND_provider_id_PROVIDER_provider_id_fk",
@@ -727,7 +893,50 @@
           "notNull": true
         }
       },
-      "indexes": {},
+      "indexes": {
+        "idx_pdsc_provider_lookup": {
+          "name": "idx_pdsc_provider_lookup",
+          "columns": [
+            {
+              "expression": "provider_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "combo_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_pdsc_device_software": {
+          "name": "idx_pdsc_device_software",
+          "columns": [
+            {
+              "expression": "device_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "software_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "PROVIDER_DEVICE_SOFTWARE_COMBO_provider_id_PROVIDER_provider_id_fk": {
           "name": "PROVIDER_DEVICE_SOFTWARE_COMBO_provider_id_PROVIDER_provider_id_fk",
@@ -876,7 +1085,23 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "idx_software_device": {
+          "name": "idx_software_device",
+          "columns": [
+            {
+              "expression": "device_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "SOFTWARE_device_id_DEVICE_id_fk": {
           "name": "SOFTWARE_device_id_DEVICE_id_fk",

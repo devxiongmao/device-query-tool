@@ -115,4 +115,15 @@ ALTER TABLE "PROVIDER_DEVICE_SOFTWARE_COMBO" ADD CONSTRAINT "PROVIDER_DEVICE_SOF
 ALTER TABLE "PROVIDER_DEVICE_SOFTWARE_COMBO" ADD CONSTRAINT "PROVIDER_DEVICE_SOFTWARE_COMBO_device_id_DEVICE_id_fk" FOREIGN KEY ("device_id") REFERENCES "public"."DEVICE"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "PROVIDER_DEVICE_SOFTWARE_COMBO" ADD CONSTRAINT "PROVIDER_DEVICE_SOFTWARE_COMBO_software_id_SOFTWARE_id_fk" FOREIGN KEY ("software_id") REFERENCES "public"."SOFTWARE"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "PROVIDER_DEVICE_SOFTWARE_COMBO" ADD CONSTRAINT "PROVIDER_DEVICE_SOFTWARE_COMBO_combo_id_COMBO_combo_id_fk" FOREIGN KEY ("combo_id") REFERENCES "public"."COMBO"("combo_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "SOFTWARE" ADD CONSTRAINT "SOFTWARE_device_id_DEVICE_id_fk" FOREIGN KEY ("device_id") REFERENCES "public"."DEVICE"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "SOFTWARE" ADD CONSTRAINT "SOFTWARE_device_id_DEVICE_id_fk" FOREIGN KEY ("device_id") REFERENCES "public"."DEVICE"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "idx_dsb_device_software" ON "DEVICE_SOFTWARE_BAND" USING btree ("device_id","software_id");--> statement-breakpoint
+CREATE INDEX "idx_dsb_band_lookup" ON "DEVICE_SOFTWARE_BAND" USING btree ("band_id");--> statement-breakpoint
+CREATE INDEX "idx_dsc_device_software" ON "DEVICE_SOFTWARE_COMBO" USING btree ("device_id","software_id");--> statement-breakpoint
+CREATE INDEX "idx_dsc_combo_lookup" ON "DEVICE_SOFTWARE_COMBO" USING btree ("combo_id");--> statement-breakpoint
+CREATE INDEX "idx_dspf_lookup" ON "DEVICE_SOFTWARE_PROVIDER_FEATURE" USING btree ("device_id","software_id","provider_id","feature_id");--> statement-breakpoint
+CREATE INDEX "idx_dspf_feature_lookup" ON "DEVICE_SOFTWARE_PROVIDER_FEATURE" USING btree ("feature_id");--> statement-breakpoint
+CREATE INDEX "idx_pdsb_provider_lookup" ON "PROVIDER_DEVICE_SOFTWARE_BAND" USING btree ("provider_id","band_id");--> statement-breakpoint
+CREATE INDEX "idx_pdsb_device_software" ON "PROVIDER_DEVICE_SOFTWARE_BAND" USING btree ("device_id","software_id");--> statement-breakpoint
+CREATE INDEX "idx_pdsc_provider_lookup" ON "PROVIDER_DEVICE_SOFTWARE_COMBO" USING btree ("provider_id","combo_id");--> statement-breakpoint
+CREATE INDEX "idx_pdsc_device_software" ON "PROVIDER_DEVICE_SOFTWARE_COMBO" USING btree ("device_id","software_id");--> statement-breakpoint
+CREATE INDEX "idx_software_device" ON "SOFTWARE" USING btree ("device_id");

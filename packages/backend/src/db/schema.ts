@@ -1,4 +1,4 @@
-import { pgTable, bigint, varchar, date, timestamp, integer, primaryKey } from 'drizzle-orm/pg-core';
+import { pgTable, bigint, varchar, date, timestamp, integer, primaryKey, index } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 // DEVICE table
@@ -12,7 +12,7 @@ export const device = pgTable('DEVICE', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
-// SOFTWARE table
+// SOFTWARE table with foreign key index
 export const software = pgTable('SOFTWARE', {
   id: bigint('id', { mode: 'number' }).primaryKey().generatedAlwaysAsIdentity(),
   name: varchar('name', { length: 100 }).notNull(),
@@ -24,7 +24,10 @@ export const software = pgTable('SOFTWARE', {
   deviceId: bigint('device_id', { mode: 'number' }).notNull().references(() => device.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
-});
+}, (table) => ({
+  // Foreign key index for joins
+  deviceIdx: index('idx_software_device').on(table.deviceId),
+}));
 
 // PROVIDER table
 export const provider = pgTable('PROVIDER', {
@@ -61,22 +64,28 @@ export const combo = pgTable('COMBO', {
 
 // Junction Tables
 
-// DEVICE_SOFTWARE_BAND
+// DEVICE_SOFTWARE_BAND with indexes
 export const deviceSoftwareBand = pgTable('DEVICE_SOFTWARE_BAND', {
   deviceId: bigint('device_id', { mode: 'number' }).notNull().references(() => device.id, { onDelete: 'cascade' }),
   softwareId: bigint('software_id', { mode: 'number' }).notNull().references(() => software.id, { onDelete: 'cascade' }),
   bandId: integer('band_id').notNull().references(() => band.bandId, { onDelete: 'cascade' }),
 }, (table) => ({
   pk: primaryKey({ columns: [table.deviceId, table.softwareId, table.bandId] }),
+  // Indexes
+  deviceSoftwareIdx: index('idx_dsb_device_software').on(table.deviceId, table.softwareId),
+  bandLookupIdx: index('idx_dsb_band_lookup').on(table.bandId),
 }));
 
-// DEVICE_SOFTWARE_COMBO
+// DEVICE_SOFTWARE_COMBO with indexes
 export const deviceSoftwareCombo = pgTable('DEVICE_SOFTWARE_COMBO', {
   deviceId: bigint('device_id', { mode: 'number' }).notNull().references(() => device.id, { onDelete: 'cascade' }),
   softwareId: bigint('software_id', { mode: 'number' }).notNull().references(() => software.id, { onDelete: 'cascade' }),
   comboId: integer('combo_id').notNull().references(() => combo.comboId, { onDelete: 'cascade' }),
 }, (table) => ({
   pk: primaryKey({ columns: [table.deviceId, table.softwareId, table.comboId] }),
+  // Indexes
+  deviceSoftwareIdx: index('idx_dsc_device_software').on(table.deviceId, table.softwareId),
+  comboLookupIdx: index('idx_dsc_combo_lookup').on(table.comboId),
 }));
 
 // COMBO_BAND
@@ -88,7 +97,7 @@ export const comboBand = pgTable('COMBO_BAND', {
   pk: primaryKey({ columns: [table.comboId, table.bandId] }),
 }));
 
-// PROVIDER_DEVICE_SOFTWARE_BAND
+// PROVIDER_DEVICE_SOFTWARE_BAND with indexes
 export const providerDeviceSoftwareBand = pgTable('PROVIDER_DEVICE_SOFTWARE_BAND', {
   providerId: integer('provider_id').notNull().references(() => provider.providerId, { onDelete: 'cascade' }),
   deviceId: bigint('device_id', { mode: 'number' }).notNull().references(() => device.id, { onDelete: 'cascade' }),
@@ -96,9 +105,12 @@ export const providerDeviceSoftwareBand = pgTable('PROVIDER_DEVICE_SOFTWARE_BAND
   bandId: integer('band_id').notNull().references(() => band.bandId, { onDelete: 'cascade' }),
 }, (table) => ({
   pk: primaryKey({ columns: [table.providerId, table.deviceId, table.softwareId, table.bandId] }),
+  // Indexes
+  providerLookupIdx: index('idx_pdsb_provider_lookup').on(table.providerId, table.bandId),
+  deviceSoftwareIdx: index('idx_pdsb_device_software').on(table.deviceId, table.softwareId),
 }));
 
-// PROVIDER_DEVICE_SOFTWARE_COMBO
+// PROVIDER_DEVICE_SOFTWARE_COMBO with indexes
 export const providerDeviceSoftwareCombo = pgTable('PROVIDER_DEVICE_SOFTWARE_COMBO', {
   providerId: integer('provider_id').notNull().references(() => provider.providerId, { onDelete: 'cascade' }),
   deviceId: bigint('device_id', { mode: 'number' }).notNull().references(() => device.id, { onDelete: 'cascade' }),
@@ -106,9 +118,12 @@ export const providerDeviceSoftwareCombo = pgTable('PROVIDER_DEVICE_SOFTWARE_COM
   comboId: integer('combo_id').notNull().references(() => combo.comboId, { onDelete: 'cascade' }),
 }, (table) => ({
   pk: primaryKey({ columns: [table.providerId, table.deviceId, table.softwareId, table.comboId] }),
+  // Indexes
+  providerLookupIdx: index('idx_pdsc_provider_lookup').on(table.providerId, table.comboId),
+  deviceSoftwareIdx: index('idx_pdsc_device_software').on(table.deviceId, table.softwareId),
 }));
 
-// DEVICE_SOFTWARE_PROVIDER_FEATURE
+// DEVICE_SOFTWARE_PROVIDER_FEATURE with indexes
 export const deviceSoftwareProviderFeature = pgTable('DEVICE_SOFTWARE_PROVIDER_FEATURE', {
   deviceId: bigint('device_id', { mode: 'number' }).notNull().references(() => device.id, { onDelete: 'cascade' }),
   softwareId: bigint('software_id', { mode: 'number' }).notNull().references(() => software.id, { onDelete: 'cascade' }),
@@ -116,6 +131,9 @@ export const deviceSoftwareProviderFeature = pgTable('DEVICE_SOFTWARE_PROVIDER_F
   featureId: bigint('feature_id', { mode: 'number' }).notNull().references(() => feature.id, { onDelete: 'cascade' }),
 }, (table) => ({
   pk: primaryKey({ columns: [table.deviceId, table.softwareId, table.providerId, table.featureId] }),
+  // Indexes
+  lookupIdx: index('idx_dspf_lookup').on(table.deviceId, table.softwareId, table.providerId, table.featureId),
+  featureLookupIdx: index('idx_dspf_feature_lookup').on(table.featureId),
 }));
 
 // Relations (for Drizzle's relational queries - optional but helpful)
