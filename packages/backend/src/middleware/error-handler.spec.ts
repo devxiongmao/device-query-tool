@@ -3,6 +3,14 @@ import { Hono } from 'hono';
 import { env } from '../config/env';
 import { errorHandler } from './error-handler';
 
+// Type definitions for error responses
+type ErrorResponse = {
+  error: {
+    message: string;
+    stack?: string;
+  };
+};
+
 // Mock the env module
 vi.mock('../config/env', () => ({
   env: {
@@ -45,14 +53,14 @@ describe('errorHandler middleware', () => {
 
     it('should return actual error message', async () => {
       const res = await app.request('/error');
-      const data = await res.json();
+      const data = (await res.json()) as ErrorResponse;
 
       expect(data.error.message).toBe('Test error message');
     });
 
     it('should include stack trace', async () => {
       const res = await app.request('/error');
-      const data = await res.json();
+      const data = (await res.json()) as ErrorResponse;
 
       expect(data.error.stack).toBeDefined();
       expect(data.error.stack).toContain('Error: Test error message');
@@ -83,14 +91,14 @@ describe('errorHandler middleware', () => {
 
     it('should return generic error message', async () => {
       const res = await app.request('/error');
-      const data = await res.json();
+      const data = (await res.json()) as ErrorResponse;
 
       expect(data.error.message).toBe('Internal Server Error');
     });
 
     it('should NOT include stack trace', async () => {
       const res = await app.request('/error');
-      const data = await res.json();
+      const data = (await res.json()) as ErrorResponse;
 
       expect(data.error.stack).toBeUndefined();
     });

@@ -1,6 +1,27 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import app from './app';
 
+// Type definitions for API responses
+type HealthResponse = {
+  status: string;
+  timestamp: string;
+  environment: string;
+  database: string;
+};
+
+type RootResponse = {
+  message: string;
+  version: string;
+  endpoints: {
+    health: string;
+    graphql: string;
+  };
+};
+
+type ErrorResponse = {
+  error: string;
+};
+
 // Mock the env module
 vi.mock('./config/env', () => ({
   env: {
@@ -32,7 +53,7 @@ describe('Hono Application', () => {
   describe('Root endpoint', () => {
     it('should return API information', async () => {
       const res = await app.request('/');
-      const data = await res.json();
+      const data = (await res.json()) as RootResponse;
 
       expect(res.status).toBe(200);
       expect(data).toEqual({
@@ -55,7 +76,7 @@ describe('Hono Application', () => {
   describe('Health check endpoint', () => {
     it('should return healthy status', async () => {
       const res = await app.request('/health');
-      const data = await res.json();
+      const data = (await res.json()) as HealthResponse;
 
       expect(res.status).toBe(200);
       expect(data.status).toBe('ok');
@@ -63,7 +84,7 @@ describe('Hono Application', () => {
 
     it('should include timestamp', async () => {
       const res = await app.request('/health');
-      const data = await res.json();
+      const data = (await res.json()) as HealthResponse;
 
       expect(data.timestamp).toBeDefined();
       expect(typeof data.timestamp).toBe('string');
@@ -73,14 +94,14 @@ describe('Hono Application', () => {
 
     it('should include environment', async () => {
       const res = await app.request('/health');
-      const data = await res.json();
+      const data = (await res.json()) as HealthResponse;
 
       expect(data.environment).toBe('test');
     });
 
     it('should include database status', async () => {
       const res = await app.request('/health');
-      const data = await res.json();
+      const data = (await res.json()) as HealthResponse;
 
       expect(data.database).toBe('not connected yet');
     });
@@ -101,7 +122,7 @@ describe('Hono Application', () => {
 
     it('should return error message', async () => {
       const res = await app.request('/does-not-exist');
-      const data = await res.json();
+      const data = (await res.json()) as ErrorResponse;
 
       expect(data).toEqual({ error: 'Not Found' });
     });
