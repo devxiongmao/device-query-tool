@@ -3,6 +3,7 @@ import { cors } from './middleware/cors';
 import { logger } from './middleware/logger';
 import { errorHandler } from './middleware/error-handler';
 import { env } from './config/env';
+import { db } from './db/client';
 
 const app = new Hono();
 
@@ -11,12 +12,23 @@ app.use('*', cors);
 app.use('*', logger);
 
 // Health check endpoint
-app.get('/health', (c) => {
+app.get('/health', async (c) => {
+  let dbStatus = 'disconnected';
+  
+  try {
+    // Test database connection
+    await db.execute('SELECT 1');
+    dbStatus = 'connected';
+  } catch (error) {
+    console.error('DB health check failed:', error);
+    dbStatus = 'error';
+  }
+
   return c.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
     environment: env.NODE_ENV,
-    database: 'not connected yet', // Will update in Task 2
+    database: dbStatus,
   });
 });
 
