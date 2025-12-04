@@ -1,4 +1,4 @@
-import { Context } from 'hono';
+import type { Context } from 'hono';
 import { env } from '../config/env';
 
 export const errorHandler = (err: Error, c: Context) => {
