@@ -2,7 +2,8 @@ import { Hono } from 'hono';
 import { cors } from './middleware/cors';
 import { logger } from './middleware/logger';
 import { errorHandler } from './middleware/error-handler';
-import { env } from "./config/env";
+import { env } from './config/env'
+;
 
 const app = new Hono();
 
