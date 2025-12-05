@@ -1,3 +1,4 @@
+import { and, eq } from 'drizzle-orm';
 import { db } from './client';
 import {
   device,
@@ -108,6 +109,10 @@ async function seed() {
       { name: '4A-7A', technology: 'LTE CA' },
       { name: '4A-12A', technology: 'LTE CA' },
       { name: '66A-66A', technology: 'LTE CA' },
+      { name: '2A-4A-7A', technology: 'LTE CA' },
+      { name: '2A-4A-12A', technology: 'LTE CA' },
+      { name: '4A-5A-7A', technology: 'LTE CA' },
+      { name: '66A-71A', technology: 'LTE CA' },
       
       // EN-DC (LTE + NR) Combos
       { name: 'B2-n66', technology: 'EN-DC' },
@@ -116,11 +121,15 @@ async function seed() {
       { name: 'B4-n71', technology: 'EN-DC' },
       { name: 'B66-n77', technology: 'EN-DC' },
       { name: 'B7-n78', technology: 'EN-DC' },
+      { name: 'B2-B4-n71', technology: 'EN-DC' },
+      { name: 'B66-n41', technology: 'EN-DC' },
+      { name: 'B7-n77', technology: 'EN-DC' },
       
       // NR Carrier Aggregation
       { name: 'n66A-n77A', technology: 'NR CA' },
       { name: 'n71A-n77A', technology: 'NR CA' },
       { name: 'n77A-n78A', technology: 'NR CA' },
+      { name: 'n41A-n66A-n77A', technology: 'NR CA' },
     ]).returning();
     console.log(`✅ Created ${combos.length} combos\n`);
 
@@ -207,8 +216,8 @@ async function seed() {
       
       for (let i = 0; i < numVersions; i++) {
         const version = platform === 'iOS' 
-          ? `${17 - i}.${Math.floor(Math.random() * 6)}`
-          : `${14 - i}.0`;
+          ? `${Math.max(15, 17 - i)}.${Math.floor(Math.random() * 6)}.${Math.floor(Math.random() * 3)}`
+          : `${Math.max(11, 14 - i)}.0`;
         
         const buildDate = new Date(dev.releaseDate);
         buildDate.setMonth(buildDate.getMonth() + (i * 3));
@@ -232,11 +241,11 @@ async function seed() {
     console.log('📡 Mapping device/software/band global capabilities...');
     
     // Helper function to get bands by technology
-    const getBandsByTech = (tech: string) => bands.filter(b => b.technology === tech);
+    // const getBandsByTech = (tech: string) => bands.filter(b => b.technology === tech);
     
     for (const sw of softwares) {
       const dev = devices.find(d => d.id === sw.deviceId)!;
-      const isApple = dev.vendor === 'Apple';
+      // const isApple = dev.vendor === 'Apple';
       const isFlagship = dev.marketName?.includes('Pro') || dev.marketName?.includes('Ultra');
       
       // All devices support basic LTE bands 2, 4, 5, 12
@@ -339,9 +348,9 @@ async function seed() {
       const globalBands = await db
         .select()
         .from(deviceSoftwareBand)
-        .where(sql => sql.and(
-          sql.eq(deviceSoftwareBand.deviceId, dev.id),
-          sql.eq(deviceSoftwareBand.softwareId, sw.id)
+        .where(and(
+          eq(deviceSoftwareBand.deviceId, dev.id),
+          eq(deviceSoftwareBand.softwareId, sw.id)
         ));
       
       for (const prov of providers) {
@@ -384,9 +393,9 @@ async function seed() {
       const globalCombos = await db
         .select()
         .from(deviceSoftwareCombo)
-        .where(sql => sql.and(
-          sql.eq(deviceSoftwareCombo.deviceId, dev.id),
-          sql.eq(deviceSoftwareCombo.softwareId, sw.id)
+        .where(and(
+          eq(deviceSoftwareCombo.deviceId, dev.id),
+          eq(deviceSoftwareCombo.softwareId, sw.id)
         ));
       
       for (const prov of providers) {
