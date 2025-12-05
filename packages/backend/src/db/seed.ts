@@ -45,7 +45,21 @@ async function seed() {
     ]).returning();
     console.log(`✅ Created ${providers.length} providers\n`);
 
-    // 2. BANDS (GSM, HSPA, LTE, NR)
+    // 2. FEATURES
+    console.log('⚡ Seeding features...');
+    const features = await db.insert(feature).values([
+      { name: 'VoLTE', description: 'Voice over LTE - HD voice calls over 4G' },
+      { name: 'VoWiFi', description: 'Voice over WiFi - WiFi calling support' },
+      { name: 'VoNR', description: 'Voice over NR - Native 5G voice calls' },
+      { name: '5G SA', description: '5G Standalone - True 5G without LTE anchor' },
+      { name: '5G NSA', description: '5G Non-Standalone - 5G with LTE anchor (EN-DC)' },
+      { name: 'Carrier Aggregation', description: 'Combine multiple LTE bands for faster speeds' },
+      { name: 'MIMO 4x4', description: 'Four antenna streams for improved throughput' },
+      { name: 'LAA', description: 'Licensed Assisted Access - Use unlicensed 5GHz spectrum' },
+    ]).returning();
+    console.log(`✅ Created ${features.length} features\n`);
+
+    // 3. BANDS (GSM, HSPA, LTE, NR)
     console.log('📻 Seeding bands...');
     const bands = await db.insert(band).values([
       // GSM Bands
@@ -85,20 +99,6 @@ async function seed() {
     ]).returning();
     console.log(`✅ Created ${bands.length} bands\n`);
 
-    // 3. FEATURES
-    console.log('⚡ Seeding features...');
-    const features = await db.insert(feature).values([
-      { name: 'VoLTE', description: 'Voice over LTE - HD voice calls over 4G' },
-      { name: 'VoWiFi', description: 'Voice over WiFi - WiFi calling support' },
-      { name: 'VoNR', description: 'Voice over NR - Native 5G voice calls' },
-      { name: '5G SA', description: '5G Standalone - True 5G without LTE anchor' },
-      { name: '5G NSA', description: '5G Non-Standalone - 5G with LTE anchor (EN-DC)' },
-      { name: 'Carrier Aggregation', description: 'Combine multiple LTE bands for faster speeds' },
-      { name: 'MIMO 4x4', description: 'Four antenna streams for improved throughput' },
-      { name: 'LAA', description: 'Licensed Assisted Access - Use unlicensed 5GHz spectrum' },
-    ]).returning();
-    console.log(`✅ Created ${features.length} features\n`);
-
     // 4. COMBOS (LTE CA, EN-DC, NR CA)
     console.log('🔗 Seeding combos...');
     const combos = await db.insert(combo).values([
@@ -133,50 +133,7 @@ async function seed() {
     ]).returning();
     console.log(`✅ Created ${combos.length} combos\n`);
 
-    // 5. COMBO_BAND mappings (which bands make up each combo)
-    console.log('🔗 Mapping combo bands...');
-    const comboMappings = [
-      // LTE CA combos
-      { comboName: '2A-4A', bandNumbers: [{ tech: 'LTE', num: '2' }, { tech: 'LTE', num: '4' }] },
-      { comboName: '2A-5A-7A', bandNumbers: [{ tech: 'LTE', num: '2' }, { tech: 'LTE', num: '5' }, { tech: 'LTE', num: '7' }] },
-      { comboName: '2A-12A', bandNumbers: [{ tech: 'LTE', num: '2' }, { tech: 'LTE', num: '12' }] },
-      { comboName: '4A-7A', bandNumbers: [{ tech: 'LTE', num: '4' }, { tech: 'LTE', num: '7' }] },
-      { comboName: '4A-12A', bandNumbers: [{ tech: 'LTE', num: '4' }, { tech: 'LTE', num: '12' }] },
-      { comboName: '66A-66A', bandNumbers: [{ tech: 'LTE', num: '66' }] },
-      
-      // EN-DC combos
-      { comboName: 'B2-n66', bandNumbers: [{ tech: 'LTE', num: '2' }, { tech: 'NR', num: 'n66' }] },
-      { comboName: 'B2-n71', bandNumbers: [{ tech: 'LTE', num: '2' }, { tech: 'NR', num: 'n71' }] },
-      { comboName: 'B4-n66', bandNumbers: [{ tech: 'LTE', num: '4' }, { tech: 'NR', num: 'n66' }] },
-      { comboName: 'B4-n71', bandNumbers: [{ tech: 'LTE', num: '4' }, { tech: 'NR', num: 'n71' }] },
-      { comboName: 'B66-n77', bandNumbers: [{ tech: 'LTE', num: '66' }, { tech: 'NR', num: 'n77' }] },
-      { comboName: 'B7-n78', bandNumbers: [{ tech: 'LTE', num: '7' }, { tech: 'NR', num: 'n78' }] },
-      
-      // NR CA combos
-      { comboName: 'n66A-n77A', bandNumbers: [{ tech: 'NR', num: 'n66' }, { tech: 'NR', num: 'n77' }] },
-      { comboName: 'n71A-n77A', bandNumbers: [{ tech: 'NR', num: 'n71' }, { tech: 'NR', num: 'n77' }] },
-      { comboName: 'n77A-n78A', bandNumbers: [{ tech: 'NR', num: 'n77' }, { tech: 'NR', num: 'n78' }] },
-    ];
-
-    for (const mapping of comboMappings) {
-      const comboRecord = combos.find(c => c.name === mapping.comboName);
-      if (!comboRecord) continue;
-
-      for (let i = 0; i < mapping.bandNumbers.length; i++) {
-        const { tech, num } = mapping.bandNumbers[i];
-        const bandRecord = bands.find(b => b.technology === tech && b.bandNumber === num);
-        if (bandRecord) {
-          await db.insert(comboBand).values({
-            comboId: comboRecord.comboId,
-            bandId: bandRecord.bandId,
-            position: i + 1,
-          });
-        }
-      }
-    }
-    console.log('✅ Mapped combo bands\n');
-
-    // 6. DEVICES
+    // 5. DEVICES
     console.log('📱 Seeding devices...');
     const devices = await db.insert(device).values([
       // Apple devices
@@ -206,7 +163,7 @@ async function seed() {
     ]).returning();
     console.log(`✅ Created ${devices.length} devices\n`);
 
-    // 7. SOFTWARE (3-5 versions per device)
+    // 6. SOFTWARE (3-5 versions per device)
     console.log('💿 Seeding software versions...');
     const softwareVersions = [];
     
@@ -237,7 +194,7 @@ async function seed() {
     const softwares = await db.insert(software).values(softwareVersions).returning();
     console.log(`✅ Created ${softwares.length} software versions\n`);
 
-    // 8. DEVICE_SOFTWARE_BAND (global capabilities)
+    // 7. DEVICE_SOFTWARE_BAND (global capabilities)
     console.log('📡 Mapping device/software/band global capabilities...');
     
     // Helper function to get bands by technology
@@ -283,7 +240,7 @@ async function seed() {
     }
     console.log('✅ Mapped global band capabilities\n');
 
-    // 9. DEVICE_SOFTWARE_COMBO (global combo support)
+    // 8. DEVICE_SOFTWARE_COMBO (global combo support)
     console.log('🔗 Mapping device/software/combo global capabilities...');
     
     for (const sw of softwares) {
@@ -332,6 +289,49 @@ async function seed() {
       }
     }
     console.log('✅ Mapped global combo capabilities\n');
+
+    // 9. COMBO_BAND mappings (which bands make up each combo)
+    console.log('🔗 Mapping combo bands...');
+    const comboMappings = [
+      // LTE CA combos
+      { comboName: '2A-4A', bandNumbers: [{ tech: 'LTE', num: '2' }, { tech: 'LTE', num: '4' }] },
+      { comboName: '2A-5A-7A', bandNumbers: [{ tech: 'LTE', num: '2' }, { tech: 'LTE', num: '5' }, { tech: 'LTE', num: '7' }] },
+      { comboName: '2A-12A', bandNumbers: [{ tech: 'LTE', num: '2' }, { tech: 'LTE', num: '12' }] },
+      { comboName: '4A-7A', bandNumbers: [{ tech: 'LTE', num: '4' }, { tech: 'LTE', num: '7' }] },
+      { comboName: '4A-12A', bandNumbers: [{ tech: 'LTE', num: '4' }, { tech: 'LTE', num: '12' }] },
+      { comboName: '66A-66A', bandNumbers: [{ tech: 'LTE', num: '66' }] },
+      
+      // EN-DC combos
+      { comboName: 'B2-n66', bandNumbers: [{ tech: 'LTE', num: '2' }, { tech: 'NR', num: 'n66' }] },
+      { comboName: 'B2-n71', bandNumbers: [{ tech: 'LTE', num: '2' }, { tech: 'NR', num: 'n71' }] },
+      { comboName: 'B4-n66', bandNumbers: [{ tech: 'LTE', num: '4' }, { tech: 'NR', num: 'n66' }] },
+      { comboName: 'B4-n71', bandNumbers: [{ tech: 'LTE', num: '4' }, { tech: 'NR', num: 'n71' }] },
+      { comboName: 'B66-n77', bandNumbers: [{ tech: 'LTE', num: '66' }, { tech: 'NR', num: 'n77' }] },
+      { comboName: 'B7-n78', bandNumbers: [{ tech: 'LTE', num: '7' }, { tech: 'NR', num: 'n78' }] },
+      
+      // NR CA combos
+      { comboName: 'n66A-n77A', bandNumbers: [{ tech: 'NR', num: 'n66' }, { tech: 'NR', num: 'n77' }] },
+      { comboName: 'n71A-n77A', bandNumbers: [{ tech: 'NR', num: 'n71' }, { tech: 'NR', num: 'n77' }] },
+      { comboName: 'n77A-n78A', bandNumbers: [{ tech: 'NR', num: 'n77' }, { tech: 'NR', num: 'n78' }] },
+    ];
+
+    for (const mapping of comboMappings) {
+      const comboRecord = combos.find(c => c.name === mapping.comboName);
+      if (!comboRecord) continue;
+
+      for (let i = 0; i < mapping.bandNumbers.length; i++) {
+        const { tech, num } = mapping.bandNumbers[i];
+        const bandRecord = bands.find(b => b.technology === tech && b.bandNumber === num);
+        if (bandRecord) {
+          await db.insert(comboBand).values({
+            comboId: comboRecord.comboId,
+            bandId: bandRecord.bandId,
+            position: i + 1,
+          });
+        }
+      }
+    }
+    console.log('✅ Mapped combo bands\n');
 
     // 10. PROVIDER-SPECIFIC BAND RESTRICTIONS
     console.log('📡 Mapping provider-specific band capabilities...');

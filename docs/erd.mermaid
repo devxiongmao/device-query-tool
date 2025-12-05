@@ -1,4 +1,33 @@
 erDiagram
+    PROVIDER {
+        bigint id PK
+        string name
+        string country
+        string network_type
+    }
+
+    FEATURE {
+        bigint id PK
+        string name
+        string description
+        datetime created_at
+        datetime updated_at
+    }
+
+    BAND {
+        bigint id PK
+        string band_number
+        string technology
+        string frequency_range
+        string band_class
+    }
+
+    COMBO {
+        bigint id PK
+        string name
+        string technology
+    }
+
     DEVICE {
         bigint id PK
         string vendor
@@ -20,35 +49,6 @@ erDiagram
         bigint device_id FK
         datetime created_at
         datetime updated_at
-    }
-
-    PROVIDER {
-        int provider_id PK
-        string name
-        string country
-        string network_type
-    }
-
-    BAND {
-        int band_id PK
-        string band_number
-        string technology
-        string frequency_range
-        string band_class
-    }
-
-    FEATURE {
-        bigint id PK
-        string name
-        string description
-        datetime created_at
-        datetime updated_at
-    }
-
-    COMBO {
-        int combo_id PK
-        string name
-        string technology
     }
 
     DEVICE_SOFTWARE_BAND {
