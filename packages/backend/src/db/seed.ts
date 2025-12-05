@@ -63,39 +63,39 @@ async function seed() {
     console.log('📻 Seeding bands...');
     const bands = await db.insert(band).values([
       // GSM Bands
-      { bandNumber: '2', technology: 'GSM', frequencyRange: '1850-1910 MHz', bandClass: 'PCS' },
-      { bandNumber: '5', technology: 'GSM', frequencyRange: '824-894 MHz', bandClass: 'CLR' },
+      { bandNumber: '2', technology: 'GSM'},
+      { bandNumber: '5', technology: 'GSM'},
       
       // HSPA/UMTS Bands
-      { bandNumber: '1', technology: 'HSPA', frequencyRange: '1920-2170 MHz', bandClass: 'IMT' },
-      { bandNumber: '2', technology: 'HSPA', frequencyRange: '1850-1990 MHz', bandClass: 'PCS' },
-      { bandNumber: '4', technology: 'HSPA', frequencyRange: '1710-2155 MHz', bandClass: 'AWS' },
-      { bandNumber: '5', technology: 'HSPA', frequencyRange: '824-894 MHz', bandClass: 'CLR' },
+      { bandNumber: '1', technology: 'HSPA'},
+      { bandNumber: '2', technology: 'HSPA'},
+      { bandNumber: '4', technology: 'HSPA'},
+      { bandNumber: '5', technology: 'HSPA'},
       
       // LTE Bands (Canadian carriers)
-      { bandNumber: '2', technology: 'LTE', frequencyRange: '1850-1990 MHz', bandClass: 'PCS' },
-      { bandNumber: '4', technology: 'LTE', frequencyRange: '1710-2155 MHz', bandClass: 'AWS' },
-      { bandNumber: '5', technology: 'LTE', frequencyRange: '824-894 MHz', bandClass: 'CLR' },
-      { bandNumber: '7', technology: 'LTE', frequencyRange: '2500-2690 MHz', bandClass: 'IMT-E' },
-      { bandNumber: '12', technology: 'LTE', frequencyRange: '698-746 MHz', bandClass: 'Lower 700 MHz' },
-      { bandNumber: '13', technology: 'LTE', frequencyRange: '777-787 MHz', bandClass: 'Upper 700 MHz' },
-      { bandNumber: '17', technology: 'LTE', frequencyRange: '704-746 MHz', bandClass: 'Lower 700 MHz' },
-      { bandNumber: '29', technology: 'LTE', frequencyRange: '717-728 MHz', bandClass: 'Lower 700 MHz' },
-      { bandNumber: '30', technology: 'LTE', frequencyRange: '2305-2315 MHz', bandClass: 'WCS' },
-      { bandNumber: '66', technology: 'LTE', frequencyRange: '1710-2200 MHz', bandClass: 'AWS Extended' },
-      { bandNumber: '71', technology: 'LTE', frequencyRange: '663-698 MHz', bandClass: '600 MHz' },
+      { bandNumber: '2', technology: 'LTE'},
+      { bandNumber: '4', technology: 'LTE'},
+      { bandNumber: '5', technology: 'LTE'},
+      { bandNumber: '7', technology: 'LTE'},
+      { bandNumber: '12', technology: 'LTE'},
+      { bandNumber: '13', technology: 'LTE'},
+      { bandNumber: '17', technology: 'LTE'},
+      { bandNumber: '29', technology: 'LTE'},
+      { bandNumber: '30', technology: 'LTE'},
+      { bandNumber: '66', technology: 'LTE'},
+      { bandNumber: '71', technology: 'LTE'},
       
       // 5G NR Bands (Canadian carriers)
-      { bandNumber: 'n2', technology: 'NR', frequencyRange: '1850-1990 MHz', bandClass: 'PCS' },
-      { bandNumber: 'n5', technology: 'NR', frequencyRange: '824-894 MHz', bandClass: 'CLR' },
-      { bandNumber: 'n7', technology: 'NR', frequencyRange: '2500-2690 MHz', bandClass: 'IMT-E' },
-      { bandNumber: 'n12', technology: 'NR', frequencyRange: '698-746 MHz', bandClass: 'Lower 700 MHz' },
-      { bandNumber: 'n25', technology: 'NR', frequencyRange: '1850-1995 MHz', bandClass: 'Extended PCS' },
-      { bandNumber: 'n41', technology: 'NR', frequencyRange: '2496-2690 MHz', bandClass: 'TDD 2.5 GHz' },
-      { bandNumber: 'n66', technology: 'NR', frequencyRange: '1710-2200 MHz', bandClass: 'AWS Extended' },
-      { bandNumber: 'n71', technology: 'NR', frequencyRange: '663-698 MHz', bandClass: '600 MHz' },
-      { bandNumber: 'n77', technology: 'NR', frequencyRange: '3300-4200 MHz', bandClass: 'C-Band' },
-      { bandNumber: 'n78', technology: 'NR', frequencyRange: '3300-3800 MHz', bandClass: 'C-Band' },
+      { bandNumber: 'n2', technology: 'NR'},
+      { bandNumber: 'n5', technology: 'NR'},
+      { bandNumber: 'n7', technology: 'NR'},
+      { bandNumber: 'n12', technology: 'NR'},
+      { bandNumber: 'n25', technology: 'NR'},
+      { bandNumber: 'n41', technology: 'NR'},
+      { bandNumber: 'n66', technology: 'NR'},
+      { bandNumber: 'n71', technology: 'NR'},
+      { bandNumber: 'n77', technology: 'NR'},
+      { bandNumber: 'n78', technology: 'NR'},
     ]).returning();
     console.log(`✅ Created ${bands.length} bands\n`);
 
@@ -234,7 +234,7 @@ async function seed() {
         await db.insert(deviceSoftwareBand).values({
           deviceId: dev.id,
           softwareId: sw.id,
-          bandId: band.bandId,
+          bandId: band.id,
         });
       }
     }
@@ -257,7 +257,7 @@ async function seed() {
         await db.insert(deviceSoftwareCombo).values({
           deviceId: dev.id,
           softwareId: sw.id,
-          comboId: combo.comboId,
+          comboId: combo.id,
         });
       }
       
@@ -270,7 +270,7 @@ async function seed() {
           await db.insert(deviceSoftwareCombo).values({
             deviceId: dev.id,
             softwareId: sw.id,
-            comboId: combo.comboId,
+            comboId: combo.id,
           });
         }
       }
@@ -283,7 +283,7 @@ async function seed() {
           await db.insert(deviceSoftwareCombo).values({
             deviceId: dev.id,
             softwareId: sw.id,
-            comboId: combo.comboId,
+            comboId: combo.id,
           });
         }
       }
@@ -294,25 +294,115 @@ async function seed() {
     console.log('🔗 Mapping combo bands...');
     const comboMappings = [
       // LTE CA combos
-      { comboName: '2A-4A', bandNumbers: [{ tech: 'LTE', num: '2' }, { tech: 'LTE', num: '4' }] },
-      { comboName: '2A-5A-7A', bandNumbers: [{ tech: 'LTE', num: '2' }, { tech: 'LTE', num: '5' }, { tech: 'LTE', num: '7' }] },
-      { comboName: '2A-12A', bandNumbers: [{ tech: 'LTE', num: '2' }, { tech: 'LTE', num: '12' }] },
-      { comboName: '4A-7A', bandNumbers: [{ tech: 'LTE', num: '4' }, { tech: 'LTE', num: '7' }] },
-      { comboName: '4A-12A', bandNumbers: [{ tech: 'LTE', num: '4' }, { tech: 'LTE', num: '12' }] },
-      { comboName: '66A-66A', bandNumbers: [{ tech: 'LTE', num: '66' }] },
+      { 
+        comboName: '2A-4A', 
+        bandNumbers: [
+          { tech: 'LTE', num: '2', dlClass: 'A', ulClass: 'A' },
+          { tech: 'LTE', num: '4', dlClass: 'A', ulClass: 'A' }
+        ] 
+      },
+      { 
+        comboName: '2A-5A-7A', 
+        bandNumbers: [
+          { tech: 'LTE', num: '2', dlClass: 'A', ulClass: 'A' },
+          { tech: 'LTE', num: '5', dlClass: 'A', ulClass: 'A' },
+          { tech: 'LTE', num: '7', dlClass: 'A', ulClass: null } // DL only in 3CA
+        ] 
+      },
+      { 
+        comboName: '2A-12A', 
+        bandNumbers: [
+          { tech: 'LTE', num: '2', dlClass: 'A', ulClass: 'A' },
+          { tech: 'LTE', num: '12', dlClass: 'A', ulClass: null } // DL only
+        ] 
+      },
+      { 
+        comboName: '4A-7A', 
+        bandNumbers: [
+          { tech: 'LTE', num: '4', dlClass: 'A', ulClass: 'A' },
+          { tech: 'LTE', num: '7', dlClass: 'A', ulClass: null } // DL only
+        ] 
+      },
+      { 
+        comboName: '4A-12A', 
+        bandNumbers: [
+          { tech: 'LTE', num: '4', dlClass: 'A', ulClass: 'A' },
+          { tech: 'LTE', num: '12', dlClass: 'A', ulClass: null } // DL only
+        ] 
+      },
+      { 
+        comboName: '66A-66A', 
+        bandNumbers: [
+          { tech: 'LTE', num: '66', dlClass: 'C', ulClass: 'A' } // Intra-band CA
+        ] 
+      },
       
-      // EN-DC combos
-      { comboName: 'B2-n66', bandNumbers: [{ tech: 'LTE', num: '2' }, { tech: 'NR', num: 'n66' }] },
-      { comboName: 'B2-n71', bandNumbers: [{ tech: 'LTE', num: '2' }, { tech: 'NR', num: 'n71' }] },
-      { comboName: 'B4-n66', bandNumbers: [{ tech: 'LTE', num: '4' }, { tech: 'NR', num: 'n66' }] },
-      { comboName: 'B4-n71', bandNumbers: [{ tech: 'LTE', num: '4' }, { tech: 'NR', num: 'n71' }] },
-      { comboName: 'B66-n77', bandNumbers: [{ tech: 'LTE', num: '66' }, { tech: 'NR', num: 'n77' }] },
-      { comboName: 'B7-n78', bandNumbers: [{ tech: 'LTE', num: '7' }, { tech: 'NR', num: 'n78' }] },
+      // EN-DC combos (LTE anchor, NR secondary)
+      { 
+        comboName: 'B2-n66', 
+        bandNumbers: [
+          { tech: 'LTE', num: '2', dlClass: 'A', ulClass: 'A' },
+          { tech: 'NR', num: 'n66', dlClass: 'A', ulClass: null } // NR typically DL only in EN-DC
+        ] 
+      },
+      { 
+        comboName: 'B2-n71', 
+        bandNumbers: [
+          { tech: 'LTE', num: '2', dlClass: 'A', ulClass: 'A' },
+          { tech: 'NR', num: 'n71', dlClass: 'A', ulClass: null }
+        ] 
+      },
+      { 
+        comboName: 'B4-n66', 
+        bandNumbers: [
+          { tech: 'LTE', num: '4', dlClass: 'A', ulClass: 'A' },
+          { tech: 'NR', num: 'n66', dlClass: 'A', ulClass: null }
+        ] 
+      },
+      { 
+        comboName: 'B4-n71', 
+        bandNumbers: [
+          { tech: 'LTE', num: '4', dlClass: 'A', ulClass: 'A' },
+          { tech: 'NR', num: 'n71', dlClass: 'A', ulClass: null }
+        ] 
+      },
+      { 
+        comboName: 'B66-n77', 
+        bandNumbers: [
+          { tech: 'LTE', num: '66', dlClass: 'A', ulClass: 'A' },
+          { tech: 'NR', num: 'n77', dlClass: 'C', ulClass: null } // Wide bandwidth
+        ] 
+      },
+      { 
+        comboName: 'B7-n78', 
+        bandNumbers: [
+          { tech: 'LTE', num: '7', dlClass: 'A', ulClass: 'A' },
+          { tech: 'NR', num: 'n78', dlClass: 'C', ulClass: null }
+        ] 
+      },
       
-      // NR CA combos
-      { comboName: 'n66A-n77A', bandNumbers: [{ tech: 'NR', num: 'n66' }, { tech: 'NR', num: 'n77' }] },
-      { comboName: 'n71A-n77A', bandNumbers: [{ tech: 'NR', num: 'n71' }, { tech: 'NR', num: 'n77' }] },
-      { comboName: 'n77A-n78A', bandNumbers: [{ tech: 'NR', num: 'n77' }, { tech: 'NR', num: 'n78' }] },
+      // NR CA combos (both UL and DL capable in SA mode)
+      { 
+        comboName: 'n66A-n77A', 
+        bandNumbers: [
+          { tech: 'NR', num: 'n66', dlClass: 'A', ulClass: 'A' },
+          { tech: 'NR', num: 'n77', dlClass: 'A', ulClass: null } // DL only secondary
+        ] 
+      },
+      { 
+        comboName: 'n71A-n77A', 
+        bandNumbers: [
+          { tech: 'NR', num: 'n71', dlClass: 'A', ulClass: 'A' },
+          { tech: 'NR', num: 'n77', dlClass: 'A', ulClass: null }
+        ] 
+      },
+      { 
+        comboName: 'n77A-n78A', 
+        bandNumbers: [
+          { tech: 'NR', num: 'n77', dlClass: 'D', ulClass: 'A' }, // Higher BW class
+          { tech: 'NR', num: 'n78', dlClass: 'D', ulClass: null }
+        ] 
+      },
     ];
 
     for (const mapping of comboMappings) {
@@ -320,13 +410,14 @@ async function seed() {
       if (!comboRecord) continue;
 
       for (let i = 0; i < mapping.bandNumbers.length; i++) {
-        const { tech, num } = mapping.bandNumbers[i];
+        const { tech, num, dlClass, ulClass } = mapping.bandNumbers[i];
         const bandRecord = bands.find(b => b.technology === tech && b.bandNumber === num);
         if (bandRecord) {
           await db.insert(comboBand).values({
-            comboId: comboRecord.comboId,
-            bandId: bandRecord.bandId,
-            position: i + 1,
+            comboId: comboRecord.id,
+            bandId: bandRecord.id,
+            dlBandClass: dlClass,
+            ulBandClass: ulClass,
           });
         }
       }
@@ -355,7 +446,7 @@ async function seed() {
       
       for (const prov of providers) {
         for (const globalBand of globalBands) {
-          const bandInfo = bands.find(b => b.bandId === globalBand.bandId)!;
+          const bandInfo = bands.find(b => b.id === globalBand.bandId)!;
           
           // Provider-specific restrictions
           let supported = true;
@@ -372,10 +463,10 @@ async function seed() {
           
           if (supported) {
             await db.insert(providerDeviceSoftwareBand).values({
-              providerId: prov.providerId,
+              providerId: prov.id,
               deviceId: dev.id,
               softwareId: sw.id,
-              bandId: bandInfo.bandId,
+              bandId: bandInfo.id,
             });
           }
         }
@@ -400,7 +491,7 @@ async function seed() {
       
       for (const prov of providers) {
         for (const globalCombo of globalCombos) {
-          const comboInfo = combos.find(c => c.comboId === globalCombo.comboId)!;
+          const comboInfo = combos.find(c => c.id === globalCombo.comboId)!;
           
           // Provider-specific combo restrictions
           let supported = true;
@@ -413,10 +504,10 @@ async function seed() {
           
           if (supported) {
             await db.insert(providerDeviceSoftwareCombo).values({
-              providerId: prov.providerId,
+              providerId: prov.id,
               deviceId: dev.id,
               softwareId: sw.id,
-              comboId: comboInfo.comboId,
+              comboId: comboInfo.id,
             });
           }
         }
@@ -438,7 +529,7 @@ async function seed() {
         await db.insert(deviceSoftwareProviderFeature).values({
           deviceId: dev.id,
           softwareId: sw.id,
-          providerId: prov.providerId,
+          providerId: prov.id,
           featureId: volteFeature.id,
         });
         
@@ -448,7 +539,7 @@ async function seed() {
           await db.insert(deviceSoftwareProviderFeature).values({
             deviceId: dev.id,
             softwareId: sw.id,
-            providerId: prov.providerId,
+            providerId: prov.id,
             featureId: vowifiFeature.id,
           });
         }
@@ -459,7 +550,7 @@ async function seed() {
           await db.insert(deviceSoftwareProviderFeature).values({
             deviceId: dev.id,
             softwareId: sw.id,
-            providerId: prov.providerId,
+            providerId: prov.id,
             featureId: nsaFeature.id,
           });
         }
@@ -470,7 +561,7 @@ async function seed() {
           await db.insert(deviceSoftwareProviderFeature).values({
             deviceId: dev.id,
             softwareId: sw.id,
-            providerId: prov.providerId,
+            providerId: prov.id,
             featureId: saFeature.id,
           });
         }
@@ -481,7 +572,7 @@ async function seed() {
           await db.insert(deviceSoftwareProviderFeature).values({
             deviceId: dev.id,
             softwareId: sw.id,
-            providerId: prov.providerId,
+            providerId: prov.id,
             featureId: vonrFeature.id,
           });
         }
@@ -492,7 +583,7 @@ async function seed() {
           await db.insert(deviceSoftwareProviderFeature).values({
             deviceId: dev.id,
             softwareId: sw.id,
-            providerId: prov.providerId,
+            providerId: prov.id,
             featureId: caFeature.id,
           });
         }
@@ -503,7 +594,7 @@ async function seed() {
           await db.insert(deviceSoftwareProviderFeature).values({
             deviceId: dev.id,
             softwareId: sw.id,
-            providerId: prov.providerId,
+            providerId: prov.id,
             featureId: mimoFeature.id,
           });
         }

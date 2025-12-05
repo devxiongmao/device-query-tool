@@ -18,8 +18,6 @@ erDiagram
         bigint id PK
         string band_number
         string technology
-        string frequency_range
-        string band_class
     }
 
     COMBO {
@@ -52,42 +50,43 @@ erDiagram
     }
 
     DEVICE_SOFTWARE_BAND {
-        int device_id FK
-        int software_id FK
-        int band_id FK
+        bigint device_id FK
+        bigint software_id FK
+        bigint band_id FK
     }
 
     DEVICE_SOFTWARE_COMBO {
-        int device_id FK
-        int software_id FK
-        int combo_id FK
+        bigint device_id FK
+        bigint software_id FK
+        bigint combo_id FK
     }
 
     COMBO_BAND {
-        int combo_id FK
-        int band_id FK
-        int position
+        bigint combo_id FK
+        bigint band_id FK
+        string dl_band_class
+        string ul_band_class
     }
 
     PROVIDER_DEVICE_SOFTWARE_BAND {
-        int provider_id FK
-        int device_id FK
-        int software_id FK
-        int band_id FK
+        bigint provider_id FK
+        bigint device_id FK
+        bigint software_id FK
+        bigint band_id FK
     }
 
     PROVIDER_DEVICE_SOFTWARE_COMBO {
-        int provider_id FK
-        int device_id FK
-        int software_id FK
-        int combo_id FK
+        bigint provider_id FK
+        bigint device_id FK
+        bigint software_id FK
+        bigint combo_id FK
     }
 
     DEVICE_SOFTWARE_PROVIDER_FEATURE {
-        int device_id FK
-        int software_id FK
-        int provider_id FK
-        int feature_id FK
+        bigint device_id FK
+        bigint software_id FK
+        bigint provider_id FK
+        bigint feature_id FK
     }
 
     DEVICE ||--o{ SOFTWARE : "has"

@@ -1,5 +1,5 @@
 {
-  "id": "ab38a875-cbc1-4e3a-80fc-9c1d924401ca",
+  "id": "545f445f-4d43-4023-81dd-41eefa96e3af",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -8,19 +8,19 @@
       "name": "BAND",
       "schema": "",
       "columns": {
-        "band_id": {
-          "name": "band_id",
-          "type": "integer",
+        "id": {
+          "name": "id",
+          "type": "bigint",
           "primaryKey": true,
           "notNull": true,
           "identity": {
             "type": "always",
-            "name": "BAND_band_id_seq",
+            "name": "BAND_id_seq",
             "schema": "public",
             "increment": "1",
             "startWith": "1",
             "minValue": "1",
-            "maxValue": "2147483647",
+            "maxValue": "9223372036854775807",
             "cache": "1",
             "cycle": false
           }
@@ -36,18 +36,6 @@
           "type": "varchar(20)",
           "primaryKey": false,
           "notNull": true
-        },
-        "frequency_range": {
-          "name": "frequency_range",
-          "type": "varchar(100)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "band_class": {
-          "name": "band_class",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
         }
       },
       "indexes": {},
@@ -62,19 +50,19 @@
       "name": "COMBO",
       "schema": "",
       "columns": {
-        "combo_id": {
-          "name": "combo_id",
-          "type": "integer",
+        "id": {
+          "name": "id",
+          "type": "bigint",
           "primaryKey": true,
           "notNull": true,
           "identity": {
             "type": "always",
-            "name": "COMBO_combo_id_seq",
+            "name": "COMBO_id_seq",
             "schema": "public",
             "increment": "1",
             "startWith": "1",
             "minValue": "1",
-            "maxValue": "2147483647",
+            "maxValue": "9223372036854775807",
             "cache": "1",
             "cycle": false
           }
@@ -106,47 +94,53 @@
       "columns": {
         "combo_id": {
           "name": "combo_id",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         },
         "band_id": {
           "name": "band_id",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         },
-        "position": {
-          "name": "position",
-          "type": "integer",
+        "dl_band_class": {
+          "name": "dl_band_class",
+          "type": "varchar(50)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
+        },
+        "ul_band_class": {
+          "name": "ul_band_class",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "COMBO_BAND_combo_id_COMBO_combo_id_fk": {
-          "name": "COMBO_BAND_combo_id_COMBO_combo_id_fk",
+        "COMBO_BAND_combo_id_COMBO_id_fk": {
+          "name": "COMBO_BAND_combo_id_COMBO_id_fk",
           "tableFrom": "COMBO_BAND",
           "tableTo": "COMBO",
           "columnsFrom": [
             "combo_id"
           ],
           "columnsTo": [
-            "combo_id"
+            "id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "COMBO_BAND_band_id_BAND_band_id_fk": {
-          "name": "COMBO_BAND_band_id_BAND_band_id_fk",
+        "COMBO_BAND_band_id_BAND_id_fk": {
+          "name": "COMBO_BAND_band_id_BAND_id_fk",
           "tableFrom": "COMBO_BAND",
           "tableTo": "BAND",
           "columnsFrom": [
             "band_id"
           ],
           "columnsTo": [
-            "band_id"
+            "id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -252,7 +246,7 @@
         },
         "band_id": {
           "name": "band_id",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         }
@@ -322,15 +316,15 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "DEVICE_SOFTWARE_BAND_band_id_BAND_band_id_fk": {
-          "name": "DEVICE_SOFTWARE_BAND_band_id_BAND_band_id_fk",
+        "DEVICE_SOFTWARE_BAND_band_id_BAND_id_fk": {
+          "name": "DEVICE_SOFTWARE_BAND_band_id_BAND_id_fk",
           "tableFrom": "DEVICE_SOFTWARE_BAND",
           "tableTo": "BAND",
           "columnsFrom": [
             "band_id"
           ],
           "columnsTo": [
-            "band_id"
+            "id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -369,7 +363,7 @@
         },
         "combo_id": {
           "name": "combo_id",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         }
@@ -439,15 +433,15 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "DEVICE_SOFTWARE_COMBO_combo_id_COMBO_combo_id_fk": {
-          "name": "DEVICE_SOFTWARE_COMBO_combo_id_COMBO_combo_id_fk",
+        "DEVICE_SOFTWARE_COMBO_combo_id_COMBO_id_fk": {
+          "name": "DEVICE_SOFTWARE_COMBO_combo_id_COMBO_id_fk",
           "tableFrom": "DEVICE_SOFTWARE_COMBO",
           "tableTo": "COMBO",
           "columnsFrom": [
             "combo_id"
           ],
           "columnsTo": [
-            "combo_id"
+            "id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -486,7 +480,7 @@
         },
         "provider_id": {
           "name": "provider_id",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         },
@@ -574,15 +568,15 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "DEVICE_SOFTWARE_PROVIDER_FEATURE_provider_id_PROVIDER_provider_id_fk": {
-          "name": "DEVICE_SOFTWARE_PROVIDER_FEATURE_provider_id_PROVIDER_provider_id_fk",
+        "DEVICE_SOFTWARE_PROVIDER_FEATURE_provider_id_PROVIDER_id_fk": {
+          "name": "DEVICE_SOFTWARE_PROVIDER_FEATURE_provider_id_PROVIDER_id_fk",
           "tableFrom": "DEVICE_SOFTWARE_PROVIDER_FEATURE",
           "tableTo": "PROVIDER",
           "columnsFrom": [
             "provider_id"
           ],
           "columnsTo": [
-            "provider_id"
+            "id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -677,19 +671,19 @@
       "name": "PROVIDER",
       "schema": "",
       "columns": {
-        "provider_id": {
-          "name": "provider_id",
-          "type": "integer",
+        "id": {
+          "name": "id",
+          "type": "bigint",
           "primaryKey": true,
           "notNull": true,
           "identity": {
             "type": "always",
-            "name": "PROVIDER_provider_id_seq",
+            "name": "PROVIDER_id_seq",
             "schema": "public",
             "increment": "1",
             "startWith": "1",
             "minValue": "1",
-            "maxValue": "2147483647",
+            "maxValue": "9223372036854775807",
             "cache": "1",
             "cycle": false
           }
@@ -727,7 +721,7 @@
       "columns": {
         "provider_id": {
           "name": "provider_id",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         },
@@ -745,7 +739,7 @@
         },
         "band_id": {
           "name": "band_id",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         }
@@ -795,15 +789,15 @@
         }
       },
       "foreignKeys": {
-        "PROVIDER_DEVICE_SOFTWARE_BAND_provider_id_PROVIDER_provider_id_fk": {
-          "name": "PROVIDER_DEVICE_SOFTWARE_BAND_provider_id_PROVIDER_provider_id_fk",
+        "PROVIDER_DEVICE_SOFTWARE_BAND_provider_id_PROVIDER_id_fk": {
+          "name": "PROVIDER_DEVICE_SOFTWARE_BAND_provider_id_PROVIDER_id_fk",
           "tableFrom": "PROVIDER_DEVICE_SOFTWARE_BAND",
           "tableTo": "PROVIDER",
           "columnsFrom": [
             "provider_id"
           ],
           "columnsTo": [
-            "provider_id"
+            "id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -834,15 +828,15 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "PROVIDER_DEVICE_SOFTWARE_BAND_band_id_BAND_band_id_fk": {
-          "name": "PROVIDER_DEVICE_SOFTWARE_BAND_band_id_BAND_band_id_fk",
+        "PROVIDER_DEVICE_SOFTWARE_BAND_band_id_BAND_id_fk": {
+          "name": "PROVIDER_DEVICE_SOFTWARE_BAND_band_id_BAND_id_fk",
           "tableFrom": "PROVIDER_DEVICE_SOFTWARE_BAND",
           "tableTo": "BAND",
           "columnsFrom": [
             "band_id"
           ],
           "columnsTo": [
-            "band_id"
+            "id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -870,7 +864,7 @@
       "columns": {
         "provider_id": {
           "name": "provider_id",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         },
@@ -888,7 +882,7 @@
         },
         "combo_id": {
           "name": "combo_id",
-          "type": "integer",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         }
@@ -938,15 +932,15 @@
         }
       },
       "foreignKeys": {
-        "PROVIDER_DEVICE_SOFTWARE_COMBO_provider_id_PROVIDER_provider_id_fk": {
-          "name": "PROVIDER_DEVICE_SOFTWARE_COMBO_provider_id_PROVIDER_provider_id_fk",
+        "PROVIDER_DEVICE_SOFTWARE_COMBO_provider_id_PROVIDER_id_fk": {
+          "name": "PROVIDER_DEVICE_SOFTWARE_COMBO_provider_id_PROVIDER_id_fk",
           "tableFrom": "PROVIDER_DEVICE_SOFTWARE_COMBO",
           "tableTo": "PROVIDER",
           "columnsFrom": [
             "provider_id"
           ],
           "columnsTo": [
-            "provider_id"
+            "id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -977,15 +971,15 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "PROVIDER_DEVICE_SOFTWARE_COMBO_combo_id_COMBO_combo_id_fk": {
-          "name": "PROVIDER_DEVICE_SOFTWARE_COMBO_combo_id_COMBO_combo_id_fk",
+        "PROVIDER_DEVICE_SOFTWARE_COMBO_combo_id_COMBO_id_fk": {
+          "name": "PROVIDER_DEVICE_SOFTWARE_COMBO_combo_id_COMBO_id_fk",
           "tableFrom": "PROVIDER_DEVICE_SOFTWARE_COMBO",
           "tableTo": "COMBO",
           "columnsFrom": [
             "combo_id"
           ],
           "columnsTo": [
-            "combo_id"
+            "id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
