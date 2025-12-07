@@ -18,6 +18,8 @@ erDiagram
         bigint id PK
         string band_number
         string technology
+        string dl_band_class
+        string ul_band_class
     }
 
     COMBO {
@@ -64,8 +66,6 @@ erDiagram
     COMBO_BAND {
         bigint combo_id FK
         bigint band_id FK
-        string dl_band_class
-        string ul_band_class
     }
 
     PROVIDER_DEVICE_SOFTWARE_BAND {
