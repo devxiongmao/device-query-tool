@@ -1,6 +1,6 @@
 {
-  "id": "545f445f-4d43-4023-81dd-41eefa96e3af",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "0c6e943e-862c-4a3c-8915-158f6d8f4e2d",
+  "prevId": "545f445f-4d43-4023-81dd-41eefa96e3af",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -36,6 +36,18 @@
           "type": "varchar(20)",
           "primaryKey": false,
           "notNull": true
+        },
+        "dl_band_class": {
+          "name": "dl_band_class",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ul_band_class": {
+          "name": "ul_band_class",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -103,18 +115,6 @@
           "type": "bigint",
           "primaryKey": false,
           "notNull": true
-        },
-        "dl_band_class": {
-          "name": "dl_band_class",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "ul_band_class": {
-          "name": "ul_band_class",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
         }
       },
       "indexes": {},
