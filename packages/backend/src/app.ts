@@ -1,32 +1,32 @@
-import { Hono } from 'hono';
-import { cors } from './middleware/cors';
-import { logger } from './middleware/logger';
-import { errorHandler } from './middleware/error-handler';
-import { env } from './config/env';
-import { db } from './db/client';
-import { handleGraphQLRequest } from './graphql/yoga';
+import { Hono } from "hono";
+import { cors } from "./middleware/cors";
+import { logger } from "./middleware/logger";
+import { errorHandler } from "./middleware/error-handler";
+import { env } from "./config/env";
+import { db } from "./db/client";
+import { handleGraphQLRequest } from "./graphql/yoga";
 
 const app = new Hono();
 
 // Middleware
-app.use('*', cors);
-app.use('*', logger);
+app.use("*", cors);
+app.use("*", logger);
 
 // Health check endpoint
-app.get('/health', async (c) => {
-  let dbStatus = 'disconnected';
-  
+app.get("/health", async (c) => {
+  let dbStatus = "disconnected";
+
   try {
     // Test database connection
-    await db.execute('SELECT 1');
-    dbStatus = 'connected';
+    await db.execute("SELECT 1");
+    dbStatus = "connected";
   } catch (error) {
-    console.error('DB health check failed:', error);
-    dbStatus = 'error';
+    console.error("DB health check failed:", error);
+    dbStatus = "error";
   }
 
   return c.json({
-    status: 'ok',
+    status: "ok",
     timestamp: new Date().toISOString(),
     environment: env.NODE_ENV,
     database: dbStatus,
@@ -34,25 +34,28 @@ app.get('/health', async (c) => {
 });
 
 // Root endpoint
-app.get('/', (c) => {
+app.get("/", (c) => {
   return c.json({
-    message: 'Device Capabilities API',
-    version: '1.0.0',
+    message: "Device Capabilities API",
+    version: "1.0.0",
     endpoints: {
-      health: '/health',
-      graphql: '/graphql',
-      graphiql: env.NODE_ENV === 'development' ? '/graphql (open in browser)' : 'disabled',
+      health: "/health",
+      graphql: "/graphql",
+      graphiql:
+        env.NODE_ENV === "development"
+          ? "/graphql (open in browser)"
+          : "disabled",
     },
   });
 });
 
 // GraphQL endpoint - handle all HTTP methods
-app.all('/graphql', handleGraphQLRequest);
-app.all('/graphql/health', handleGraphQLRequest);
+app.all("/graphql", handleGraphQLRequest);
+app.all("/graphql/health", handleGraphQLRequest);
 
 // 404 handler
 app.notFound((c) => {
-  return c.json({ error: 'Not Found' }, 404);
+  return c.json({ error: "Not Found" }, 404);
 });
 
 // Global error handler

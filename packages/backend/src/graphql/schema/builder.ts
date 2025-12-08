@@ -1,6 +1,6 @@
-import SchemaBuilder from '@pothos/core';
-import RelayPlugin from '@pothos/plugin-relay';
-import type { GraphQLContext } from '../context';
+import SchemaBuilder from "@pothos/core";
+import RelayPlugin from "@pothos/plugin-relay";
+import type { GraphQLContext } from "../context";
 
 // Create the schema builder with proper typing
 export const builder = new SchemaBuilder<{
@@ -18,13 +18,13 @@ export const builder = new SchemaBuilder<{
 }>({
   plugins: [RelayPlugin],
   relayOptions: {
-    clientMutationId: 'omit',
-    cursorType: 'String',
+    clientMutationId: "omit",
+    cursorType: "String",
   },
 });
 
 // Define custom scalar types
-builder.scalarType('DateTime', {
+builder.scalarType("DateTime", {
   serialize: (value) => {
     if (value instanceof Date) {
       return value.toISOString();
@@ -32,7 +32,7 @@ builder.scalarType('DateTime', {
     return value as string;
   },
   parseValue: (value) => {
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       return new Date(value);
     }
     return value as Date;
@@ -43,13 +43,15 @@ builder.scalarType('DateTime', {
 builder.queryType({
   fields: (t) => ({
     hello: t.string({
-      resolve: () => 'Hello from GraphQL!',
+      resolve: () => "Hello from GraphQL!",
     }),
-    
+
     // Test database connection
     deviceCount: t.int({
       resolve: async (_root, _args, ctx) => {
-        const result = await ctx.db.execute('SELECT COUNT(*) as count FROM "DEVICE"');
+        const result = await ctx.db.execute(
+          'SELECT COUNT(*) as count FROM "DEVICE"'
+        );
         return result.rows[0].count;
       },
     }),
@@ -61,7 +63,7 @@ builder.mutationType({
   fields: (t) => ({
     // Placeholder - we'll add mutations later
     _placeholder: t.string({
-      resolve: () => 'Mutations will be added here',
+      resolve: () => "Mutations will be added here",
     }),
   }),
 });
