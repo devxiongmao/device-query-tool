@@ -4,6 +4,7 @@ import { logger } from './middleware/logger';
 import { errorHandler } from './middleware/error-handler';
 import { env } from './config/env';
 import { db } from './db/client';
+import { handleGraphQLRequest } from './graphql/yoga';
 
 const app = new Hono();
 
@@ -39,10 +40,15 @@ app.get('/', (c) => {
     version: '1.0.0',
     endpoints: {
       health: '/health',
-      graphql: '/graphql', // Coming in Slice 2
+      graphql: '/graphql',
+      graphiql: env.NODE_ENV === 'development' ? '/graphql (open in browser)' : 'disabled',
     },
   });
 });
+
+// GraphQL endpoint - handle all HTTP methods
+app.all('/graphql', handleGraphQLRequest);
+app.all('/graphql/health', handleGraphQLRequest);
 
 // 404 handler
 app.notFound((c) => {
