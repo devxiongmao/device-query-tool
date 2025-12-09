@@ -4,7 +4,6 @@ import {
   feature,
   device,
   software,
-  provider,
   deviceSoftwareProviderFeature,
 } from "../db/schema";
 import type {
@@ -72,8 +71,8 @@ export class FeatureRepository {
 
     const results = await db
       .selectDistinct({
-        device: device,
-        software: software,
+        device,
+        software,
         providerId: deviceSoftwareProviderFeature.providerId,
       })
       .from(deviceSoftwareProviderFeature)
@@ -125,7 +124,7 @@ export class FeatureRepository {
     }
 
     return db
-      .selectDistinct({ feature: feature })
+      .selectDistinct({ feature })
       .from(deviceSoftwareProviderFeature)
       .innerJoin(
         feature,

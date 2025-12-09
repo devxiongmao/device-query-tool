@@ -33,7 +33,7 @@ async function testRepositories() {
   console.log(`   Found ${bands.length} NR bands`);
   if (bands.length > 0) {
     const bandDevices = await bandRepository.findDevicesSupportingBand({
-      bandId: bands[0].bandId,
+      bandId: bands[0].id,
     });
     console.log(
       `   Band ${bands[0].bandNumber}: supported by ${bandDevices.length} devices globally`
@@ -45,8 +45,8 @@ async function testRepositories() {
   const providers = await providerRepository.findAll();
   if (bands.length > 0 && providers.length > 0) {
     const providerBandDevices = await bandRepository.findDevicesSupportingBand({
-      bandId: bands[0].bandId,
-      providerId: providers[0].providerId,
+      bandId: bands[0].id,
+      providerId: providers[0].id,
     });
     console.log(
       `   Band ${bands[0].bandNumber} on ${providers[0].name}: supported by ${providerBandDevices.length} devices`
@@ -65,7 +65,7 @@ async function testRepositories() {
   console.log(`   Found ${combos.length} EN-DC combos`);
   if (combos.length > 0) {
     const comboDevices = await comboRepository.findDevicesSupportingCombo({
-      comboId: combos[0].comboId,
+      comboId: combos[0].id,
     });
     console.log(
       `   Combo ${combos[0].name}: supported by ${comboDevices.length} devices`

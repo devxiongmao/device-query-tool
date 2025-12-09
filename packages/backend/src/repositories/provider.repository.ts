@@ -10,7 +10,7 @@ export class ProviderRepository {
     const result = await db
       .select()
       .from(provider)
-      .where(eq(provider.providerId, id))
+      .where(eq(provider.id, id))
       .limit(1);
 
     return result[0] || null;
@@ -22,7 +22,7 @@ export class ProviderRepository {
   async findByIds(ids: number[]) {
     if (ids.length === 0) return [];
 
-    return db.select().from(provider).where(inArray(provider.providerId, ids));
+    return db.select().from(provider).where(inArray(provider.id, ids));
   }
 
   /**

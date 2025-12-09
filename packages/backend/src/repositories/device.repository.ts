@@ -1,6 +1,6 @@
 import { eq, and, like, gte, lte, sql, inArray } from "drizzle-orm";
 import { db } from "../db/client";
-import { device, software } from "../db/schema";
+import { device } from "../db/schema";
 import type { SearchDevicesParams } from "./types";
 
 export class DeviceRepository {

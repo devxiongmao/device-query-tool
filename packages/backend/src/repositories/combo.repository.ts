@@ -19,7 +19,7 @@ export class ComboRepository {
     const result = await db
       .select()
       .from(combo)
-      .where(eq(combo.comboId, id))
+      .where(eq(combo.id, id))
       .limit(1);
 
     return result[0] || null;
@@ -31,7 +31,7 @@ export class ComboRepository {
   async findByIds(ids: number[]) {
     if (ids.length === 0) return [];
 
-    return db.select().from(combo).where(inArray(combo.comboId, ids));
+    return db.select().from(combo).where(inArray(combo.id, ids));
   }
 
   /**
@@ -65,18 +65,16 @@ export class ComboRepository {
   }
 
   /**
-   * Find bands that make up a combo (with position)
+   * Find bands that make up a combo
    */
   async findBandsByCombo(comboId: number) {
     return db
       .select({
-        band: band,
-        position: comboBand.position,
+        band,
       })
       .from(comboBand)
-      .innerJoin(band, eq(comboBand.bandId, band.bandId))
-      .where(eq(comboBand.comboId, comboId))
-      .orderBy(comboBand.position);
+      .innerJoin(band, eq(comboBand.bandId, band.id))
+      .where(eq(comboBand.comboId, comboId));
   }
 
   /**
@@ -88,13 +86,12 @@ export class ComboRepository {
     return db
       .select({
         comboId: comboBand.comboId,
-        band: band,
-        position: comboBand.position,
+        band,
       })
       .from(comboBand)
-      .innerJoin(band, eq(comboBand.bandId, band.bandId))
+      .innerJoin(band, eq(comboBand.bandId, band.id))
       .where(inArray(comboBand.comboId, comboIds))
-      .orderBy(comboBand.comboId, comboBand.position);
+      .orderBy(comboBand.comboId);
   }
 
   /**
@@ -110,8 +107,8 @@ export class ComboRepository {
       // Provider-specific query
       const results = await db
         .selectDistinct({
-          device: device,
-          software: software,
+          device,
+          software,
           providerId: providerDeviceSoftwareCombo.providerId,
         })
         .from(providerDeviceSoftwareCombo)
@@ -120,10 +117,7 @@ export class ComboRepository {
           software,
           eq(providerDeviceSoftwareCombo.softwareId, software.id)
         )
-        .innerJoin(
-          combo,
-          eq(providerDeviceSoftwareCombo.comboId, combo.comboId)
-        )
+        .innerJoin(combo, eq(providerDeviceSoftwareCombo.comboId, combo.id))
         .where(
           and(
             eq(providerDeviceSoftwareCombo.comboId, comboId),
@@ -157,13 +151,13 @@ export class ComboRepository {
       // Global capability query
       const results = await db
         .selectDistinct({
-          device: device,
-          software: software,
+          device,
+          software,
         })
         .from(deviceSoftwareCombo)
         .innerJoin(device, eq(deviceSoftwareCombo.deviceId, device.id))
         .innerJoin(software, eq(deviceSoftwareCombo.softwareId, software.id))
-        .innerJoin(combo, eq(deviceSoftwareCombo.comboId, combo.comboId))
+        .innerJoin(combo, eq(deviceSoftwareCombo.comboId, combo.id))
         .where(
           and(
             eq(deviceSoftwareCombo.comboId, comboId),
@@ -213,9 +207,9 @@ export class ComboRepository {
     }
 
     return db
-      .select({ combo: combo })
+      .select({ combo })
       .from(deviceSoftwareCombo)
-      .innerJoin(combo, eq(deviceSoftwareCombo.comboId, combo.comboId))
+      .innerJoin(combo, eq(deviceSoftwareCombo.comboId, combo.id))
       .where(and(...conditions))
       .then((results) => results.map((r) => r.combo));
   }
@@ -240,9 +234,9 @@ export class ComboRepository {
     }
 
     return db
-      .select({ combo: combo })
+      .select({ combo })
       .from(providerDeviceSoftwareCombo)
-      .innerJoin(combo, eq(providerDeviceSoftwareCombo.comboId, combo.comboId))
+      .innerJoin(combo, eq(providerDeviceSoftwareCombo.comboId, combo.id))
       .where(and(...conditions))
       .then((results) => results.map((r) => r.combo));
   }

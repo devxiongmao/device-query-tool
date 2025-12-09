@@ -1,4 +1,4 @@
-import { eq, and, inArray, like, sql } from "drizzle-orm";
+import { eq, and, inArray, like } from "drizzle-orm";
 import { db } from "../db/client";
 import {
   band,
@@ -71,8 +71,8 @@ export class BandRepository {
       // Provider-specific query
       const results = await db
         .selectDistinct({
-          device: device,
-          software: software,
+          device,
+          software,
           providerId: providerDeviceSoftwareBand.providerId,
         })
         .from(providerDeviceSoftwareBand)
@@ -115,8 +115,8 @@ export class BandRepository {
       // Global capability query
       const results = await db
         .selectDistinct({
-          device: device,
-          software: software,
+          device,
+          software,
         })
         .from(deviceSoftwareBand)
         .innerJoin(device, eq(deviceSoftwareBand.deviceId, device.id))
@@ -171,7 +171,7 @@ export class BandRepository {
     }
 
     return db
-      .select({ band: band })
+      .select({ band })
       .from(deviceSoftwareBand)
       .innerJoin(band, eq(deviceSoftwareBand.bandId, band.id))
       .where(and(...conditions))
@@ -198,7 +198,7 @@ export class BandRepository {
     }
 
     return db
-      .select({ band: band })
+      .select({ band })
       .from(providerDeviceSoftwareBand)
       .innerJoin(band, eq(providerDeviceSoftwareBand.bandId, band.id))
       .where(and(...conditions))
