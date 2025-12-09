@@ -1,7 +1,14 @@
 import { builder } from "./builder";
 
-// Import all type definitions (we'll create these in next tasks)
-// For now, we just have the basic Query and Mutation types from builder
+// Import all type definitions
+import "./types/device";
+import "./types/software";
+import "./types/band";
+import "./types/combo";
+import "./types/feature";
+import "./types/provider";
+import './types/junctions';
+import "./types/capability-results";
 
 // Build and export the schema
 export const schema = builder.toSchema();
