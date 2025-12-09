@@ -11,8 +11,8 @@ export const BandType = builder.objectRef<{
   bandId: number;
   bandNumber: string;
   technology: string;
-  frequencyRange: string;
-  bandClass: string | null;
+  dlBandClass: string;
+  ulBandClass: string;
 }>("Band");
 
 BandType.implement({
@@ -24,12 +24,13 @@ BandType.implement({
     technology: t.exposeString("technology", {
       description: "Technology type (GSM, HSPA, LTE, NR)",
     }),
-    frequencyRange: t.exposeString("frequencyRange", {
-      description: "Frequency range in MHz",
-    }),
-    bandClass: t.exposeString("bandClass", {
+    dlBandClass: t.exposeString("dlBandClass", {
       nullable: true,
-      description: 'Band class/name (e.g., "PCS", "AWS", "C-Band")',
+      description: "Downlink bandwidth class for the band",
+    }),
+    ulBandClass: t.exposeString("ulBandClass", {
+      nullable: true,
+      description: "Uplink bandwidth class for the band",
     }),
 
     // Relationships

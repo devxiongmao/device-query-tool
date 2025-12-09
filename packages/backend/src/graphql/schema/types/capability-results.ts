@@ -20,10 +20,10 @@ export const SupportStatusType = builder.enumType("SupportStatus", {
 // Result type for capability queries
 // Used when searching for devices by band/combo/feature
 export const DeviceCapabilityResultType = builder.objectRef<{
-  device: any; // Will be typed properly
-  software: any[];
+  device: any; // eslint-disable-line @typescript-eslint/no-explicit-any -- will be typed properly
+  software: any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
   supportStatus: "global" | "provider-specific";
-  provider: any | null;
+  provider: any | null; // eslint-disable-line @typescript-eslint/no-explicit-any
 }>("DeviceCapabilityResult");
 
 DeviceCapabilityResultType.implement({

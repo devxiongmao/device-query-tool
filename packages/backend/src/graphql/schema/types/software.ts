@@ -35,7 +35,7 @@ SoftwareType.implement({
       description: "The device this software runs on",
       resolve: async (_software, _args, _ctx) => {
         // Will implement with DataLoader
-        return null as any;
+        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
       },
     }),
   }),

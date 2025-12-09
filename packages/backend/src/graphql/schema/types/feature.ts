@@ -51,25 +51,25 @@ FeatureAvailabilityType.implement({
     device: t.field({
       type: DeviceType,
       resolve: async (_availability, _args, _ctx) => {
-        return null as any; // Will implement
+        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
       },
     }),
     software: t.field({
       type: SoftwareType,
       resolve: async (_availability, _args, _ctx) => {
-        return null as any; // Will implement
+        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
       },
     }),
     provider: t.field({
       type: ProviderType,
       resolve: async (_availability, _args, _ctx) => {
-        return null as any; // Will implement
+        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
       },
     }),
     feature: t.field({
       type: FeatureType,
       resolve: async (_availability, _args, _ctx) => {
-        return null as any; // Will implement
+        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
       },
     }),
   }),
