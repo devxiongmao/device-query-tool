@@ -43,20 +43,19 @@ query TestQuery {
 
   // CORS is already handled by Hono middleware
   cors: false,
-
-  // Health check endpoint
-  healthCheckEndpoint: "/graphql/health",
 });
 
 // Helper function to integrate with Hono
 export async function handleGraphQLRequest(c: HonoContext) {
-  const response = await yoga.handleRequest(c.req.raw, {
-    request: c.req.raw,
-    // You can pass additional context here if needed
-  });
+  const response = await yoga.handleRequest(c.req.raw, {});
 
   return new Response(response.body, {
     status: response.status,
     headers: response.headers,
   });
+}
+
+// Health check handler
+export function handleGraphQLHealth(c: HonoContext) {
+  return c.json({ data: "graphQL is healthy!" });
 }

@@ -62,6 +62,7 @@ describe("Hono Application", () => {
         endpoints: {
           health: "/health",
           graphql: "/graphql",
+          graphiql: "disabled",
         },
       });
     });
@@ -110,6 +111,27 @@ describe("Hono Application", () => {
       const res = await app.request("/health");
 
       expect(res.headers.get("content-type")).toContain("application/json");
+    });
+  });
+
+  describe("GraphQL Health check endpoint", () => {
+    it("should return healthy status", async () => {
+      const res = await app.request("/graphql/health");
+
+      expect(res.status).toBe(200);
+    });
+
+    it("should return JSON content type", async () => {
+      const res = await app.request("/graphql/health");
+
+      expect(res.headers.get("content-type")).toContain("application/json");
+    });
+
+    it("should return data", async () => {
+      const res = await app.request("/graphql/health");
+      const data = (await res.json());
+
+      expect(data.data).toBe("graphQL is healthy!");
     });
   });
 

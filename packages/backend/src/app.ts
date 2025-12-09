@@ -4,7 +4,7 @@ import { logger } from "./middleware/logger";
 import { errorHandler } from "./middleware/error-handler";
 import { env } from "./config/env";
 import { db } from "./db/client";
-import { handleGraphQLRequest } from "./graphql/yoga";
+import { handleGraphQLHealth, handleGraphQLRequest } from "./graphql/yoga";
 
 const app = new Hono();
 
@@ -51,7 +51,7 @@ app.get("/", (c) => {
 
 // GraphQL endpoint - handle all HTTP methods
 app.all("/graphql", handleGraphQLRequest);
-app.all("/graphql/health", handleGraphQLRequest);
+app.all("/graphql/health", handleGraphQLHealth);
 
 // 404 handler
 app.notFound((c) => {

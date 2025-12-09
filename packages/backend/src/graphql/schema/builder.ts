@@ -17,7 +17,7 @@ export const builder = new SchemaBuilder<{
   };
 }>({
   plugins: [RelayPlugin],
-  relayOptions: {
+  relay: {
     clientMutationId: "omit",
     cursorType: "String",
   },
@@ -52,7 +52,7 @@ builder.queryType({
         const result = await ctx.db.execute(
           'SELECT COUNT(*) as count FROM "DEVICE"'
         );
-        return result.rows[0].count;
+        return Number(result[0].count);
       },
     }),
   }),
