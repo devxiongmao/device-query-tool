@@ -2,7 +2,7 @@ import { builder } from "../builder";
 
 // Provider type definition
 export const ProviderType = builder.objectRef<{
-  providerId: number;
+  id: number;
   name: string;
   country: string;
   networkType: string;
@@ -10,7 +10,7 @@ export const ProviderType = builder.objectRef<{
 
 ProviderType.implement({
   fields: (t) => ({
-    id: t.exposeID("providerId"),
+    id: t.exposeID("id"),
     name: t.exposeString("name", {
       description: 'Provider name (e.g., "Telus", "Rogers")',
     }),

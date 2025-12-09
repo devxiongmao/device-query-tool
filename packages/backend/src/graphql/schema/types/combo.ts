@@ -1,6 +1,11 @@
 import { builder } from "../builder";
-import { BandType } from "./band";
 import { DeviceType } from "./device";
+import { BandType } from "./band";
+import {
+  DeviceComboType,
+  ProviderDeviceComboType,
+  ComboBandType,
+} from "./junctions";
 
 // Combo technology enum
 export const ComboTechnologyType = builder.enumType("ComboTechnology", {
@@ -20,16 +25,15 @@ export const ComboTechnologyType = builder.enumType("ComboTechnology", {
   } as const,
 });
 
-// Combo type definition
 export const ComboType = builder.objectRef<{
-  comboId: number;
+  id: number;
   name: string;
   technology: string;
 }>("Combo");
 
 ComboType.implement({
   fields: (t) => ({
-    id: t.exposeID("comboId"),
+    id: t.exposeID("id"),
     name: t.exposeString("name", {
       description: 'Combo name (e.g., "2A-4A", "B2-n66")',
     }),
@@ -37,27 +41,54 @@ ComboType.implement({
       description: "Combo technology type",
     }),
 
-    // Relationships
+    // Simple list of bands (backwards compatible)
     bands: t.field({
       type: [BandType],
-      description: "Bands that make up this combo (in order)",
+      description: "Bands that make up this combo (ordered)",
       resolve: async (_combo, _args, _ctx) => {
-        // Will implement with DataLoader
         return [];
       },
     }),
 
+    // Detailed band composition with position
+    bandComponents: t.field({
+      type: [ComboBandType],
+      description: "Detailed band components with position information",
+      resolve: async (_combo, _args, _ctx) => {
+        return [];
+      },
+    }),
+
+    // Simple list of devices
     devices: t.field({
       type: [DeviceType],
-      description: "Devices that support this combo",
+      description: "Devices that support this combo (simplified)",
       args: {
-        providerId: t.arg.id({
-          required: false,
-          description: "Filter by provider-specific support",
-        }),
+        providerId: t.arg.id({ required: false }),
       },
       resolve: async (_combo, _args, _ctx) => {
-        // Will implement with repository
+        return [];
+      },
+    }),
+
+    // Detailed device support
+    deviceSupport: t.field({
+      type: [DeviceComboType],
+      description: "Detailed device/software/combo relationships (global)",
+      resolve: async (_combo, _args, _ctx) => {
+        return [];
+      },
+    }),
+
+    // Provider-specific detailed support
+    providerDeviceSupport: t.field({
+      type: [ProviderDeviceComboType],
+      description:
+        "Detailed device/software/combo relationships (provider-specific)",
+      args: {
+        providerId: t.arg.id({ required: false }),
+      },
+      resolve: async (_combo, _args, _ctx) => {
         return [];
       },
     }),

@@ -1,14 +1,13 @@
 import { builder } from "../builder";
 import { DeviceType } from "./device";
+import { DeviceBandType, ProviderDeviceBandType } from "./junctions";
 
-// Technology enum for bands
 export const TechnologyType = builder.enumType("Technology", {
   values: ["GSM", "HSPA", "LTE", "NR"] as const,
 });
 
-// Band type definition
 export const BandType = builder.objectRef<{
-  bandId: number;
+  id: number;
   bandNumber: string;
   technology: string;
   dlBandClass: string;
@@ -17,13 +16,9 @@ export const BandType = builder.objectRef<{
 
 BandType.implement({
   fields: (t) => ({
-    id: t.exposeID("bandId"),
-    bandNumber: t.exposeString("bandNumber", {
-      description: 'Band number (e.g., "2", "4", "n77")',
-    }),
-    technology: t.exposeString("technology", {
-      description: "Technology type (GSM, HSPA, LTE, NR)",
-    }),
+    id: t.exposeID("id"),
+    bandNumber: t.exposeString("bandNumber"),
+    technology: t.exposeString("technology"),
     dlBandClass: t.exposeString("dlBandClass", {
       nullable: true,
       description: "Downlink bandwidth class for the band",
@@ -33,18 +28,36 @@ BandType.implement({
       description: "Uplink bandwidth class for the band",
     }),
 
-    // Relationships
+    // Simple list of devices (backwards compatible)
     devices: t.field({
       type: [DeviceType],
-      description: "Devices that support this band (global capability)",
+      description: "Devices that support this band (simplified)",
       args: {
-        providerId: t.arg.id({
-          required: false,
-          description: "Filter by provider-specific support",
-        }),
+        providerId: t.arg.id({ required: false }),
       },
       resolve: async (_band, _args, _ctx) => {
-        // Will implement with repository
+        return [];
+      },
+    }),
+
+    // Detailed device support with junction data
+    deviceSupport: t.field({
+      type: [DeviceBandType],
+      description: "Detailed device/software/band relationships (global)",
+      resolve: async (_band, _args, _ctx) => {
+        return [];
+      },
+    }),
+
+    // Provider-specific detailed support
+    providerDeviceSupport: t.field({
+      type: [ProviderDeviceBandType],
+      description:
+        "Detailed device/software/band relationships (provider-specific)",
+      args: {
+        providerId: t.arg.id({ required: false }),
+      },
+      resolve: async (_band, _args, _ctx) => {
         return [];
       },
     }),
