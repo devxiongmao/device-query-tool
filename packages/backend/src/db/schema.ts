@@ -3,7 +3,6 @@ import {
   bigint,
   varchar,
   date,
-  timestamp,
   integer,
   primaryKey,
   index,
@@ -23,8 +22,6 @@ export const feature = pgTable("FEATURE", {
   id: bigint("id", { mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
   name: varchar("name", { length: 100 }).notNull(),
   description: varchar("description", { length: 500 }),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 // BAND table
@@ -50,8 +47,6 @@ export const device = pgTable("DEVICE", {
   modelNum: varchar("model_num", { length: 100 }).notNull(),
   marketName: varchar("market_name", { length: 200 }),
   releaseDate: date("release_date").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 // SOFTWARE table with foreign key index
@@ -70,8 +65,6 @@ export const software = pgTable(
     deviceId: bigint("device_id", { mode: "number" })
       .notNull()
       .references(() => device.id, { onDelete: "cascade" }),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (table) => ({
     // Foreign key index for joins
