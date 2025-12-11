@@ -10,8 +10,6 @@ export const DeviceType = builder.objectRef<{
   modelNum: string;
   marketName: string | null;
   releaseDate: string;
-  createdAt: Date;
-  updatedAt: Date;
 }>("Device");
 
 DeviceType.implement({
@@ -24,8 +22,6 @@ DeviceType.implement({
       type: "DateTime",
       description: "Device release date",
     }),
-    createdAt: t.expose("createdAt", { type: "DateTime" }),
-    updatedAt: t.expose("updatedAt", { type: "DateTime" }),
 
     // Software versions
     software: t.field({
