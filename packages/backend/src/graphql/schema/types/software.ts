@@ -11,8 +11,6 @@ export const SoftwareType = builder.objectRef<{
   buildNumber: string | null;
   releaseDate: string;
   deviceId: number;
-  createdAt: Date;
-  updatedAt: Date;
 }>("Software");
 
 SoftwareType.implement({
@@ -26,8 +24,6 @@ SoftwareType.implement({
     svn: t.exposeInt("svn", { nullable: true }),
     buildNumber: t.exposeString("buildNumber", { nullable: true }),
     releaseDate: t.expose("releaseDate", { type: "DateTime" }),
-    createdAt: t.expose("createdAt", { type: "DateTime" }),
-    updatedAt: t.expose("updatedAt", { type: "DateTime" }),
 
     // Relationships
     device: t.field({

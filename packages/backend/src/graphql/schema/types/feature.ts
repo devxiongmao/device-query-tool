@@ -6,8 +6,6 @@ export const FeatureType = builder.objectRef<{
   id: number;
   name: string;
   description: string | null;
-  createdAt: Date;
-  updatedAt: Date;
 }>("Feature");
 
 FeatureType.implement({
@@ -17,8 +15,6 @@ FeatureType.implement({
       description: 'Feature name (e.g., "VoLTE", "VoWiFi")',
     }),
     description: t.exposeString("description", { nullable: true }),
-    createdAt: t.expose("createdAt", { type: "DateTime" }),
-    updatedAt: t.expose("updatedAt", { type: "DateTime" }),
 
     // Use junction type instead
     availability: t.field({
