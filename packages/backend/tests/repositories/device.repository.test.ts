@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import { DeviceFactory } from "../factories/device.factory";
-import { db } from "../../src/db/client"
+import { db } from "../../src/db/client";
 import { DeviceRepository } from "../../src/repositories/device.repository";
 
 // Mock the database

@@ -25,10 +25,7 @@ export class DeviceFactory {
   /**
    * Create multiple devices
    */
-  static createMany(
-    count: number,
-    overrides: Partial<Device> = {}
-  ): Device[] {
+  static createMany(count: number, overrides: Partial<Device> = {}): Device[] {
     return Array.from({ length: count }, () => this.create(overrides));
   }
 
