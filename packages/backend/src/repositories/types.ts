@@ -9,8 +9,8 @@ export interface SearchDevicesParams extends PaginationParams {
   vendor?: string;
   modelNum?: string;
   marketName?: string;
-  releasedAfter?: string;
-  releasedBefore?: string;
+  releasedAfter?: string; // XMDEV-544: Fix date casting
+  releasedBefore?: string; // XMDEV-544: Fix date casting
 }
 
 export interface FindDevicesByBandParams {
