@@ -38,9 +38,15 @@ DeviceType.implement({
           description: "Filter by release date",
         }),
       },
-      resolve: async (_device, _args, _ctx) => {
-        // Will implement in next task
-        return [];
+      resolve: async (device, args, ctx) => {
+        return ctx.loaders.softwareByDevice.load({
+          deviceId: device.id,
+          platform: args.platform || undefined,
+          releasedAfter:
+            args.releasedAfter instanceof Date
+              ? args.releasedAfter.toISOString()
+              : args.releasedAfter || undefined,
+        });
       },
     }),
 
@@ -58,9 +64,30 @@ DeviceType.implement({
           description: "Filter by specific software version",
         }),
       },
-      resolve: async (_device, _args, _ctx) => {
-        // Will implement in next task
-        return [];
+      resolve: async (device, args, ctx) => {
+        // If no specific software version, get all software and aggregate bands
+        if (!args.softwareId) {
+          const softwares = await ctx.loaders.softwareByDevice.load({
+            deviceId: device.id,
+          });
+
+          if (softwares.length === 0) return [];
+
+          // Get bands for the latest software version
+          const latestSoftware = softwares[softwares.length - 1];
+          return ctx.loaders.bandsByDeviceSoftware.load({
+            deviceId: device.id,
+            softwareId: latestSoftware.id,
+            technology: args.technology || undefined,
+          });
+        }
+
+        // Get bands for specific software version
+        return ctx.loaders.bandsByDeviceSoftware.load({
+          deviceId: device.id,
+          softwareId: Number(args.softwareId),
+          technology: args.technology || undefined,
+        });
       },
     }),
 
@@ -73,9 +100,24 @@ DeviceType.implement({
         technology: t.arg.string({ required: false }),
         softwareId: t.arg.id({ required: false }),
       },
-      resolve: async (_device, _args, _ctx) => {
-        // Will implement in next task
-        return [];
+      resolve: async (device, args, ctx) => {
+        // Get software
+        const softwares = await ctx.loaders.softwareByDevice.load({
+          deviceId: device.id,
+        });
+
+        if (softwares.length === 0) return [];
+
+        const softwareId = args.softwareId
+          ? Number(args.softwareId)
+          : softwares[softwares.length - 1].id; // Latest
+
+        return ctx.loaders.bandsByDeviceSoftwareProvider.load({
+          deviceId: device.id,
+          softwareId,
+          providerId: Number(args.providerId),
+          technology: args.technology || undefined,
+        });
       },
     }),
 
@@ -90,9 +132,22 @@ DeviceType.implement({
         }),
         softwareId: t.arg.id({ required: false }),
       },
-      resolve: async (_device, _args, _ctx) => {
-        // Will implement in next task
-        return [];
+      resolve: async (device, args, ctx) => {
+        const softwares = await ctx.loaders.softwareByDevice.load({
+          deviceId: device.id,
+        });
+
+        if (softwares.length === 0) return [];
+
+        const softwareId = args.softwareId
+          ? Number(args.softwareId)
+          : softwares[softwares.length - 1].id;
+
+        return ctx.loaders.combosByDeviceSoftware.load({
+          deviceId: device.id,
+          softwareId,
+          technology: args.technology || undefined,
+        });
       },
     }),
 
@@ -105,9 +160,23 @@ DeviceType.implement({
         technology: t.arg.string({ required: false }),
         softwareId: t.arg.id({ required: false }),
       },
-      resolve: async (_device, _args, _ctx) => {
-        // Will implement in next task
-        return [];
+      resolve: async (device, args, ctx) => {
+        const softwares = await ctx.loaders.softwareByDevice.load({
+          deviceId: device.id,
+        });
+
+        if (softwares.length === 0) return [];
+
+        const softwareId = args.softwareId
+          ? Number(args.softwareId)
+          : softwares[softwares.length - 1].id;
+
+        return ctx.loaders.combosByDeviceSoftwareProvider.load({
+          deviceId: device.id,
+          softwareId,
+          providerId: Number(args.providerId),
+          technology: args.technology || undefined,
+        });
       },
     }),
 
@@ -118,9 +187,22 @@ DeviceType.implement({
       args: {
         softwareId: t.arg.id({ required: false }),
       },
-      resolve: async (_device, _args, _ctx) => {
-        // Will implement in next task
-        return [];
+      resolve: async (device, args, ctx) => {
+        const softwares = await ctx.loaders.softwareByDevice.load({
+          deviceId: device.id,
+        });
+
+        if (softwares.length === 0) return [];
+
+        const softwareId = args.softwareId
+          ? Number(args.softwareId)
+          : softwares[softwares.length - 1].id;
+
+        return ctx.loaders.featuresByDeviceSoftwareProvider.load({
+          deviceId: device.id,
+          softwareId,
+          providerId: undefined, // All providers
+        });
       },
     }),
 
@@ -132,9 +214,22 @@ DeviceType.implement({
         providerId: t.arg.id({ required: true }),
         softwareId: t.arg.id({ required: false }),
       },
-      resolve: async (_device, _args, _ctx) => {
-        // Will implement in next task
-        return [];
+      resolve: async (device, args, ctx) => {
+        const softwares = await ctx.loaders.softwareByDevice.load({
+          deviceId: device.id,
+        });
+
+        if (softwares.length === 0) return [];
+
+        const softwareId = args.softwareId
+          ? Number(args.softwareId)
+          : softwares[softwares.length - 1].id;
+
+        return ctx.loaders.featuresByDeviceSoftwareProvider.load({
+          deviceId: device.id,
+          softwareId,
+          providerId: Number(args.providerId),
+        });
       },
     }),
   }),

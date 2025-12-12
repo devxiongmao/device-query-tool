@@ -29,9 +29,12 @@ SoftwareType.implement({
     device: t.field({
       type: DeviceType,
       description: "The device this software runs on",
-      resolve: async (_software, _args, _ctx) => {
-        // Will implement with DataLoader
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (software, _args, ctx) => {
+        const device = await ctx.loaders.deviceById.load(software.deviceId);
+        if (!device) {
+          throw new Error(`Device ${software.deviceId} not found`);
+        }
+        return device;
       },
     }),
   }),
