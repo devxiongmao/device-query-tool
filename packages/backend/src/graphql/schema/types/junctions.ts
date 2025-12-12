@@ -20,21 +20,28 @@ DeviceBandType.implement({
   fields: (t) => ({
     device: t.field({
       type: DeviceType,
-      resolve: async (_junction, _args, _ctx) => {
-        // Will implement with DataLoader
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const device = await ctx.loaders.deviceById.load(junction.deviceId);
+        if (!device) throw new Error("Device not found");
+        return device;
       },
     }),
     software: t.field({
       type: SoftwareType,
-      resolve: async (_junction, _args, _ctx) => {
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const software = await ctx.loaders.softwareById.load(
+          junction.softwareId
+        );
+        if (!software) throw new Error("Software not found");
+        return software;
       },
     }),
     band: t.field({
       type: BandType,
-      resolve: async (_junction, _args, _ctx) => {
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const band = await ctx.loaders.bandById.load(junction.bandId);
+        if (!band) throw new Error("Band not found");
+        return band;
       },
     }),
   }),
@@ -56,26 +63,38 @@ ProviderDeviceBandType.implement({
   fields: (t) => ({
     provider: t.field({
       type: ProviderType,
-      resolve: async (_junction, _args, _ctx) => {
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const provider = await ctx.loaders.providerById.load(
+          junction.providerId
+        );
+        if (!provider) throw new Error("Provider not found");
+        return provider;
       },
     }),
     device: t.field({
       type: DeviceType,
-      resolve: async (_junction, _args, _ctx) => {
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const device = await ctx.loaders.deviceById.load(junction.deviceId);
+        if (!device) throw new Error("Device not found");
+        return device;
       },
     }),
     software: t.field({
       type: SoftwareType,
-      resolve: async (_junction, _args, _ctx) => {
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const software = await ctx.loaders.softwareById.load(
+          junction.softwareId
+        );
+        if (!software) throw new Error("Software not found");
+        return software;
       },
     }),
     band: t.field({
       type: BandType,
-      resolve: async (_junction, _args, _ctx) => {
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const band = await ctx.loaders.bandById.load(junction.bandId);
+        if (!band) throw new Error("Band not found");
+        return band;
       },
     }),
   }),
@@ -95,20 +114,28 @@ DeviceComboType.implement({
   fields: (t) => ({
     device: t.field({
       type: DeviceType,
-      resolve: async (_junction, _args, _ctx) => {
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const device = await ctx.loaders.deviceById.load(junction.deviceId);
+        if (!device) throw new Error("Device not found");
+        return device;
       },
     }),
     software: t.field({
       type: SoftwareType,
-      resolve: async (_junction, _args, _ctx) => {
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const software = await ctx.loaders.softwareById.load(
+          junction.softwareId
+        );
+        if (!software) throw new Error("Software not found");
+        return software;
       },
     }),
     combo: t.field({
       type: ComboType,
-      resolve: async (_junction, _args, _ctx) => {
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const combo = await ctx.loaders.comboById.load(junction.comboId);
+        if (!combo) throw new Error("Combo not found");
+        return combo;
       },
     }),
   }),
@@ -130,26 +157,38 @@ ProviderDeviceComboType.implement({
   fields: (t) => ({
     provider: t.field({
       type: ProviderType,
-      resolve: async (_junction, _args, _ctx) => {
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const provider = await ctx.loaders.providerById.load(
+          junction.providerId
+        );
+        if (!provider) throw new Error("Provider not found");
+        return provider;
       },
     }),
     device: t.field({
       type: DeviceType,
-      resolve: async (_junction, _args, _ctx) => {
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const device = await ctx.loaders.deviceById.load(junction.deviceId);
+        if (!device) throw new Error("Device not found");
+        return device;
       },
     }),
     software: t.field({
       type: SoftwareType,
-      resolve: async (_junction, _args, _ctx) => {
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const software = await ctx.loaders.softwareById.load(
+          junction.softwareId
+        );
+        if (!software) throw new Error("Software not found");
+        return software;
       },
     }),
     combo: t.field({
       type: ComboType,
-      resolve: async (_junction, _args, _ctx) => {
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const combo = await ctx.loaders.comboById.load(junction.comboId);
+        if (!combo) throw new Error("Combo not found");
+        return combo;
       },
     }),
   }),
@@ -170,26 +209,38 @@ DeviceFeatureType.implement({
   fields: (t) => ({
     device: t.field({
       type: DeviceType,
-      resolve: async (_junction, _args, _ctx) => {
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const device = await ctx.loaders.deviceById.load(junction.deviceId);
+        if (!device) throw new Error("Device not found");
+        return device;
       },
     }),
     software: t.field({
       type: SoftwareType,
-      resolve: async (_junction, _args, _ctx) => {
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const software = await ctx.loaders.softwareById.load(
+          junction.softwareId
+        );
+        if (!software) throw new Error("Software not found");
+        return software;
       },
     }),
     provider: t.field({
       type: ProviderType,
-      resolve: async (_junction, _args, _ctx) => {
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const provider = await ctx.loaders.providerById.load(
+          junction.providerId
+        );
+        if (!provider) throw new Error("Provider not found");
+        return provider;
       },
     }),
     feature: t.field({
       type: FeatureType,
-      resolve: async (_junction, _args, _ctx) => {
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const feature = await ctx.loaders.featureById.load(junction.featureId);
+        if (!feature) throw new Error("Feature not found");
+        return feature;
       },
     }),
   }),
@@ -208,14 +259,18 @@ ComboBandType.implement({
   fields: (t) => ({
     combo: t.field({
       type: ComboType,
-      resolve: async (_junction, _args, _ctx) => {
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const combo = await ctx.loaders.comboById.load(junction.comboId);
+        if (!combo) throw new Error("Combo not found");
+        return combo;
       },
     }),
     band: t.field({
       type: BandType,
-      resolve: async (_junction, _args, _ctx) => {
-        return null as any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will implement
+      resolve: async (junction, _args, ctx) => {
+        const band = await ctx.loaders.bandById.load(junction.bandId);
+        if (!band) throw new Error("Band not found");
+        return band;
       },
     }),
   }),

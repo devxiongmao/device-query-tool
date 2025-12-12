@@ -1,12 +1,12 @@
 import type { YogaInitialContext } from "graphql-yoga";
 import type { db } from "../db/client";
+import type { Loaders } from "./loaders";
+import { createLoaders } from "./loaders";
 
 // Define the shape of our GraphQL context
 export interface GraphQLContext extends YogaInitialContext {
   db: typeof db;
-  // Future: add loaders, user auth, etc.
-  // loaders: ReturnType<typeof createLoaders>;
-  // userId?: string;
+  loaders: Loaders;
 }
 
 // Context factory - creates context for each request
@@ -19,5 +19,6 @@ export async function createContext(
   return {
     ...initialContext,
     db,
+    loaders: createLoaders(),
   };
 }

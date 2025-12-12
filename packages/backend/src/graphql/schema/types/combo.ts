@@ -41,43 +41,47 @@ ComboType.implement({
       description: "Combo technology type",
     }),
 
-    // Simple list of bands (backwards compatible)
+    // BANDS THAT MAKE UP THIS COMBO (simple list)
     bands: t.field({
       type: [BandType],
       description: "Bands that make up this combo (ordered)",
-      resolve: async (_combo, _args, _ctx) => {
-        return [];
+      resolve: async (combo, _args, ctx) => {
+        return ctx.loaders.bandsByCombo.load(combo.id);
       },
     }),
 
-    // Detailed band composition with position
+    // Detailed band composition with position (for future use)
     bandComponents: t.field({
       type: [ComboBandType],
       description: "Detailed band components with position information",
       resolve: async (_combo, _args, _ctx) => {
+        // We'll implement this in the junctions resolver
         return [];
       },
     }),
 
-    // Simple list of devices
+    // DEVICES SUPPORTING THIS COMBO (simplified)
     devices: t.field({
       type: [DeviceType],
       description: "Devices that support this combo (simplified)",
       args: {
         providerId: t.arg.id({ required: false }),
       },
-      resolve: async (_combo, _args, _ctx) => {
-        return [];
+      resolve: async (combo, args, ctx) => {
+        const results = await ctx.loaders.devicesByCombo.load({
+          comboId: combo.id,
+          providerId: args.providerId ? Number(args.providerId) : undefined,
+        });
+
+        return results.map((r) => r.device);
       },
     }),
 
-    // Detailed device support
+    // Detailed device support (for future use)
     deviceSupport: t.field({
       type: [DeviceComboType],
       description: "Detailed device/software/combo relationships (global)",
-      resolve: async (_combo, _args, _ctx) => {
-        return [];
-      },
+      resolve: async () => [],
     }),
 
     // Provider-specific detailed support
@@ -88,9 +92,7 @@ ComboType.implement({
       args: {
         providerId: t.arg.id({ required: false }),
       },
-      resolve: async (_combo, _args, _ctx) => {
-        return [];
-      },
+      resolve: async () => [],
     }),
   }),
 });

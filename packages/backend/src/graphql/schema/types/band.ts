@@ -10,8 +10,8 @@ export const BandType = builder.objectRef<{
   id: number;
   bandNumber: string;
   technology: string;
-  dlBandClass: string;
-  ulBandClass: string;
+  dlBandClass: string | null;
+  ulBandClass: string | null;
 }>("Band");
 
 BandType.implement({
@@ -28,25 +28,28 @@ BandType.implement({
       description: "Uplink bandwidth class for the band",
     }),
 
-    // Simple list of devices (backwards compatible)
+    // DEVICES SUPPORTING THIS BAND (simplified)
     devices: t.field({
       type: [DeviceType],
       description: "Devices that support this band (simplified)",
       args: {
         providerId: t.arg.id({ required: false }),
       },
-      resolve: async (_band, _args, _ctx) => {
-        return [];
+      resolve: async (band, args, ctx) => {
+        const results = await ctx.loaders.devicesByBand.load({
+          bandId: band.id,
+          providerId: args.providerId ? Number(args.providerId) : undefined,
+        });
+
+        return results.map((r) => r.device);
       },
     }),
 
-    // Detailed device support with junction data
+    // Detailed junction data (for future use)
     deviceSupport: t.field({
       type: [DeviceBandType],
       description: "Detailed device/software/band relationships (global)",
-      resolve: async (_band, _args, _ctx) => {
-        return [];
-      },
+      resolve: async () => [],
     }),
 
     // Provider-specific detailed support
@@ -57,9 +60,7 @@ BandType.implement({
       args: {
         providerId: t.arg.id({ required: false }),
       },
-      resolve: async (_band, _args, _ctx) => {
-        return [];
-      },
+      resolve: async () => [],
     }),
   }),
 });
