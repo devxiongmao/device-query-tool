@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import { BandRepository } from "../../src/repositories/band.repository";
 import { BandFactory } from "../factories/band.factory";
-import { DeviceCapabilityFactory } from "../factories/device-capability.factory";
 import { DeviceFactory } from "../factories/device.factory";
 import { SoftwareFactory } from "../factories/software.factory";
 import { db } from "../../src/db/client";
@@ -43,8 +42,8 @@ describe("BandRepository", () => {
       orderBy: vi.fn().mockReturnThis(),
     };
 
-    vi.mocked(db.select).mockReturnValue(mockSelect);
-    vi.mocked(db.selectDistinct).mockReturnValue(mockSelectDistinct);
+    (db.select as ReturnType<typeof vi.fn>).mockReturnValue(mockSelect);
+    (db.selectDistinct as ReturnType<typeof vi.fn>).mockReturnValue(mockSelectDistinct);
   });
 
   afterEach(() => {

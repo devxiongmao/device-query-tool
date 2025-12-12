@@ -26,7 +26,7 @@ describe("SoftwareRepository", () => {
       orderBy: vi.fn().mockReturnThis(),
     };
 
-    vi.mocked(db.select).mockReturnValue(mockSelect);
+    (db.select as ReturnType<typeof vi.fn>).mockReturnValue(mockSelect);
   });
 
   afterEach(() => {
@@ -283,7 +283,6 @@ describe("SoftwareRepository", () => {
     it("should handle software with null or undefined fields gracefully", async () => {
       const mockSoftware = SoftwareFactory.create({
         platform: "Android",
-        version: "1.0",
       });
       mockSelect.limit.mockResolvedValue([mockSoftware]);
 

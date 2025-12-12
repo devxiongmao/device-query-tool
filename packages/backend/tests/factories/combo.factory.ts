@@ -55,8 +55,6 @@ export class ComboFactory {
       id: this.idCounter++,
       technology,
       name,
-      createdAt: new Date(),
-      updatedAt: new Date(),
       ...overrides,
     };
   }

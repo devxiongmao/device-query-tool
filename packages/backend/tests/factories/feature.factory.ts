@@ -42,8 +42,7 @@ export class FeatureFactory {
     return {
       id: this.idCounter++,
       name: overrides.name || faker.helpers.arrayElement(this.featureNames),
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      description: "A description of the feature",
       ...overrides,
     };
   }

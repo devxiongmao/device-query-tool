@@ -66,7 +66,7 @@ export class DeviceRepository {
     }
 
     if (conditions.length > 0) {
-      query = query.where(and(...conditions)) as any;
+      query = query.where(and(...conditions)) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
     }
 
     return query.limit(limit).offset(offset).orderBy(device.releaseDate);

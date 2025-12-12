@@ -26,7 +26,7 @@ describe("ProviderRepository", () => {
       orderBy: vi.fn().mockReturnThis(),
     };
 
-    vi.mocked(db.select).mockReturnValue(mockSelect);
+    (db.select as ReturnType<typeof vi.fn>).mockReturnValue(mockSelect);
   });
 
   afterEach(() => {
@@ -72,8 +72,6 @@ describe("ProviderRepository", () => {
       expect(result).toBeDefined();
       expect(result?.id).toBe(mockProvider.id);
       expect(result?.name).toBe("Verizon");
-      expect(result?.createdAt).toBeDefined();
-      expect(result?.updatedAt).toBeDefined();
     });
   });
 

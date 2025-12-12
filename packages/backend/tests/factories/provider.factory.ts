@@ -74,8 +74,8 @@ export class ProviderFactory {
     return {
       id: this.idCounter++,
       name: overrides.name || faker.helpers.arrayElement(allProviders),
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      country: "US",
+      networkType: "5G",
       ...overrides,
     };
   }

@@ -41,7 +41,7 @@ export class FeatureRepository {
     let query = db.select().from(feature);
 
     if (filters?.name) {
-      query = query.where(like(feature.name, `%${filters.name}%`)) as any;
+      query = query.where(like(feature.name, `%${filters.name}%`)) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
     }
 
     return query.orderBy(feature.name);

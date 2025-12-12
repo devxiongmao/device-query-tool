@@ -41,8 +41,8 @@ describe("FeatureRepository", () => {
       then: vi.fn().mockReturnThis(),
     };
 
-    vi.mocked(db.select).mockReturnValue(mockSelect);
-    vi.mocked(db.selectDistinct).mockReturnValue(mockSelectDistinct);
+    (db.select as ReturnType<typeof vi.fn>).mockReturnValue(mockSelect);
+    (db.selectDistinct as ReturnType<typeof vi.fn>).mockReturnValue(mockSelectDistinct);
   });
 
   afterEach(() => {
@@ -186,7 +186,7 @@ describe("FeatureRepository", () => {
 
       const result = await repository.search({ name: "volte" });
 
-      expect(mockSelect.where).toHaveBeenCalled();
+      expect(result).toEqual([feature]);
     });
   });
 
@@ -404,9 +404,7 @@ describe("FeatureRepository", () => {
 
       it("should only include devices for the specified provider", async () => {
         const device1 = DeviceFactory.create({ id: 1 });
-        const device2 = DeviceFactory.create({ id: 2 });
         const software1 = SoftwareFactory.create({ deviceId: 1 });
-        const software2 = SoftwareFactory.create({ deviceId: 2 });
 
         // Only device1 supports feature on provider 10
         const mockResults = [

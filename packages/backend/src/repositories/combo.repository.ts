@@ -51,7 +51,7 @@ export class ComboRepository {
     let query = db.select().from(combo);
 
     if (conditions.length > 0) {
-      query = query.where(and(...conditions)) as any;
+      query = query.where(and(...conditions)) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
     }
 
     return query.orderBy(combo.technology, combo.name);

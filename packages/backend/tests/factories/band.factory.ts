@@ -62,8 +62,8 @@ export class BandFactory {
       id: this.idCounter++,
       technology,
       bandNumber,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      dlBandClass: "A",
+      ulBandClass: "A",
       ...overrides,
     };
   }

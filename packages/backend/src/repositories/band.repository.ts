@@ -45,7 +45,7 @@ export class BandRepository {
     let query = db.select().from(band);
 
     if (conditions.length > 0) {
-      query = query.where(and(...conditions)) as any;
+      query = query.where(and(...conditions)) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
     }
 
     return query.orderBy(band.technology, band.bandNumber);

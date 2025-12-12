@@ -31,8 +31,8 @@ export interface FindDevicesByFeatureParams {
 }
 
 export interface DeviceCapabilityResult {
-  device: any; // Will be typed from Drizzle schema
-  software: any[];
+  device: any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will be typed from Drizzle schema
+  software: any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
   supportStatus: "global" | "provider-specific";
-  provider: any | null;
+  provider: any | null; // eslint-disable-line @typescript-eslint/no-explicit-any
 }

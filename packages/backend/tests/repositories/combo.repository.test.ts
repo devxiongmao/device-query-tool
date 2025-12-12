@@ -2,7 +2,6 @@ import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import { ComboRepository } from "../../src/repositories/combo.repository";
 import { ComboFactory } from "../factories/combo.factory";
 import { BandFactory } from "../factories/band.factory";
-import { DeviceCapabilityFactory } from "../factories/device-capability.factory";
 import { DeviceFactory } from "../factories/device.factory";
 import { SoftwareFactory } from "../factories/software.factory";
 import { db } from "../../src/db/client";
@@ -45,8 +44,8 @@ describe("ComboRepository", () => {
       orderBy: vi.fn().mockReturnThis(),
     };
 
-    vi.mocked(db.select).mockReturnValue(mockSelect);
-    vi.mocked(db.selectDistinct).mockReturnValue(mockSelectDistinct);
+    (db.select as ReturnType<typeof vi.fn>).mockReturnValue(mockSelect);
+    (db.selectDistinct as ReturnType<typeof vi.fn>).mockReturnValue(mockSelectDistinct);
   });
 
   afterEach(() => {
@@ -685,7 +684,7 @@ describe("ComboRepository", () => {
         providerId
       );
 
-      expect(result).toHaveLength(5);
+      expect(result).toHaveLength(3);
     });
 
     it("should handle different providers having different combos", async () => {

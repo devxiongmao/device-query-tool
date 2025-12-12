@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import type { DeviceCapabilityResult } from "../../repositories/types";
+import type { DeviceCapabilityResult } from "../../src/repositories/types";
 import { DeviceFactory } from "./device.factory";
 import { SoftwareFactory } from "./software.factory";
 

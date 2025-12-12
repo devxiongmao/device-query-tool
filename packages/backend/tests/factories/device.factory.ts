@@ -16,8 +16,6 @@ export class DeviceFactory {
       modelNum: faker.string.alphanumeric(8).toUpperCase(),
       marketName: faker.commerce.productName(),
       releaseDate: faker.date.past({ years: 3 }).toISOString().split("T")[0],
-      createdAt: new Date(),
-      updatedAt: new Date(),
       ...overrides,
     };
   }

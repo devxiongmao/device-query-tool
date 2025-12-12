@@ -7,18 +7,16 @@ export class SoftwareFactory {
   private static idCounter = 1;
 
   private static platforms = ["Android", "iOS", "Windows", "macOS", "Linux"];
-  private static versionFormats = [
-    () => `${faker.number.int({ min: 1, max: 15 })}.0`,
-    () =>
-      `${faker.number.int({ min: 1, max: 15 })}.${faker.number.int({
-        min: 0,
-        max: 9,
-      })}`,
-    () =>
-      `${faker.number.int({ min: 1, max: 15 })}.${faker.number.int({
-        min: 0,
-        max: 9,
-      })}.${faker.number.int({ min: 0, max: 99 })}`,
+
+  private static softwareNames = [
+    "System Firmware",
+    "Device Manager",
+    "Core Services",
+    "Network Stack",
+    "Security Module",
+    "Boot Loader",
+    "Update Agent",
+    "Diagnostics Suite",
   ];
 
   /**
@@ -27,12 +25,28 @@ export class SoftwareFactory {
   static create(overrides: Partial<Software> = {}): Software {
     return {
       id: this.idCounter++,
-      deviceId: faker.number.int({ min: 1, max: 1000 }),
+      name: faker.helpers.arrayElement(this.softwareNames),
       platform: faker.helpers.arrayElement(this.platforms),
-      version: faker.helpers.arrayElement(this.versionFormats)(),
+      ptcrb:
+        faker.helpers.maybe(
+          () => faker.number.int({ min: 10000, max: 99999 }),
+          { probability: 0.7 }
+        ) ?? null,
+      svn:
+        faker.helpers.maybe(() => faker.number.int({ min: 1, max: 999 }), {
+          probability: 0.7,
+        }) ?? null,
+      buildNumber:
+        faker.helpers.maybe(
+          () =>
+            `${faker.number.int({ min: 1, max: 15 })}.${faker.number.int({
+              min: 0,
+              max: 9,
+            })}.${faker.number.int({ min: 0, max: 99 })}`,
+          { probability: 0.8 }
+        ) ?? null,
       releaseDate: faker.date.past({ years: 2 }).toISOString().split("T")[0],
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      deviceId: faker.number.int({ min: 1, max: 1000 }),
       ...overrides,
     };
   }
@@ -112,16 +126,16 @@ export class SoftwareFactory {
    */
   static createVersionHistory(
     deviceId: number,
-    versions: string[],
+    buildNumbers: string[],
     overrides: Partial<Software> = {}
   ): Software[] {
-    return versions.map((version, index) => {
+    return buildNumbers.map((buildNumber, index) => {
       const date = new Date();
-      date.setMonth(date.getMonth() - (versions.length - index));
+      date.setMonth(date.getMonth() - (buildNumbers.length - index));
 
       return this.create({
         deviceId,
-        version,
+        buildNumber,
         releaseDate: date.toISOString().split("T")[0],
         ...overrides,
       });
