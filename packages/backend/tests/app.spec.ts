@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import app from "./app";
+import app from "../src/app";
 
 // Type definitions for API responses
 type HealthResponse = {
@@ -129,7 +129,7 @@ describe("Hono Application", () => {
 
     it("should return data", async () => {
       const res = await app.request("/graphql/health");
-      const data = (await res.json());
+      const data = await res.json();
 
       expect(data.data).toBe("graphQL is healthy!");
     });

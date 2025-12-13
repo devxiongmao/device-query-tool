@@ -18,6 +18,12 @@ const envSchema = z.object({
 
   // Logging
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
+
+  // GraphQL
+  GRAPHQL_MAX_DEPTH: z.coerce.number().default(5),
+  GRAPHQL_MAX_COMPLEXITY: z.coerce.number().default(1000),
+  GRAPHQL_RATE_LIMIT_PER_MINUTE: z.coerce.number().default(100),
+  GRAPHQL_RATE_LIMIT_PER_HOUR: z.coerce.number().default(1000),
 });
 
 export type Env = z.infer<typeof envSchema>;

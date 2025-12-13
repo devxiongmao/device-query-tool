@@ -16,11 +16,15 @@
     "db:seed": "bun src/db/seed.ts"
   },
   "dependencies": {
+    "@envelop/core": "^5.4.0",
+    "@envelop/depth-limit": "^7.0.0",
+    "@envelop/rate-limiter": "^9.0.0",
     "@pothos/core": "^4.10.0",
     "@pothos/plugin-relay": "^4.6.2",
     "dataloader": "^2.2.3",
     "drizzle-orm": "^0.44.7",
     "graphql": "^16.12.0",
+    "graphql-depth-limit": "^1.1.0",
     "graphql-yoga": "^5.17.1",
     "hono": "^4.10.4",
     "postgres": "^3.4.7",

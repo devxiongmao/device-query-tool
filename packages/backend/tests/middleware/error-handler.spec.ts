@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { Hono } from "hono";
-import { env } from "../config/env";
-import { errorHandler } from "./error-handler";
+import { errorHandler } from "../../src/middleware/error-handler";
+import { env } from "../../src/config/env";
 
 // Type definitions for error responses
 type ErrorResponse = {
