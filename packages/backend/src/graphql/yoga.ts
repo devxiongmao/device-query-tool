@@ -3,11 +3,24 @@ import type { Context as HonoContext } from "hono";
 import { schema } from "./schema";
 import { createContext } from "./context";
 import { env } from "../config/env";
+import { createComplexityPlugin } from "./plugins/complexity";
+import { createDepthLimitPlugin } from "./plugins/depth-limit";
+import { createRateLimiterPlugin } from "./plugins/rate-limiter";
 
 // Create GraphQL Yoga instance
 export const yoga = createYoga({
   schema,
   context: createContext,
+
+  // Plugins for query protection
+  plugins: [
+    createDepthLimitPlugin(env.GRAPHQL_MAX_DEPTH),
+    createComplexityPlugin(env.GRAPHQL_MAX_COMPLEXITY),
+    createRateLimiterPlugin(
+      env.GRAPHQL_RATE_LIMIT_PER_MINUTE,
+      env.GRAPHQL_RATE_LIMIT_PER_HOUR
+    ),
+  ],
 
   // GraphiQL configuration (disable in production)
   graphiql:
@@ -17,9 +30,42 @@ export const yoga = createYoga({
           defaultQuery: `
 # Welcome to Device Capabilities GraphQL API!
 # 
-# Try this query:
-query TestQuery {
-  hello
+# Query Protection:
+# - Max depth: 5 levels
+# - Max complexity: 1000 points
+# - Rate limit: 100 requests/minute, 1000 requests/hour
+#
+# Try these queries:
+
+# 1. Simple device query
+query GetDevice {
+  device(id: "1") {
+    vendor
+    modelNum
+    software {
+      name
+    }
+  }
+}
+
+# 2. Search devices
+query SearchDevices {
+  devices(vendor: "Apple") {
+    vendor
+    modelNum
+    marketName
+  }
+}
+
+# 3. Capability search
+query DevicesByBand {
+  devicesByBand(bandId: "25") {
+    device {
+      vendor
+      modelNum
+    }
+    supportStatus
+  }
 }
     `.trim(),
         }
