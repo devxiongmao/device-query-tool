@@ -35,4 +35,8 @@ export interface DeviceCapabilityResult {
   software: any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
   supportStatus: "global" | "provider-specific";
   provider: any | null; // eslint-disable-line @typescript-eslint/no-explicit-any
+  // Optional capability-specific properties (used in tests and GraphQL resolvers)
+  band?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  combo?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  feature?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
