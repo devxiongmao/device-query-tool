@@ -38,16 +38,10 @@ builder.scalarType("DateTime", {
   },
 });
 
-// Query root type (fields will be added in queries/)
-builder.queryType({
-  fields: (t) => ({
-    hello: t.string({
-      resolve: () => "Hello from GraphQL!",
-    }),
-  }),
-});
+// Query root type (fields added via queryFields in query files)
+builder.queryType({});
 
-// Mutation root type
+// Mutation root type (for future use)
 builder.mutationType({
   fields: (t) => ({
     _placeholder: t.string({
