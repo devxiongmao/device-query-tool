@@ -1,9 +1,8 @@
 {
-  // Solution-style tsconfig: only references sub-project configs.
-  // Actual compiler options live in `tsconfig.app.json` and `tsconfig.node.json`.
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
+    { "path": "./tsconfig.node.json" },
+    { "path": "./tsconfig.test.json" }
   ]
 }

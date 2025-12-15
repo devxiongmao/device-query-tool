@@ -1,8 +1,5 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { Layout } from "../components/layout/Layout";
-
-// Pages (we'll create these next)
-
 import { HomePage } from "../pages/Home";
 import { NotFoundPage } from "../pages/NotFound";
 import { CapabilityQueryPage } from "../pages/CapabilityQuery";
