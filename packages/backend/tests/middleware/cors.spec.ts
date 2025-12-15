@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { Hono } from "hono";
-import { cors } from "./cors";
+import { cors } from "../../src/middleware/cors";
 
 describe("cors middleware", () => {
   let app: Hono;
