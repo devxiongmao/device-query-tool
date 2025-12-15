@@ -12,7 +12,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
       // Handle specific error codes
       if (extensions?.code === "RATE_LIMIT_EXCEEDED") {
-        const resetIn = extensions.resetIn as number;
+        const resetIn = extensions.resetIn as any;
         console.warn(`Rate limited. Retry in ${resetIn} seconds.`);
         // Could show a toast notification here
       }
