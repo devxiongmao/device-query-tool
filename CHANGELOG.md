@@ -1,11 +1,11 @@
 ## Changelog
-### From v0.1.1 to HEAD
+### From v0.1.2 to HEAD
 
-- XMDEV-532: Adds seed data (#21) (b3a9a1c) by Jon
-- XMDEV-518: Adds drizzle and sets up postgres and schema (#19) (50af879) by Jon
-- XMDEV-531: Adds testing step in github ci for backend (#18) (1607c1b) by Jon
-- XMDEV-529: Adds eslint and type check job for backend to CI (#17) (72428e0) by Jon
-- XMDEV-527: Adds typescript linting for backend (#16) (cf4972b) by Jon
-- XMDEV-525: Adds cors, logger, and env setup (#14) (a1523b6) by Jon
-- XMDEV-526: Adds formalized development plan (#15) (63ff794) by Jon
+- XMDEV-542: Adds query complexity handling and rate limiting (#29) (afcf4b0) by Jon
+- XMDEV-539: Adds all queries to enable device and capability querying (#28) (70bf873) by Jon
+- XMDEV-538: Adds dataloader implementation for GraphQL (no N + 1 queries) (#27) (86d6e7c) by Jon
+- XMDEV-537: Adds data access (repository) layer for graphQL (#25) (cb6a066) by Jon
+- XMDEV-543: Drop unused date columns (#26) (97c59d1) by Jon
+- XMDEV-536: Adds graphQL type definitions (#24) (5731484) by Jon
+- XMDEV-535: Adds graphQL dependancies and initial setup (#23) (d285f43) by Jon
 
