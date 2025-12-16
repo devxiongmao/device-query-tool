@@ -1,0 +1,79 @@
+# List all providers
+query GetProviders {
+  providers {
+    id
+    name
+    country
+    networkType
+  }
+}
+
+# Search bands
+query SearchBands($technology: String, $bandNumber: String) {
+  bands(technology: $technology, bandNumber: $bandNumber) {
+    id
+    bandNumber
+    technology
+    dlBandClass
+    ulBandClass
+  }
+}
+
+# Get single band
+query GetBand($id: ID!) {
+  band(id: $id) {
+    id
+    bandNumber
+    technology
+    dlBandClass
+    ulBandClass
+  }
+}
+
+# Search combos
+query SearchCombos($technology: String, $name: String) {
+  combos(technology: $technology, name: $name) {
+    id
+    name
+    technology
+    bands {
+      id
+      bandNumber
+      technology
+    }
+  }
+}
+
+# Get single combo
+query GetCombo($id: ID!) {
+  combo(id: $id) {
+    id
+    name
+    technology
+    bands {
+      id
+      bandNumber
+      technology
+      dlBandClass
+      ulBandClass
+    }
+  }
+}
+
+# Search features
+query SearchFeatures($name: String) {
+  features(name: $name) {
+    id
+    name
+    description
+  }
+}
+
+# Get single feature
+query GetFeature($id: ID!) {
+  feature(id: $id) {
+    id
+    name
+    description
+  }
+}
