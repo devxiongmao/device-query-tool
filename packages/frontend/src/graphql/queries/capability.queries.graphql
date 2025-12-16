@@ -1,0 +1,121 @@
+# Find devices by band (global)
+query DevicesByBand($bandId: ID!, $technology: String) {
+  devicesByBand(bandId: $bandId, technology: $technology) {
+    supportStatus
+    device {
+      id
+      vendor
+      modelNum
+      marketName
+      releaseDate
+    }
+    software {
+      id
+      name
+      buildNumber
+    }
+  }
+}
+
+# Find devices by band (provider-specific)
+query DevicesByBandProvider($bandId: ID!, $providerId: ID!, $technology: String) {
+  devicesByBand(bandId: $bandId, providerId: $providerId, technology: $technology) {
+    supportStatus
+    provider {
+      id
+      name
+      country
+    }
+    device {
+      id
+      vendor
+      modelNum
+      marketName
+    }
+    software {
+      id
+      name
+      buildNumber
+    }
+  }
+}
+
+# Find devices by combo (global)
+query DevicesByCombo($comboId: ID!, $technology: String) {
+  devicesByCombo(comboId: $comboId, technology: $technology) {
+    supportStatus
+    device {
+      id
+      vendor
+      modelNum
+      marketName
+    }
+    software {
+      id
+      name
+      buildNumber
+    }
+  }
+}
+
+# Find devices by combo (provider-specific)
+query DevicesByComboProvider($comboId: ID!, $providerId: ID!, $technology: String) {
+  devicesByCombo(comboId: $comboId, providerId: $providerId, technology: $technology) {
+    supportStatus
+    provider {
+      id
+      name
+    }
+    device {
+      id
+      vendor
+      modelNum
+      marketName
+    }
+    software {
+      id
+      name
+      buildNumber
+    }
+  }
+}
+
+# Find devices by feature (global)
+query DevicesByFeature($featureId: ID!) {
+  devicesByFeature(featureId: $featureId) {
+    supportStatus
+    device {
+      id
+      vendor
+      modelNum
+      marketName
+    }
+    software {
+      id
+      name
+      buildNumber
+    }
+  }
+}
+
+# Find devices by feature (provider-specific)
+query DevicesByFeatureProvider($featureId: ID!, $providerId: ID!) {
+  devicesByFeature(featureId: $featureId, providerId: $providerId) {
+    supportStatus
+    provider {
+      id
+      name
+    }
+    device {
+      id
+      vendor
+      modelNum
+      marketName
+    }
+    software {
+      id
+      name
+      buildNumber
+    }
+  }
+}

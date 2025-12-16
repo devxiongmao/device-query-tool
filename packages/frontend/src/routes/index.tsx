@@ -1,9 +1,10 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { Layout } from "../components/layout/Layout";
 import { HomePage } from "../pages/Home";
-import { NotFoundPage } from "../pages/NotFound";
-import { CapabilityQueryPage } from "../pages/CapabilityQuery";
 import { DeviceQueryPage } from "../pages/DeviceQuery";
+import { CapabilityQueryPage } from "../pages/CapabilityQuery";
+import { NotFoundPage } from "../pages/NotFound";
+import { TestCodegen } from "../components/test/TestCodegen";
 
 export const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ export const router = createBrowserRouter([
       {
         path: "capability",
         element: <CapabilityQueryPage />,
+      },
+      {
+        path: "test",
+        element: <TestCodegen />,
       },
       {
         path: "404",

@@ -1,0 +1,186 @@
+# Get a single device with all details
+query GetDevice($id: ID!) {
+  device(id: $id) {
+    id
+    vendor
+    modelNum
+    marketName
+    releaseDate
+    software {
+      id
+      name
+      platform
+      buildNumber
+      releaseDate
+    }
+  }
+}
+
+# Search for devices
+query SearchDevices(
+  $vendor: String
+  $modelNum: String
+  $marketName: String
+  $limit: Int
+  $offset: Int
+) {
+  devices(
+    vendor: $vendor
+    modelNum: $modelNum
+    marketName: $marketName
+    limit: $limit
+    offset: $offset
+  ) {
+    id
+    vendor
+    modelNum
+    marketName
+    releaseDate
+  }
+}
+
+# Get device with global band support
+query GetDeviceWithBands($id: ID!, $technology: String) {
+  device(id: $id) {
+    id
+    vendor
+    modelNum
+    marketName
+    supportedBands(technology: $technology) {
+      id
+      bandNumber
+      technology
+      dlBandClass
+      ulBandClass
+    }
+  }
+}
+
+# Get device with provider-specific bands
+query GetDeviceWithProviderBands(
+  $id: ID!
+  $providerId: ID!
+  $technology: String
+) {
+  device(id: $id) {
+    id
+    vendor
+    modelNum
+    marketName
+    supportedBandsForProvider(providerId: $providerId, technology: $technology) {
+      id
+      bandNumber
+      technology
+      dlBandClass
+      ulBandClass
+    }
+  }
+}
+
+# Get device with combos
+query GetDeviceWithCombos($id: ID!, $technology: String) {
+  device(id: $id) {
+    id
+    vendor
+    modelNum
+    supportedCombos(technology: $technology) {
+      id
+      name
+      technology
+      bands {
+        bandNumber
+      }
+    }
+  }
+}
+
+# Get device with provider-specific combos
+query GetDeviceWithProviderCombos(
+  $id: ID!
+  $providerId: ID!
+  $technology: String
+) {
+  device(id: $id) {
+    id
+    vendor
+    modelNum
+    supportedCombosForProvider(providerId: $providerId, technology: $technology) {
+      id
+      name
+      technology
+    }
+  }
+}
+
+# Get device with features
+query GetDeviceWithFeatures($id: ID!) {
+  device(id: $id) {
+    id
+    vendor
+    modelNum
+    features {
+      id
+      name
+      description
+    }
+  }
+}
+
+# Get device with provider-specific features
+query GetDeviceWithProviderFeatures($id: ID!, $providerId: ID!) {
+  device(id: $id) {
+    id
+    vendor
+    modelNum
+    featuresForProvider(providerId: $providerId) {
+      id
+      name
+      description
+    }
+  }
+}
+
+# Complete device query with all capabilities
+query GetDeviceComplete(
+  $id: ID!
+  $providerId: ID
+  $bandTechnology: String
+  $comboTechnology: String
+) {
+  device(id: $id) {
+    id
+    vendor
+    modelNum
+    marketName
+    releaseDate
+    
+    software {
+      id
+      name
+      platform
+      buildNumber
+      releaseDate
+    }
+    
+    # Global capabilities
+    supportedBands(technology: $bandTechnology) {
+      id
+      bandNumber
+      technology
+      dlBandClass
+      ulBandClass
+    }
+    
+    supportedCombos(technology: $comboTechnology) {
+      id
+      name
+      technology
+    }
+    
+    features {
+      id
+      name
+      description
+    }
+  }
+}

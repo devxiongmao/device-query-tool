@@ -1,0 +1,74 @@
+# Reusable fragments for device data
+fragment DeviceBasic on Device {
+  id
+  vendor
+  modelNum
+  marketName
+  releaseDate
+}
+
+fragment DeviceWithSoftware on Device {
+  ...DeviceBasic
+  software {
+    id
+    name
+    platform
+    buildNumber
+    releaseDate
+  }
+}
+
+fragment SoftwareBasic on Software {
+  id
+  name
+  platform
+  buildNumber
+  releaseDate
+}
+
+fragment BandBasic on Band {
+  id
+  bandNumber
+  technology
+  dlBandClass
+  ulBandClass
+}
+
+fragment ComboBasic on Combo {
+  id
+  name
+  technology
+}
+
+fragment ComboWithBands on Combo {
+  ...ComboBasic
+  bands {
+    ...BandBasic
+  }
+}
+
+fragment FeatureBasic on Feature {
+  id
+  name
+  description
+}
+
+fragment ProviderBasic on Provider {
+  id
+  name
+  country
+  networkType
+}
+
+fragment CapabilityResult on DeviceCapabilityResult {
+  supportStatus
+  device {
+    ...DeviceBasic
+  }
+  software {
+    ...SoftwareBasic
+  }
+  provider {
+    ...ProviderBasic
+  }
+}
