@@ -1,7 +1,7 @@
 import {
   useGetProvidersQuery,
   useSearchDevicesQuery,
-} from "../../graphql/generated/hooks";
+} from "../../graphql/generated/graphql";
 
 export function TestCodegen() {
   // Test 1: Simple query with generated hook
