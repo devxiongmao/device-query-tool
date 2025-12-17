@@ -77,7 +77,7 @@ export function Layout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
             <p className="text-center sm:text-left">
-              © 2024 Device Capabilities. Built with React + GraphQL +
+              © 2025 Device Capabilities. Built with React + GraphQL +
               TypeScript.
             </p>
             <div className="flex items-center space-x-4">

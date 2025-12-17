@@ -39,7 +39,7 @@ export function ComponentShowcase() {
       {/* Buttons */}
       <Card>
         <CardHeader>
-          <CardTitle>Buttons</CardTitle>
+          <CardTitle as="h2">Buttons</CardTitle>
           <CardDescription>Different button variants and sizes</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -54,7 +54,7 @@ export function ComponentShowcase() {
             <Button size="sm">Small</Button>
             <Button size="md">Medium</Button>
             <Button size="lg">Large</Button>
-            <Button size="icon" variant="outline">
+            <Button size="icon" variant="outline" aria-label="Search">
               <Search className="w-4 h-4" />
             </Button>
           </div>
@@ -71,7 +71,7 @@ export function ComponentShowcase() {
       {/* Inputs */}
       <Card>
         <CardHeader>
-          <CardTitle>Inputs & Selects</CardTitle>
+          <CardTitle as="h2">Inputs & Selects</CardTitle>
           <CardDescription>Form input components</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -107,7 +107,7 @@ export function ComponentShowcase() {
       {/* Badges */}
       <Card>
         <CardHeader>
-          <CardTitle>Badges</CardTitle>
+          <CardTitle as="h2">Badges</CardTitle>
           <CardDescription>Status and category indicators</CardDescription>
         </CardHeader>
         <CardContent>
@@ -125,7 +125,7 @@ export function ComponentShowcase() {
       {/* Table */}
       <Card>
         <CardHeader>
-          <CardTitle>Table</CardTitle>
+          <CardTitle as="h2">Table</CardTitle>
           <CardDescription>Data table component</CardDescription>
         </CardHeader>
         <CardContent>
@@ -171,7 +171,7 @@ export function ComponentShowcase() {
       {/* Checkbox */}
       <Card>
         <CardHeader>
-          <CardTitle>Checkboxes</CardTitle>
+          <CardTitle as="h2">Checkboxes</CardTitle>
           <CardDescription>Checkbox components</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -187,7 +187,7 @@ export function ComponentShowcase() {
       {/* Loading States */}
       <Card>
         <CardHeader>
-          <CardTitle>Loading States</CardTitle>
+          <CardTitle as="h2">Loading States</CardTitle>
           <CardDescription>Spinner components</CardDescription>
         </CardHeader>
         <CardContent>
@@ -211,7 +211,7 @@ export function ComponentShowcase() {
       {/* Empty State */}
       <Card>
         <CardHeader>
-          <CardTitle>Empty State</CardTitle>
+          <CardTitle as="h2">Empty State</CardTitle>
           <CardDescription>When there's no data to display</CardDescription>
         </CardHeader>
         <CardContent>
