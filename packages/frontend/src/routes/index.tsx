@@ -5,6 +5,7 @@ import { DeviceQueryPage } from "../pages/DeviceQuery";
 import { CapabilityQueryPage } from "../pages/CapabilityQuery";
 import { NotFoundPage } from "../pages/NotFound";
 import { TestCodegen } from "../components/test/TestCodegen";
+import { ComponentShowcase } from '../pages/ComponentShowcase';
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ export const router = createBrowserRouter([
       {
         path: "device",
         element: <DeviceQueryPage />,
+      },
+      {
+        path: 'showcase',
+        element: <ComponentShowcase />,
       },
       {
         path: "capability",
