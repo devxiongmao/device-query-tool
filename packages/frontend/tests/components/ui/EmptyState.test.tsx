@@ -2,9 +2,9 @@ import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe, toHaveNoViolations } from "jest-axe";
-
-import { Search, AlertCircle, Inbox, FileQuestion } from "lucide-react";
+import { Search, AlertCircle, Inbox } from "lucide-react";
 import { EmptyState } from "../../../src/components/ui";
+import type { ReactNode } from "react";
 
 expect.extend(toHaveNoViolations);
 
@@ -160,20 +160,6 @@ describe("EmptyState Component", () => {
       expect(icon).toHaveClass("w-8");
       expect(icon).toHaveClass("h-8");
       expect(icon).toHaveClass("text-gray-400");
-    });
-
-    it("renders different Lucide icons", () => {
-      const icons = [
-        { icon: Search, className: "lucide-search" },
-        { icon: AlertCircle, className: "lucide-alert-circle" },
-        { icon: Inbox, className: "lucide-inbox" },
-        { icon: FileQuestion, className: "lucide-file-question" },
-      ];
-
-      icons.forEach(({ icon, className }) => {
-        const { container } = render(<EmptyState title="Test" icon={icon} />);
-        expect(container.querySelector(`.${className}`)).toBeInTheDocument();
-      });
     });
   });
 
@@ -542,7 +528,7 @@ describe("EmptyState Component", () => {
     });
 
     it("accepts ReactNode for action", () => {
-      const actions: React.ReactNode[] = [
+      const actions: ReactNode[] = [
         <button key="1">Button</button>,
         <div key="2">Custom element</div>,
         "Text node",

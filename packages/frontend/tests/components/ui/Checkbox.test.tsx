@@ -2,9 +2,8 @@ import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe, toHaveNoViolations } from "jest-axe";
-import { createRef } from "react";
+import { createRef, useState } from "react";
 import { Checkbox } from "../../../src/components/ui";
-import React from "react";
 
 expect.extend(toHaveNoViolations);
 
@@ -270,6 +269,7 @@ describe("Checkbox Component", () => {
       render(<Checkbox onFocus={handleFocus} />);
 
       const checkbox = screen.getByRole("checkbox");
+      expect(checkbox).not.toBeNull();
       await user.tab();
 
       expect(handleFocus).toHaveBeenCalledTimes(1);
@@ -287,6 +287,7 @@ describe("Checkbox Component", () => {
       );
 
       const checkbox = screen.getByRole("checkbox");
+      expect(checkbox).not.toBeNull();
       await user.tab(); // Focus checkbox
       await user.tab(); // Blur checkbox
 
@@ -309,7 +310,7 @@ describe("Checkbox Component", () => {
   describe("Controlled Component", () => {
     it("works as controlled component", async () => {
       const ControlledCheckbox = () => {
-        const [checked, setChecked] = React.useState(false);
+        const [checked, setChecked] = useState(false);
         return (
           <Checkbox
             checked={checked}
