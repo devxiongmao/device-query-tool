@@ -1,4 +1,7 @@
-import { useGetDeviceCompleteQuery } from "../../../graphql/generated/graphql";
+import {
+  useGetDeviceCompleteQuery,
+  useGetProviderDeviceCompleteQuery,
+} from "../../../graphql/generated/graphql";
 import {
   Card,
   CardHeader,
@@ -31,16 +34,41 @@ export function DeviceResults({
   selectedTechnologies,
   selectedFields,
 }: DeviceResultsProps) {
-  const { data, loading, error } = useGetDeviceCompleteQuery({
+  const singleSelectedTechnology =
+    selectedTechnologies.length === 1 ? selectedTechnologies[0] : undefined;
+
+  const {
+    data: providerData,
+    loading: providerLoading,
+    error: providerError,
+  } = useGetProviderDeviceCompleteQuery({
     variables: {
       id: deviceId,
-      providerId: providerId || undefined,
-      bandTechnology:
-        selectedTechnologies.length === 1 ? selectedTechnologies[0] : undefined,
-      comboTechnology:
-        selectedTechnologies.length === 1 ? selectedTechnologies[0] : undefined,
+      // When providerId is null we skip this query, but the variable
+      // is still required by the generated hook type.
+      providerId: providerId ?? "",
+      bandTechnology: singleSelectedTechnology,
+      comboTechnology: singleSelectedTechnology,
     },
+    skip: !providerId,
   });
+
+  const {
+    data: globalData,
+    loading: globalLoading,
+    error: globalError,
+  } = useGetDeviceCompleteQuery({
+    variables: {
+      id: deviceId,
+      bandTechnology: singleSelectedTechnology,
+      comboTechnology: singleSelectedTechnology,
+    },
+    skip: !!providerId,
+  });
+
+  const loading = providerId ? providerLoading : globalLoading;
+  const error = providerId ? providerError : globalError;
+  const data = providerId ? providerData : globalData;
 
   if (loading) {
     return (
@@ -86,19 +114,29 @@ export function DeviceResults({
   const device = data.device;
 
   // Filter bands by selected technologies
-  const filteredBands =
-    selectedTechnologies.length > 0
-      ? device.supportedBands?.filter((band) =>
+  const filteredBands = providerId
+    ? selectedTechnologies.length > 0
+      ? device.supportedBandsForProvider?.filter((band) =>
           selectedTechnologies.includes(band.technology)
         )
-      : device.supportedBands;
+      : device.supportedBandsForProvider
+    : selectedTechnologies.length > 0
+    ? device.supportedBands?.filter((band) =>
+        selectedTechnologies.includes(band.technology)
+      )
+    : device.supportedBands;
 
-  const filteredCombos =
-    selectedTechnologies.length > 0
-      ? device.supportedCombos?.filter((combo) =>
+  const filteredCombos = providerId
+    ? selectedTechnologies.length > 0
+      ? device.supportedCombosForProvider?.filter((combo) =>
           selectedTechnologies.includes(combo.technology)
         )
-      : device.supportedCombos;
+      : device.supportedCombosForProvider
+    : selectedTechnologies.length > 0
+    ? device.supportedCombos?.filter((combo) =>
+        selectedTechnologies.includes(combo.technology)
+      )
+    : device.supportedCombos;
 
   return (
     <div className="space-y-6">
@@ -190,8 +228,8 @@ export function DeviceResults({
                 <TableRow>
                   <TableHead>Band</TableHead>
                   <TableHead>Technology</TableHead>
-                  <TableHead>Frequency Range</TableHead>
-                  <TableHead>Band Class</TableHead>
+                  <TableHead>Downlink Band Class</TableHead>
+                  <TableHead>Uplink Band Class</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

@@ -34,6 +34,10 @@ export function DeviceSearch({
     skip: !debouncedSearch, // Don't query until user types something
   });
 
+  const devices = data?.devices
+    ? Array.from(new Map(data.devices.map((d) => [d.id, d])).values())
+    : [];
+
   return (
     <div className="space-y-4">
       <Input
@@ -61,14 +65,14 @@ export function DeviceSearch({
       {/* Results */}
       {!loading && !error && debouncedSearch && (
         <div className="space-y-2">
-          {data?.devices && data.devices.length > 0 ? (
+          {devices && devices.length > 0 ? (
             <>
               <p className="text-sm text-gray-600">
-                Found {data.devices.length} device
-                {data.devices.length !== 1 ? "s" : ""}
+                Found {devices.length} device
+                {devices.length !== 1 ? "s" : ""}
               </p>
               <div className="space-y-2 max-h-96 overflow-y-auto">
-                {data.devices.map((device) => (
+                {devices.map((device) => (
                   <button
                     key={device.id}
                     onClick={() => onDeviceSelect(device.id)}

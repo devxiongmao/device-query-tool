@@ -140,10 +140,9 @@ query GetDeviceWithProviderFeatures($id: ID!, $providerId: ID!) {
   }
 }
 
-# Complete device query with all capabilities
+# Complete global device query with all capabilities
 query GetDeviceComplete(
   $id: ID!
-  $providerId: ID
   $bandTechnology: String
   $comboTechnology: String
 ) {
@@ -172,6 +171,51 @@ query GetDeviceComplete(
     }
     
     supportedCombos(technology: $comboTechnology) {
+      id
+      name
+      technology
+    }
+    
+    features {
+      id
+      name
+      description
+    }
+  }
+}
+
+# Complete global device query with all capabilities
+query GetProviderDeviceComplete(
+  $id: ID!
+  $providerId: ID!
+  $bandTechnology: String
+  $comboTechnology: String
+) {
+  device(id: $id) {
+    id
+    vendor
+    modelNum
+    marketName
+    releaseDate
+    
+    software {
+      id
+      name
+      platform
+      buildNumber
+      releaseDate
+    }
+    
+    # Global capabilities
+    supportedBandsForProvider(technology: $bandTechnology, providerId: $providerId) {
+      id
+      bandNumber
+      technology
+      dlBandClass
+      ulBandClass
+    }
+    
+    supportedCombosForProvider(technology: $comboTechnology, providerId: $providerId) {
       id
       name
       technology
