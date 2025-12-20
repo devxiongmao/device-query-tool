@@ -27,6 +27,3 @@ dist-ssr
 .env
 .env.local
 .env.production
-
-# GraphQL Code Generator
-src/graphql/generated/

@@ -141,12 +141,12 @@ describe("Card Components", () => {
       expect(screen.getByText("Card Title")).toBeInTheDocument();
     });
 
-    it("renders as an h3 element", () => {
+    it("renders as an h2 element", () => {
       render(<CardTitle>Title</CardTitle>);
 
-      const title = screen.getByRole("heading", { level: 3 });
+      const title = screen.getByRole("heading", { level: 2 });
       expect(title).toBeInTheDocument();
-      expect(title.nodeName).toBe("H3");
+      expect(title.nodeName).toBe("H2");
     });
 
     it("applies base classes", () => {
@@ -525,12 +525,12 @@ describe("Card Components", () => {
       render(
         <Card>
           <CardHeader>
-            <CardTitle>Heading Level 3</CardTitle>
+            <CardTitle>Heading Level 2</CardTitle>
           </CardHeader>
         </Card>
       );
 
-      const heading = screen.getByRole("heading", { level: 3 });
+      const heading = screen.getByRole("heading", { level: 2 });
       expect(heading).toBeInTheDocument();
     });
 
