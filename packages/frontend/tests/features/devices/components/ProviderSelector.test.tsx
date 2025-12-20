@@ -140,7 +140,7 @@ describe("ProviderSelector Component", () => {
     });
 
     it("shows error in a Card", async () => {
-      const { container } = render(
+      render(
         <MockedProvider mocks={createMock([], true)} addTypename={false}>
           <ProviderSelector
             selectedProviderId={null}

@@ -184,7 +184,7 @@ query GetDeviceComplete(
   }
 }
 
-# Complete global device query with all capabilities
+# Complete provider device query with all capabilities
 query GetProviderDeviceComplete(
   $id: ID!
   $providerId: ID!
@@ -206,7 +206,7 @@ query GetProviderDeviceComplete(
       releaseDate
     }
     
-    # Global capabilities
+    # Provider capabilities
     supportedBandsForProvider(technology: $bandTechnology, providerId: $providerId) {
       id
       bandNumber
