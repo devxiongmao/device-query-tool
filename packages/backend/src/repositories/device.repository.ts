@@ -1,4 +1,4 @@
-import { eq, and, like, gte, lte, sql, inArray } from "drizzle-orm";
+import { eq, or, like, gte, lte, sql, inArray } from "drizzle-orm";
 import { db } from "../db/client";
 import { device } from "../db/schema";
 import type { SearchDevicesParams } from "./types";
@@ -66,7 +66,7 @@ export class DeviceRepository {
     }
 
     if (conditions.length > 0) {
-      query = query.where(and(...conditions)) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+      query = query.where(or(...conditions)) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
     }
 
     return query.limit(limit).offset(offset).orderBy(device.releaseDate);
