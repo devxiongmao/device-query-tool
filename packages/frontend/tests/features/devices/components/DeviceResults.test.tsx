@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
+import { axe, toHaveNoViolations } from "jest-axe";
 import {
   GetDeviceCompleteDocument,
   GetProviderDeviceCompleteDocument,
@@ -96,6 +97,8 @@ const mockProviderDevice = {
   },
 };
 
+expect.extend(toHaveNoViolations);
+
 describe("DeviceResults", () => {
   const defaultProps = {
     deviceId: "device-1",
@@ -142,6 +145,12 @@ describe("DeviceResults", () => {
       </MockedProvider>
     );
   };
+
+  it("should have no accessibility violations", async () => {
+    const { container } = renderComponent({}, createMocks());
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
 
   it("shows loading state initially", () => {
     renderComponent({}, createMocks());

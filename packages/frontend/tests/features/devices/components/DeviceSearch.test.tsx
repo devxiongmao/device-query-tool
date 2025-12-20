@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing";
-
+import { axe, toHaveNoViolations } from "jest-axe";
 import { SearchDevicesDocument } from "../../../../src/graphql/generated/graphql";
 import { DeviceSearch } from "../../../../src/features/devices/components/DeviceSearch";
 
@@ -28,6 +28,8 @@ const mockDevices = [
     releaseDate: "2024-01-24",
   },
 ];
+
+expect.extend(toHaveNoViolations);
 
 describe("DeviceSearch", () => {
   const mockOnDeviceSelect = vi.fn();
@@ -70,14 +72,24 @@ describe("DeviceSearch", () => {
     expect(
       screen.getByPlaceholderText(/Enter vendor or model number/)
     ).toBeInTheDocument();
-    expect(screen.getByText("Start typing to search for devices")).toBeInTheDocument();
+    expect(
+      screen.getByText("Start typing to search for devices")
+    ).toBeInTheDocument();
+  });
+
+  it("should have no accessibility violations", async () => {
+    const { container } = renderComponent();
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 
   it("searches for devices when user types", async () => {
     const user = userEvent.setup();
     renderComponent({}, createMocks("Apple"));
 
-    const searchInput = screen.getByPlaceholderText(/Enter vendor or model number/);
+    const searchInput = screen.getByPlaceholderText(
+      /Enter vendor or model number/
+    );
     await user.click(searchInput);
     await user.paste("Apple");
 
@@ -95,7 +107,9 @@ describe("DeviceSearch", () => {
     const singleDevice = [mockDevices[0]];
     renderComponent({}, createMocks("iPhone 15 Pro", singleDevice));
 
-    const searchInput = screen.getByPlaceholderText(/Enter vendor or model number/);
+    const searchInput = screen.getByPlaceholderText(
+      /Enter vendor or model number/
+    );
     await user.click(searchInput);
     await user.paste("iPhone 15 Pro");
 
@@ -108,7 +122,9 @@ describe("DeviceSearch", () => {
     const user = userEvent.setup();
     renderComponent({}, createMocks("Apple"));
 
-    const searchInput = screen.getByPlaceholderText(/Enter vendor or model number/);
+    const searchInput = screen.getByPlaceholderText(
+      /Enter vendor or model number/
+    );
     await user.click(searchInput);
     await user.paste("Apple");
 
@@ -124,12 +140,11 @@ describe("DeviceSearch", () => {
 
   it("highlights selected device", async () => {
     const user = userEvent.setup();
-    renderComponent(
-      { selectedDeviceId: "device-1" },
-      createMocks("Apple")
-    );
+    renderComponent({ selectedDeviceId: "device-1" }, createMocks("Apple"));
 
-    const searchInput = screen.getByPlaceholderText(/Enter vendor or model number/);
+    const searchInput = screen.getByPlaceholderText(
+      /Enter vendor or model number/
+    );
     await user.click(searchInput);
     await user.paste("Apple");
 
@@ -147,7 +162,9 @@ describe("DeviceSearch", () => {
     const user = userEvent.setup();
     renderComponent({}, createMocks("NonExistent", []));
 
-    const searchInput = screen.getByPlaceholderText(/Enter vendor or model number/);
+    const searchInput = screen.getByPlaceholderText(
+      /Enter vendor or model number/
+    );
     await user.click(searchInput);
     await user.paste("NonExistent");
 
@@ -178,7 +195,9 @@ describe("DeviceSearch", () => {
 
     renderComponent({}, errorMocks);
 
-    const searchInput = screen.getByPlaceholderText(/Enter vendor or model number/);
+    const searchInput = screen.getByPlaceholderText(
+      /Enter vendor or model number/
+    );
     await user.click(searchInput);
     await user.paste("Error");
 
@@ -196,12 +215,16 @@ describe("DeviceSearch", () => {
     const user = userEvent.setup();
     renderComponent({}, createMocks("Apple"));
 
-    const searchInput = screen.getByPlaceholderText(/Enter vendor or model number/);
+    const searchInput = screen.getByPlaceholderText(
+      /Enter vendor or model number/
+    );
     await user.click(searchInput);
     await user.paste("Apple");
 
     // Should briefly show loading state
-    expect(screen.getByText("Start typing to search for devices")).toBeInTheDocument();
+    expect(
+      screen.getByText("Start typing to search for devices")
+    ).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.getByText("Found 3 devices")).toBeInTheDocument();
@@ -212,7 +235,9 @@ describe("DeviceSearch", () => {
     const user = userEvent.setup();
     renderComponent({}, createMocks("Apple"));
 
-    const searchInput = screen.getByPlaceholderText(/Enter vendor or model number/);
+    const searchInput = screen.getByPlaceholderText(
+      /Enter vendor or model number/
+    );
     await user.click(searchInput);
     await user.paste("Apple");
 
@@ -234,7 +259,9 @@ describe("DeviceSearch", () => {
 
     renderComponent({}, createMocks("Apple", duplicateDevices));
 
-    const searchInput = screen.getByPlaceholderText(/Enter vendor or model number/);
+    const searchInput = screen.getByPlaceholderText(
+      /Enter vendor or model number/
+    );
     await user.click(searchInput);
     await user.paste("Apple");
 
@@ -243,9 +270,9 @@ describe("DeviceSearch", () => {
     });
 
     // Should only show unique devices
-    const deviceButtons = screen.getAllByRole("button").filter((btn) =>
-      btn.textContent?.includes("iPhone")
-    );
+    const deviceButtons = screen
+      .getAllByRole("button")
+      .filter((btn) => btn.textContent?.includes("iPhone"));
     expect(deviceButtons).toHaveLength(2);
   });
 
@@ -253,7 +280,9 @@ describe("DeviceSearch", () => {
     const user = userEvent.setup();
     renderComponent({}, createMocks("Apple"));
 
-    const searchInput = screen.getByPlaceholderText(/Enter vendor or model number/);
+    const searchInput = screen.getByPlaceholderText(
+      /Enter vendor or model number/
+    );
     await user.click(searchInput);
     await user.paste("Apple");
 
@@ -264,7 +293,9 @@ describe("DeviceSearch", () => {
     await user.clear(searchInput);
 
     await waitFor(() => {
-      expect(screen.getByText("Start typing to search for devices")).toBeInTheDocument();
+      expect(
+        screen.getByText("Start typing to search for devices")
+      ).toBeInTheDocument();
     });
 
     expect(screen.queryByText("Found 3 devices")).not.toBeInTheDocument();

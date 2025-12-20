@@ -8,6 +8,7 @@ import {
   GetProviderDeviceCompleteDocument,
 } from "../../src/graphql/generated/graphql";
 import { DeviceQueryPage } from "../../src/pages/DeviceQuery";
+import { axe, toHaveNoViolations } from "jest-axe";
 
 const mockDevices = [
   {
@@ -73,6 +74,8 @@ const mockDeviceComplete = {
     ],
   },
 };
+
+expect.extend(toHaveNoViolations);
 
 describe("DeviceQueryPage", () => {
   const createMocks = (overrides = {}) => [
@@ -151,6 +154,12 @@ describe("DeviceQueryPage", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("No device selected")).toBeInTheDocument();
     expect(screen.getByText("1. Select Device")).toBeInTheDocument();
+  });
+
+  it("should have no accessibility violations", async () => {
+    const { container } = renderPage();
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 
   it("shows device search functionality", () => {
