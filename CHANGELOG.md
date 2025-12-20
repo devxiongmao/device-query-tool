@@ -1,11 +1,10 @@
 ## Changelog
-### From v0.1.2 to HEAD
+### From v0.1.3 to HEAD
 
-- XMDEV-542: Adds query complexity handling and rate limiting (#29) (afcf4b0) by Jon
-- XMDEV-539: Adds all queries to enable device and capability querying (#28) (70bf873) by Jon
-- XMDEV-538: Adds dataloader implementation for GraphQL (no N + 1 queries) (#27) (86d6e7c) by Jon
-- XMDEV-537: Adds data access (repository) layer for graphQL (#25) (cb6a066) by Jon
-- XMDEV-543: Drop unused date columns (#26) (97c59d1) by Jon
-- XMDEV-536: Adds graphQL type definitions (#24) (5731484) by Jon
-- XMDEV-535: Adds graphQL dependancies and initial setup (#23) (d285f43) by Jon
+- XMDEV-549: Adds initial build of device query page (#36) (666dc9d) by Jon
+- XMDEV-548: Adds component library for building query pages (#35) (2dfc6c3) by Jon
+- XMDEV-547: Adds graphQL code gen for types and hooks (#34) (a1118ad) by Jon
+- XMDEV-554: Update tab icon to be a mobile phone (#33) (2e05d56) by Jon
+- XMDEV-528: Adds linting, typecheck and tests for frontend in CI (#32) (1b60497) by Jon
+- XMDEV-546: Adds frontend react app scaffolding and base pages (#31) (3bf1b49) by Jon
 
