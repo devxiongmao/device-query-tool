@@ -1,0 +1,23 @@
+# Debian-based Node (glibc, not musl)
+FROM node:22.12-slim
+
+# Install Bun
+RUN npm install -g bun
+
+WORKDIR /app
+
+# Copy dependency manifests
+COPY packages/frontend/package.json packages/frontend/bun.lock ./packages/frontend/
+WORKDIR /app/packages/frontend
+
+# IMPORTANT:
+# Ensure a clean install so optional deps resolve correctly
+RUN rm -rf node_modules && bun install
+
+# Copy source (overridden by volume mount in dev)
+COPY packages/frontend ./packages/frontend
+
+# Vite dev server
+EXPOSE 5173
+
+CMD ["bun", "run", "docker"]

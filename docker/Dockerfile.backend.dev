@@ -1,0 +1,16 @@
+FROM oven/bun:1.1.34
+
+WORKDIR /app
+
+# Copy dependency manifests
+COPY packages/backend/package.json packages/backend/bun.lock ./packages/backend/
+WORKDIR /app/packages/backend
+
+RUN bun install
+
+# Copy source (will be overridden by volume mount in compose)
+COPY packages/backend ./packages/backend
+
+EXPOSE 3000
+
+CMD ["bun", "run", "dev"]
