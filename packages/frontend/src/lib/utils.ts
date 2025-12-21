@@ -12,6 +12,9 @@ export function cn(...inputs: ClassValue[]) {
  * Format date to readable string
  */
 export function formatDate(date: string | Date): string {
+  if(date === undefined || date === null) {
+    return ""
+  }
   const d = typeof date === "string" ? new Date(date) : date;
   return d.toLocaleDateString("en-US", {
     year: "numeric",

@@ -31,6 +31,7 @@ query DevicesByBandProvider($bandId: ID!, $providerId: ID!, $technology: String)
       vendor
       modelNum
       marketName
+      releaseDate
     }
     software {
       id
@@ -49,6 +50,7 @@ query DevicesByCombo($comboId: ID!, $technology: String) {
       vendor
       modelNum
       marketName
+      releaseDate
     }
     software {
       id
@@ -71,6 +73,7 @@ query DevicesByComboProvider($comboId: ID!, $providerId: ID!, $technology: Strin
       vendor
       modelNum
       marketName
+      releaseDate
     }
     software {
       id
@@ -89,6 +92,7 @@ query DevicesByFeature($featureId: ID!) {
       vendor
       modelNum
       marketName
+      releaseDate
     }
     software {
       id
@@ -111,6 +115,7 @@ query DevicesByFeatureProvider($featureId: ID!, $providerId: ID!) {
       vendor
       modelNum
       marketName
+      releaseDate
     }
     software {
       id

@@ -420,7 +420,7 @@ export type DevicesByBandProviderQueryVariables = Exact<{
 }>;
 
 
-export type DevicesByBandProviderQuery = { __typename?: 'Query', devicesByBand?: Array<{ __typename?: 'DeviceCapabilityResult', supportStatus?: SupportStatus | null, provider?: { __typename?: 'Provider', id?: string | null, name?: string | null, country?: string | null } | null, device?: { __typename?: 'Device', id?: string | null, vendor?: string | null, modelNum?: string | null, marketName?: string | null } | null, software?: Array<{ __typename?: 'Software', id?: string | null, name?: string | null, buildNumber?: string | null }> | null }> | null };
+export type DevicesByBandProviderQuery = { __typename?: 'Query', devicesByBand?: Array<{ __typename?: 'DeviceCapabilityResult', supportStatus?: SupportStatus | null, provider?: { __typename?: 'Provider', id?: string | null, name?: string | null, country?: string | null } | null, device?: { __typename?: 'Device', id?: string | null, vendor?: string | null, modelNum?: string | null, marketName?: string | null, releaseDate?: string | null } | null, software?: Array<{ __typename?: 'Software', id?: string | null, name?: string | null, buildNumber?: string | null }> | null }> | null };
 
 export type DevicesByComboQueryVariables = Exact<{
   comboId: Scalars['ID']['input'];
@@ -428,7 +428,7 @@ export type DevicesByComboQueryVariables = Exact<{
 }>;
 
 
-export type DevicesByComboQuery = { __typename?: 'Query', devicesByCombo?: Array<{ __typename?: 'DeviceCapabilityResult', supportStatus?: SupportStatus | null, device?: { __typename?: 'Device', id?: string | null, vendor?: string | null, modelNum?: string | null, marketName?: string | null } | null, software?: Array<{ __typename?: 'Software', id?: string | null, name?: string | null, buildNumber?: string | null }> | null }> | null };
+export type DevicesByComboQuery = { __typename?: 'Query', devicesByCombo?: Array<{ __typename?: 'DeviceCapabilityResult', supportStatus?: SupportStatus | null, device?: { __typename?: 'Device', id?: string | null, vendor?: string | null, modelNum?: string | null, marketName?: string | null, releaseDate?: string | null } | null, software?: Array<{ __typename?: 'Software', id?: string | null, name?: string | null, buildNumber?: string | null }> | null }> | null };
 
 export type DevicesByComboProviderQueryVariables = Exact<{
   comboId: Scalars['ID']['input'];
@@ -437,14 +437,14 @@ export type DevicesByComboProviderQueryVariables = Exact<{
 }>;
 
 
-export type DevicesByComboProviderQuery = { __typename?: 'Query', devicesByCombo?: Array<{ __typename?: 'DeviceCapabilityResult', supportStatus?: SupportStatus | null, provider?: { __typename?: 'Provider', id?: string | null, name?: string | null } | null, device?: { __typename?: 'Device', id?: string | null, vendor?: string | null, modelNum?: string | null, marketName?: string | null } | null, software?: Array<{ __typename?: 'Software', id?: string | null, name?: string | null, buildNumber?: string | null }> | null }> | null };
+export type DevicesByComboProviderQuery = { __typename?: 'Query', devicesByCombo?: Array<{ __typename?: 'DeviceCapabilityResult', supportStatus?: SupportStatus | null, provider?: { __typename?: 'Provider', id?: string | null, name?: string | null } | null, device?: { __typename?: 'Device', id?: string | null, vendor?: string | null, modelNum?: string | null, marketName?: string | null, releaseDate?: string | null } | null, software?: Array<{ __typename?: 'Software', id?: string | null, name?: string | null, buildNumber?: string | null }> | null }> | null };
 
 export type DevicesByFeatureQueryVariables = Exact<{
   featureId: Scalars['ID']['input'];
 }>;
 
 
-export type DevicesByFeatureQuery = { __typename?: 'Query', devicesByFeature?: Array<{ __typename?: 'DeviceCapabilityResult', supportStatus?: SupportStatus | null, device?: { __typename?: 'Device', id?: string | null, vendor?: string | null, modelNum?: string | null, marketName?: string | null } | null, software?: Array<{ __typename?: 'Software', id?: string | null, name?: string | null, buildNumber?: string | null }> | null }> | null };
+export type DevicesByFeatureQuery = { __typename?: 'Query', devicesByFeature?: Array<{ __typename?: 'DeviceCapabilityResult', supportStatus?: SupportStatus | null, device?: { __typename?: 'Device', id?: string | null, vendor?: string | null, modelNum?: string | null, marketName?: string | null, releaseDate?: string | null } | null, software?: Array<{ __typename?: 'Software', id?: string | null, name?: string | null, buildNumber?: string | null }> | null }> | null };
 
 export type DevicesByFeatureProviderQueryVariables = Exact<{
   featureId: Scalars['ID']['input'];
@@ -452,7 +452,7 @@ export type DevicesByFeatureProviderQueryVariables = Exact<{
 }>;
 
 
-export type DevicesByFeatureProviderQuery = { __typename?: 'Query', devicesByFeature?: Array<{ __typename?: 'DeviceCapabilityResult', supportStatus?: SupportStatus | null, provider?: { __typename?: 'Provider', id?: string | null, name?: string | null } | null, device?: { __typename?: 'Device', id?: string | null, vendor?: string | null, modelNum?: string | null, marketName?: string | null } | null, software?: Array<{ __typename?: 'Software', id?: string | null, name?: string | null, buildNumber?: string | null }> | null }> | null };
+export type DevicesByFeatureProviderQuery = { __typename?: 'Query', devicesByFeature?: Array<{ __typename?: 'DeviceCapabilityResult', supportStatus?: SupportStatus | null, provider?: { __typename?: 'Provider', id?: string | null, name?: string | null } | null, device?: { __typename?: 'Device', id?: string | null, vendor?: string | null, modelNum?: string | null, marketName?: string | null, releaseDate?: string | null } | null, software?: Array<{ __typename?: 'Software', id?: string | null, name?: string | null, buildNumber?: string | null }> | null }> | null };
 
 export type GetDeviceQueryVariables = Exact<{
   id: Scalars['ID']['input'];
@@ -745,6 +745,7 @@ export const DevicesByBandProviderDocument = gql`
       vendor
       modelNum
       marketName
+      releaseDate
     }
     software {
       id
@@ -801,6 +802,7 @@ export const DevicesByComboDocument = gql`
       vendor
       modelNum
       marketName
+      releaseDate
     }
     software {
       id
@@ -864,6 +866,7 @@ export const DevicesByComboProviderDocument = gql`
       vendor
       modelNum
       marketName
+      releaseDate
     }
     software {
       id
@@ -920,6 +923,7 @@ export const DevicesByFeatureDocument = gql`
       vendor
       modelNum
       marketName
+      releaseDate
     }
     software {
       id
@@ -978,6 +982,7 @@ export const DevicesByFeatureProviderDocument = gql`
       vendor
       modelNum
       marketName
+      releaseDate
     }
     software {
       id
