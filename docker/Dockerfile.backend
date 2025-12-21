@@ -1,0 +1,47 @@
+# -----------------------------
+# Base image
+# -----------------------------
+FROM oven/bun:1.1.34 AS base
+WORKDIR /app
+
+# -----------------------------
+# Install dependencies
+# -----------------------------
+FROM base AS deps
+
+COPY packages/backend/package.json packages/backend/bun.lock ./packages/backend/
+WORKDIR /app/packages/backend
+
+RUN bun install --frozen-lockfile
+
+# -----------------------------
+# Build application
+# -----------------------------
+FROM base AS build
+
+COPY --from=deps /app/packages/backend/node_modules ./packages/backend/node_modules
+COPY packages/backend ./packages/backend
+
+WORKDIR /app/packages/backend
+RUN bun run build
+
+# -----------------------------
+# Production runtime
+# -----------------------------
+FROM oven/bun:1.1.34-slim AS runtime
+
+WORKDIR /app
+ENV NODE_ENV=production
+
+# Copy runtime artifacts only
+COPY --from=build /app/packages/backend/dist ./dist
+COPY --from=build /app/packages/backend/node_modules ./node_modules
+COPY --from=build /app/packages/backend/package.json ./
+
+# Non-root user (best practice)
+USER bun
+
+EXPOSE 3000
+
+# Run migrations, then start server
+CMD ["sh", "-c", "bun run db:migrate && bun dist/index.js"]

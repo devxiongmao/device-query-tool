@@ -8,3 +8,11 @@ start-backend:
 
 .PHONY: start-all
 start-all: start-frontend start-backend
+
+.PHONY: docker-up
+docker-up: 
+	docker compose -f docker-compose.dev.yml up --build
+
+.PHONY: docker-down
+docker-down: 
+	docker compose -f docker-compose.dev.yml down -v
