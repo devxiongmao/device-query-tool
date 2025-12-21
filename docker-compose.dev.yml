@@ -1,0 +1,57 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: app-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: device_capabilities
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d device_capabilities"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+
+  backend:
+    container_name: app-backend
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.backend.dev
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./packages/backend:/app/packages/backend
+    env_file:
+      - ./packages/backend/.env
+    environment:
+      # Override localhost for Docker networking
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/device_capabilities
+    ports:
+      - "3000:3000"
+
+  frontend:
+    container_name: app-frontend
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.frontend.dev
+    restart: unless-stopped
+    volumes:
+      - ./packages/frontend:/app/packages/frontend
+      - /app/packages/frontend/node_modules
+    environment:
+      VITE_API_URL: http://localhost:3000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
