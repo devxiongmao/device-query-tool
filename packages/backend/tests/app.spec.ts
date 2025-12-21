@@ -23,7 +23,7 @@ type ErrorResponse = {
 };
 
 // Mock the env module
-vi.mock("./config/env", () => ({
+vi.mock("../src/config/env", () => ({
   env: {
     NODE_ENV: "test",
     DATABASE_URL: "postgresql://localhost:5432/testdb",

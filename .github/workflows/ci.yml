@@ -49,6 +49,7 @@ jobs:
               - 'packages/backend/package.json'
               - 'packages/backend/bun.lock'
               - 'packages/frontend/package.json'
+              - 'packages/frontend/bun.lock'
             actions:
               - '.github/workflows/**'
               - '.github/dependabot.yml'
@@ -209,20 +210,20 @@ jobs:
 
       - name: Run ESLint
         working-directory: packages/backend
-        run: bun lint
+        run: bun run lint
 
       - name: Run Type Check
         working-directory: packages/backend
-        run: bun typecheck
+        run: bun run typecheck
       
       - name: Run Database Migrations
         working-directory: packages/backend
-        run: bun db:push --force
+        run: bun run db:push --force
         continue-on-error: false
       
       - name: Run Tests
         working-directory: packages/backend
-        run: bun test
+        run: bun run test
 
   create-release:
     name: Create GitHub Release
