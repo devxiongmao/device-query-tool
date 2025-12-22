@@ -10,10 +10,10 @@ To typecheck:
 bun typecheck
 ```
 
-To test:
+To test: create testdb database, then run
 
 ```sh
-bun test
+bun run test
 ```
 
 To run:

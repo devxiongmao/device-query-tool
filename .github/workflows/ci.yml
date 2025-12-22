@@ -166,15 +166,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: [analyze_changes]
     if: needs.analyze_changes.outputs.backend_changes == 'true' || startsWith(github.head_ref, 'release-')
+
+    environment: test
     
     # Set up PostgreSQL service container
     services:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: test_password
-          POSTGRES_DB: test_db
+          POSTGRES_USER: ${{ vars.DB_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          POSTGRES_DB: ${{ vars.DB_NAME }}
         ports:
           - 5432:5432
         options: >-
@@ -182,18 +184,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-    
-    env:
-      NODE_ENV: test
-      DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_db
-      DB_HOST: localhost
-      DB_PORT: 5432
-      DB_NAME: test_db
-      DB_USER: test_user
-      DB_PASSWORD: test_password
-      PORT: 3000
-      CORS_ORIGIN: http://localhost:5173
-      LOG_LEVEL: info
     
     steps:
       - name: Checkout code
