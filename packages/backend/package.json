@@ -5,7 +5,7 @@
     "dev": "bun run --hot src/index.ts",
     "build": "bun build src/index.ts --outdir ./dist --target bun",
     "start": "bun dist/index.js",
-    "test": "bun --bun vitest",
+    "test": "vitest",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -37,6 +37,7 @@
     "@types/bun": "latest",
     "@typescript-eslint/eslint-plugin": "^8.48.1",
     "@typescript-eslint/parser": "^8.48.1",
+    "dotenv": "^17.2.3",
     "drizzle-kit": "^0.31.7",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
@@ -44,6 +45,6 @@
     "eslint-plugin-import": "^2.32.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.48.1",
-    "vitest": "^4.0.15"
+    "vitest": "^4.0.16"
   }
 }
