@@ -1,0 +1,20 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: "/packages/backend"
+    schedule:
+      interval: semiannually
+    open-pull-requests-limit: 10
+
+  - package-ecosystem: npm
+    directory: "/packages/frontend"
+    schedule:
+      interval: semiannually
+    open-pull-requests-limit: 10
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
