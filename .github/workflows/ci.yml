@@ -185,6 +185,22 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     
+    env:
+      NODE_ENV: test
+      DATABASE_URL: ${{ vars.DATABASE_URL }}
+      DB_HOST: ${{ vars.DB_HOST }}
+      DB_PORT: ${{ vars.DB_PORT }}
+      DB_NAME: ${{ vars.DB_NAME }}
+      DB_USER: ${{ vars.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      PORT: ${{ vars.PORT }}
+      CORS_ORIGIN: ${{ vars.CORS_ORIGIN }}
+      LOG_LEVEL: ${{ vars.LOG_LEVEL }}
+      GRAPHQL_MAX_DEPTH: ${{ vars.GRAPHQL_MAX_DEPTH }}
+      GRAPHQL_MAX_COMPLEXITY: ${{ vars.GRAPHQL_MAX_COMPLEXITY }}
+      GRAPHQL_RATE_LIMIT_PER_MINUTE: ${{ vars.GRAPHQL_RATE_LIMIT_PER_MINUTE }}
+      GRAPHQL_RATE_LIMIT_PER_HOUR: ${{ vars.GRAPHQL_RATE_LIMIT_PER_HOUR }}
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
