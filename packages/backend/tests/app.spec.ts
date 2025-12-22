@@ -22,22 +22,6 @@ type ErrorResponse = {
   error: string;
 };
 
-// Mock the env module
-vi.mock("./config/env", () => ({
-  env: {
-    NODE_ENV: "test",
-    DATABASE_URL: "postgresql://localhost:5432/testdb",
-    DB_HOST: "localhost",
-    DB_PORT: 5432,
-    DB_NAME: "test_db",
-    DB_USER: "test_user",
-    DB_PASSWORD: "test_password",
-    PORT: 3000,
-    CORS_ORIGIN: "http://localhost:5173",
-    LOG_LEVEL: "info" as const,
-  },
-}));
-
 describe("Hono Application", () => {
   let consoleLogSpy: ReturnType<typeof vi.spyOn>;
 

@@ -1,14 +1,12 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import { z } from "zod";
 
-// We'll need to test the schema directly instead of the loaded env
-// to avoid issues with .env files and module caching
 describe("env.ts", () => {
   let originalEnv: NodeJS.ProcessEnv;
   let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
   let processExitSpy: ReturnType<typeof vi.spyOn>;
 
-  // Import the schema for direct testing
+  // Define the schema directly in the test file to match the implementation
   const envSchema = z.object({
     DATABASE_URL: z.string().url(),
     DB_HOST: z.string().default("localhost"),
@@ -62,18 +60,18 @@ describe("env.ts", () => {
       // Assert
       expect(result.DATABASE_URL).toBe("postgresql://localhost:5432/testdb");
       expect(result.DB_PASSWORD).toBe("secret123");
-      expect(result.DB_HOST).toBe("localhost"); // default
-      expect(result.DB_PORT).toBe(5432); // default
-      expect(result.DB_NAME).toBe("device_capabilities"); // default
-      expect(result.DB_USER).toBe("postgres"); // default
-      expect(result.PORT).toBe(3000); // default
-      expect(result.NODE_ENV).toBe("development"); // default
-      expect(result.CORS_ORIGIN).toBe("http://localhost:5173"); // default
-      expect(result.LOG_LEVEL).toBe("info"); // default
-      expect(result.GRAPHQL_MAX_DEPTH).toBe(5); // default
-      expect(result.GRAPHQL_MAX_COMPLEXITY).toBe(1000); // default
-      expect(result.GRAPHQL_RATE_LIMIT_PER_MINUTE).toBe(100); // default
-      expect(result.GRAPHQL_RATE_LIMIT_PER_HOUR).toBe(1000); // default
+      expect(result.DB_HOST).toBe("localhost");
+      expect(result.DB_PORT).toBe(5432);
+      expect(result.DB_NAME).toBe("device_capabilities");
+      expect(result.DB_USER).toBe("postgres");
+      expect(result.PORT).toBe(3000);
+      expect(result.NODE_ENV).toBe("development");
+      expect(result.CORS_ORIGIN).toBe("http://localhost:5173");
+      expect(result.LOG_LEVEL).toBe("info");
+      expect(result.GRAPHQL_MAX_DEPTH).toBe(5);
+      expect(result.GRAPHQL_MAX_COMPLEXITY).toBe(1000);
+      expect(result.GRAPHQL_RATE_LIMIT_PER_MINUTE).toBe(100);
+      expect(result.GRAPHQL_RATE_LIMIT_PER_HOUR).toBe(1000);
     });
 
     it("should parse environment with custom values overriding defaults", () => {
@@ -89,10 +87,10 @@ describe("env.ts", () => {
         NODE_ENV: "production" as const,
         CORS_ORIGIN: "https://example.com",
         LOG_LEVEL: "error" as const,
-        GRAPHQL_MAX_DEPTH: 3,
-        GRAPHQL_MAX_COMPLEXITY: 300,
-        GRAPHQL_RATE_LIMIT_PER_MINUTE: 40,
-        GRAPHQL_RATE_LIMIT_PER_HOUR: 2000,
+        GRAPHQL_MAX_DEPTH: "3",
+        GRAPHQL_MAX_COMPLEXITY: "300",
+        GRAPHQL_RATE_LIMIT_PER_MINUTE: "40",
+        GRAPHQL_RATE_LIMIT_PER_HOUR: "2000",
       };
 
       // Act
@@ -352,7 +350,7 @@ describe("env.ts", () => {
   });
 
   describe("Type safety", () => {
-    it("should export correct Env type", () => {
+    it("should infer correct types from schema", () => {
       // Arrange
       const testEnv = {
         DATABASE_URL: "postgresql://localhost:5432/testdb",
@@ -362,23 +360,21 @@ describe("env.ts", () => {
       // Act
       const result = envSchema.parse(testEnv);
 
-      // Assert - Type checking (will fail at compile time if types are wrong)
-      const typedResult: {
-        DATABASE_URL: string;
-        DB_HOST: string;
-        DB_PORT: number;
-        DB_NAME: string;
-        DB_USER: string;
-        DB_PASSWORD: string;
-        PORT: number;
-        NODE_ENV: "development" | "production" | "test";
-        CORS_ORIGIN: string;
-        LOG_LEVEL: "debug" | "info" | "warn" | "error";
-      } = result;
-
-      expect(typedResult).toBeDefined();
-      expect(typeof typedResult.PORT).toBe("number");
-      expect(typeof typedResult.DB_PORT).toBe("number");
+      // Assert - Runtime type checking
+      expect(typeof result.DATABASE_URL).toBe("string");
+      expect(typeof result.DB_HOST).toBe("string");
+      expect(typeof result.DB_PORT).toBe("number");
+      expect(typeof result.DB_NAME).toBe("string");
+      expect(typeof result.DB_USER).toBe("string");
+      expect(typeof result.DB_PASSWORD).toBe("string");
+      expect(typeof result.PORT).toBe("number");
+      expect(typeof result.NODE_ENV).toBe("string");
+      expect(typeof result.CORS_ORIGIN).toBe("string");
+      expect(typeof result.LOG_LEVEL).toBe("string");
+      expect(typeof result.GRAPHQL_MAX_DEPTH).toBe("number");
+      expect(typeof result.GRAPHQL_MAX_COMPLEXITY).toBe("number");
+      expect(typeof result.GRAPHQL_RATE_LIMIT_PER_MINUTE).toBe("number");
+      expect(typeof result.GRAPHQL_RATE_LIMIT_PER_HOUR).toBe("number");
     });
   });
 });

@@ -3,7 +3,7 @@ import { parse } from "graphql";
 import { createComplexityPlugin } from "../../../src/graphql/plugins/complexity";
 
 // Mock env config
-vi.mock("../../config/env", () => ({
+vi.mock("../../../src/config/env", () => ({
   env: {
     LOG_LEVEL: "error", // Default to error to avoid console spam
   },
