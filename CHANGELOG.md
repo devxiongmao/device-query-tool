@@ -1,10 +1,10 @@
 ## Changelog
-### From v0.1.3 to HEAD
+### From v0.1.4 to HEAD
 
-- XMDEV-549: Adds initial build of device query page (#36) (666dc9d) by Jon
-- XMDEV-548: Adds component library for building query pages (#35) (2dfc6c3) by Jon
-- XMDEV-547: Adds graphQL code gen for types and hooks (#34) (a1118ad) by Jon
-- XMDEV-554: Update tab icon to be a mobile phone (#33) (2e05d56) by Jon
-- XMDEV-528: Adds linting, typecheck and tests for frontend in CI (#32) (1b60497) by Jon
-- XMDEV-546: Adds frontend react app scaffolding and base pages (#31) (3bf1b49) by Jon
+- XMDEV-533: Adds readmes for root, backend and frontend (#43) (be19610) by Jon
+- XMDEV-560: Adds license file (MIT) (#42) (6a5c139) by Jon
+- XMDEV-559: Adds the dependabot config (#41) (464bbf5) by Jon
+- XMDEV-556: Adds capability query page (#38) (1fa4bef) by Jon
+- XMDEV-553: Fix backend bun scripts to use run (#40) (54534d3) by Jon
+- XMDEV-10: Adds dev and prod dockerfiles (#39) (5dc9e90) by Jon
 
