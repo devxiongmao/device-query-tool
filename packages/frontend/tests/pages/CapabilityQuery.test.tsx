@@ -37,8 +37,8 @@ const mockCombos = [
     name: "DC_1A_3A",
     technology: "LTE CA",
     bands: [
-      { id: "band-3", bandNumber: "1" },
-      { id: "band-4", bandNumber: "3" },
+      { id: "band-3", bandNumber: "1", technology: "LTE" },
+      { id: "band-4", bandNumber: "3", technology: "LTE" },
     ],
   },
   {
@@ -46,8 +46,8 @@ const mockCombos = [
     name: "DC_n77A_n78A",
     technology: "NR CA",
     bands: [
-      { id: "band-1", bandNumber: "n77" },
-      { id: "band-5", bandNumber: "n78" },
+      { id: "band-1", bandNumber: "n77", technology: "NR" },
+      { id: "band-5", bandNumber: "n78", technology: "NR" },
     ],
   },
 ];
@@ -66,8 +66,18 @@ const mockFeatures = [
 ];
 
 const mockProviders = [
-  { id: "provider-1", name: "AT&T", country: "United States" },
-  { id: "provider-2", name: "Verizon", country: "United States" },
+  {
+    id: "provider-1",
+    name: "AT&T",
+    country: "United States",
+    networkType: "LTE",
+  },
+  {
+    id: "provider-2",
+    name: "Verizon",
+    country: "United States",
+    networkType: "LTE",
+  },
 ];
 
 const mockDevicesForBand = [
@@ -153,6 +163,7 @@ const mockDevicesForBandProvider = [
     provider: {
       id: "provider-1",
       name: "AT&T",
+      country: "United States",
     },
   },
 ];
@@ -308,6 +319,10 @@ describe("CapabilityQueryPage", () => {
 
   it("should have no accessibility violations", async () => {
     const { container } = renderPage();
+    // Wait for the async query to complete before running accessibility check
+    await waitFor(() => {
+      expect(screen.getByText("Query by Capability")).toBeInTheDocument();
+    });
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
@@ -580,7 +595,8 @@ describe("CapabilityQueryPage", () => {
 
     const bandNumberInput = screen.getByLabelText("Band Number");
     await user.clear(bandNumberInput);
-    await user.type(bandNumberInput, "n77");
+    await user.click(bandNumberInput);
+    await user.paste("n77");
 
     await waitFor(() => {
       expect(screen.getByText("Found 1 band")).toBeInTheDocument();
@@ -601,7 +617,8 @@ describe("CapabilityQueryPage", () => {
 
     const featureInput = screen.getByLabelText("Feature Name");
     await user.clear(featureInput);
-    await user.type(featureInput, "VoLTE");
+    await user.click(featureInput);
+    await user.paste("VoLTE");
 
     await waitFor(() => {
       expect(screen.getByText("Found 1 feature")).toBeInTheDocument();

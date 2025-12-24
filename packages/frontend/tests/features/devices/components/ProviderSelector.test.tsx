@@ -943,6 +943,11 @@ describe("ProviderSelector Component", () => {
         </MockedProvider>
       );
 
+      // Wait for the async query to complete before running accessibility check
+      await waitFor(() => {
+        expect(screen.getByText("Telus")).toBeInTheDocument();
+      });
+
       const results = await axe(container);
       expect(results).toHaveNoViolations();
     });
