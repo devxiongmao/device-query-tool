@@ -406,6 +406,86 @@ describe("createDepthLimitPlugin", () => {
       expect(result).toBeUndefined();
     });
 
+    it("should calculate depth correctly when FragmentSpread contains nested fields", () => {
+      const plugin = createDepthLimitPlugin(4);
+      const query = `
+        fragment DeviceWithSoftware on Device {
+          id
+          vendor
+          software {
+            id
+            name
+            platform {
+              version
+            }
+          }
+        }
+        
+        query {
+          device(id: "1") {
+            ...DeviceWithSoftware
+          }
+        }
+      `;
+
+      const result = plugin.onExecute?.(createExecutionArgs(query));
+      expect(result).toBeUndefined();
+    });
+
+    it("should reject FragmentSpread that exceeds depth limit", () => {
+      const plugin = createDepthLimitPlugin(3);
+      const query = `
+        fragment DeepFragment on Device {
+          id
+          software {
+            id
+            platform {
+              version {
+                major
+              }
+            }
+          }
+        }
+        
+        query {
+          device(id: "1") {
+            ...DeepFragment
+          }
+        }
+      `;
+
+      expect(() => {
+        plugin.onExecute?.(createExecutionArgs(query));
+      }).toThrow(/Query depth.*exceeds maximum allowed depth/);
+    });
+
+    it("should handle nested FragmentSpread (fragments that spread other fragments)", () => {
+      const plugin = createDepthLimitPlugin(4);
+      const query = `
+        fragment DeviceBasic on Device {
+          id
+          vendor
+        }
+        
+        fragment DeviceWithSoftware on Device {
+          ...DeviceBasic
+          software {
+            id
+            name
+          }
+        }
+        
+        query {
+          device(id: "1") {
+            ...DeviceWithSoftware
+          }
+        }
+      `;
+
+      const result = plugin.onExecute?.(createExecutionArgs(query));
+      expect(result).toBeUndefined();
+    });
+
     it("should handle nested inline fragments", () => {
       const plugin = createDepthLimitPlugin(4);
       const query = `
