@@ -1,10 +1,10 @@
 .PHONY: start-frontend
 start-frontend:
-	cd packages/frontend && bun dev
+	cd packages/frontend && bun run dev
 
 .PHONY: start-backend
 start-backend:
-	cd packages/backend && bun dev
+	cd packages/backend && bun run dev
 
 .PHONY: start-all
 start-all: start-frontend start-backend

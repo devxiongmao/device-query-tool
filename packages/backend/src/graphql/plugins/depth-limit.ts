@@ -1,6 +1,6 @@
 import type { Plugin } from "graphql-yoga";
 import { env } from "../../config/env";
-import type { SelectionSetNode } from "graphql";
+import type { FragmentDefinitionNode, SelectionSetNode } from "graphql";
 
 /**
  * Limit query depth to prevent deeply nested queries
@@ -10,6 +10,17 @@ export function createDepthLimitPlugin(maxDepth: number = 5): Plugin {
   return {
     onExecute: ({ args }) => {
       const { document } = args;
+
+      // Build a map of fragment definitions for quick lookup
+      const fragmentMap = new Map<string, FragmentDefinitionNode>();
+      for (const definition of document.definitions) {
+        if (definition.kind === "FragmentDefinition") {
+          fragmentMap.set(definition.name.value, definition);
+        }
+      }
+
+      // Track visited fragments to prevent infinite loops from circular references
+      const visitedFragments = new Set<string>();
 
       const calculateDepth = (
         selectionSet: SelectionSetNode,
@@ -41,10 +52,26 @@ export function createDepthLimitPlugin(maxDepth: number = 5): Plugin {
               );
               maxChildDepth = Math.max(maxChildDepth, childDepth);
             }
+          } else if (selection.kind === "FragmentSpread") {
+            // Handle FragmentSpread: look up the fragment definition and calculate its depth
+            const fragmentName = selection.name.value;
+
+            // Prevent infinite loops from circular fragment references
+            if (visitedFragments.has(fragmentName)) {
+              continue;
+            }
+
+            const fragmentDef = fragmentMap.get(fragmentName);
+            if (fragmentDef && fragmentDef.selectionSet) {
+              visitedFragments.add(fragmentName);
+              const childDepth = calculateDepth(
+                fragmentDef.selectionSet,
+                currentDepth
+              );
+              visitedFragments.delete(fragmentName);
+              maxChildDepth = Math.max(maxChildDepth, childDepth);
+            }
           }
-          // XMDEV-545: Handle FragmentSpread
-          // FragmentSpread doesn't have a selectionSet - it references a fragment definition
-          // Fragment definitions are handled separately when encountered
         }
 
         return maxChildDepth;
@@ -52,6 +79,8 @@ export function createDepthLimitPlugin(maxDepth: number = 5): Plugin {
 
       for (const definition of document.definitions) {
         if (definition.kind === "OperationDefinition") {
+          // Reset visited fragments for each operation
+          visitedFragments.clear();
           const depth = calculateDepth(definition.selectionSet);
 
           if (depth > maxDepth) {
