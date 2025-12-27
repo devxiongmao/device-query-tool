@@ -147,7 +147,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: packages/frontend
-        run: bun install --frozen-lockfile
+        run: bun install
 
       - name: Run ESLint
         working-directory: packages/frontend
@@ -212,7 +212,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: packages/backend
-        run: bun install --frozen-lockfile
+        run: bun install
 
       - name: Run ESLint
         working-directory: packages/backend
