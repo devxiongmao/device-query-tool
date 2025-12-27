@@ -88,8 +88,10 @@ describe("FeatureSearch", () => {
 
   describe("Loading state", () => {
     it("displays spinner while loading", () => {
+      const mockWithFilter = createMock(mockFeatures, undefined);
+
       render(
-        <MockedProvider mocks={[]} addTypename={false}>
+        <MockedProvider mocks={[mockWithFilter]} addTypename={false}>
           <FeatureSearch onFeatureSelect={vi.fn()} />
         </MockedProvider>
       );
@@ -336,7 +338,8 @@ describe("FeatureSearch", () => {
       );
 
       const input = screen.getByLabelText("Feature Name");
-      await user.type(input, "VoLTE");
+      await user.click(input);
+      await user.paste("VoLTE");
 
       // The component should trigger a new query with the name variable
       await waitFor(() => {
@@ -346,15 +349,20 @@ describe("FeatureSearch", () => {
 
     it("clears search filter when input is cleared", async () => {
       const user = userEvent.setup();
+      const mockWithFilter = createMock(mockFeatures, "VoLTE");
 
       render(
-        <MockedProvider mocks={[createMock()]} addTypename={false}>
+        <MockedProvider
+          mocks={[createMock(), mockWithFilter, createMock()]}
+          addTypename={false}
+        >
           <FeatureSearch onFeatureSelect={vi.fn()} />
         </MockedProvider>
       );
 
       const input = screen.getByLabelText("Feature Name");
-      await user.type(input, "VoLTE");
+      await user.click(input);
+      await user.paste("VoLTE");
       await user.clear(input);
 
       expect(input).toHaveValue("");

@@ -148,6 +148,11 @@ describe("DeviceResults", () => {
 
   it("should have no accessibility violations", async () => {
     const { container } = renderComponent({}, createMocks());
+    // Wait for the async query to complete before running accessibility check
+    await waitFor(() => {
+      expect(screen.getByText("Apple iPhone 15 Pro")).toBeInTheDocument();
+    });
+
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });

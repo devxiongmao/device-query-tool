@@ -105,8 +105,10 @@ describe("BandSearch", () => {
 
   describe("Loading state", () => {
     it("displays spinner while loading", () => {
+      const mockWithFilter = createMock(mockBands, undefined, undefined);
+
       render(
-        <MockedProvider mocks={[]} addTypename={false}>
+        <MockedProvider mocks={[mockWithFilter]} addTypename={false}>
           <BandSearch onBandSelect={vi.fn()} />
         </MockedProvider>
       );
@@ -337,15 +339,20 @@ describe("BandSearch", () => {
 
     it("clears band number filter when input is cleared", async () => {
       const user = userEvent.setup();
+      const mockWithFilter = createMock(mockBands, undefined, "2");
 
       render(
-        <MockedProvider mocks={[createMock()]} addTypename={false}>
+        <MockedProvider
+          mocks={[createMock(), mockWithFilter]}
+          addTypename={false}
+        >
           <BandSearch onBandSelect={vi.fn()} />
         </MockedProvider>
       );
 
       const input = screen.getByLabelText("Band Number");
-      await user.type(input, "2");
+      await user.click(input);
+      await user.paste("2");
       await user.clear(input);
 
       expect(input).toHaveValue("");

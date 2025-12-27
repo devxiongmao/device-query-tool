@@ -34,6 +34,8 @@ const mockDeviceResults = [
     provider: {
       id: "provider-1",
       name: "Verizon",
+      country: "United States",
+      networkType: "LTE",
     },
   },
   {
@@ -60,6 +62,8 @@ const mockDeviceResults = [
     provider: {
       id: "provider-1",
       name: "Verizon",
+      country: "United States",
+      networkType: "LTE",
     },
   },
 ];
@@ -164,7 +168,7 @@ describe("CapabilityResults", () => {
   describe("Loading state", () => {
     it("displays loading spinner while fetching band results", () => {
       render(
-        <MockedProvider mocks={[]} addTypename={false}>
+        <MockedProvider mocks={[createBandMock()]} addTypename={false}>
           <CapabilityResults
             capabilityType="band"
             capabilityId="band-1"
@@ -179,7 +183,7 @@ describe("CapabilityResults", () => {
 
     it("displays loading spinner while fetching combo results", () => {
       render(
-        <MockedProvider mocks={[]} addTypename={false}>
+        <MockedProvider mocks={[createComboMock()]} addTypename={false}>
           <CapabilityResults
             capabilityType="combo"
             capabilityId="combo-1"
@@ -195,7 +199,7 @@ describe("CapabilityResults", () => {
 
     it("displays loading spinner while fetching feature results", () => {
       render(
-        <MockedProvider mocks={[]} addTypename={false}>
+        <MockedProvider mocks={[createFeatureMock()]} addTypename={false}>
           <CapabilityResults
             capabilityType="feature"
             capabilityId="feature-1"

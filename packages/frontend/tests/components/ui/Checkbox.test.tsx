@@ -150,7 +150,7 @@ describe("Checkbox Component", () => {
     });
 
     it("can be checked with checked prop", () => {
-      render(<Checkbox checked />);
+      render(<Checkbox checked onChange={() => vi.fn()} />);
 
       const checkbox = screen.getByRole("checkbox");
       expect(checkbox).toBeChecked();
