@@ -1,0 +1,1057 @@
+{
+  "id": "e0132cfa-71df-4cb8-bb7b-0945397d107a",
+  "prevId": "c2bd7d6b-d2ef-47bb-9b94-fc3f9f79288a",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.BAND": {
+      "name": "BAND",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "BAND_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "9223372036854775807",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "band_number": {
+          "name": "band_number",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "technology": {
+          "name": "technology",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dl_band_class": {
+          "name": "dl_band_class",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ul_band_class": {
+          "name": "ul_band_class",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.COMBO": {
+      "name": "COMBO",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "COMBO_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "9223372036854775807",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "technology": {
+          "name": "technology",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.COMBO_BAND": {
+      "name": "COMBO_BAND",
+      "schema": "",
+      "columns": {
+        "combo_id": {
+          "name": "combo_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "band_id": {
+          "name": "band_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "COMBO_BAND_combo_id_COMBO_id_fk": {
+          "name": "COMBO_BAND_combo_id_COMBO_id_fk",
+          "tableFrom": "COMBO_BAND",
+          "tableTo": "COMBO",
+          "columnsFrom": [
+            "combo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "COMBO_BAND_band_id_BAND_id_fk": {
+          "name": "COMBO_BAND_band_id_BAND_id_fk",
+          "tableFrom": "COMBO_BAND",
+          "tableTo": "BAND",
+          "columnsFrom": [
+            "band_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "COMBO_BAND_combo_id_band_id_pk": {
+          "name": "COMBO_BAND_combo_id_band_id_pk",
+          "columns": [
+            "combo_id",
+            "band_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.DEVICE": {
+      "name": "DEVICE",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "DEVICE_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "9223372036854775807",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "vendor": {
+          "name": "vendor",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "model_num": {
+          "name": "model_num",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "market_name": {
+          "name": "market_name",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "release_date": {
+          "name": "release_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.DEVICE_SOFTWARE_BAND": {
+      "name": "DEVICE_SOFTWARE_BAND",
+      "schema": "",
+      "columns": {
+        "device_id": {
+          "name": "device_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "software_id": {
+          "name": "software_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "band_id": {
+          "name": "band_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "idx_dsb_device_software": {
+          "name": "idx_dsb_device_software",
+          "columns": [
+            {
+              "expression": "device_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "software_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_dsb_band_lookup": {
+          "name": "idx_dsb_band_lookup",
+          "columns": [
+            {
+              "expression": "band_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "DEVICE_SOFTWARE_BAND_device_id_DEVICE_id_fk": {
+          "name": "DEVICE_SOFTWARE_BAND_device_id_DEVICE_id_fk",
+          "tableFrom": "DEVICE_SOFTWARE_BAND",
+          "tableTo": "DEVICE",
+          "columnsFrom": [
+            "device_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "DEVICE_SOFTWARE_BAND_software_id_SOFTWARE_id_fk": {
+          "name": "DEVICE_SOFTWARE_BAND_software_id_SOFTWARE_id_fk",
+          "tableFrom": "DEVICE_SOFTWARE_BAND",
+          "tableTo": "SOFTWARE",
+          "columnsFrom": [
+            "software_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "DEVICE_SOFTWARE_BAND_band_id_BAND_id_fk": {
+          "name": "DEVICE_SOFTWARE_BAND_band_id_BAND_id_fk",
+          "tableFrom": "DEVICE_SOFTWARE_BAND",
+          "tableTo": "BAND",
+          "columnsFrom": [
+            "band_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "DEVICE_SOFTWARE_BAND_device_id_software_id_band_id_pk": {
+          "name": "DEVICE_SOFTWARE_BAND_device_id_software_id_band_id_pk",
+          "columns": [
+            "device_id",
+            "software_id",
+            "band_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.DEVICE_SOFTWARE_COMBO": {
+      "name": "DEVICE_SOFTWARE_COMBO",
+      "schema": "",
+      "columns": {
+        "device_id": {
+          "name": "device_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "software_id": {
+          "name": "software_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "combo_id": {
+          "name": "combo_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "idx_dsc_device_software": {
+          "name": "idx_dsc_device_software",
+          "columns": [
+            {
+              "expression": "device_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "software_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_dsc_combo_lookup": {
+          "name": "idx_dsc_combo_lookup",
+          "columns": [
+            {
+              "expression": "combo_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "DEVICE_SOFTWARE_COMBO_device_id_DEVICE_id_fk": {
+          "name": "DEVICE_SOFTWARE_COMBO_device_id_DEVICE_id_fk",
+          "tableFrom": "DEVICE_SOFTWARE_COMBO",
+          "tableTo": "DEVICE",
+          "columnsFrom": [
+            "device_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "DEVICE_SOFTWARE_COMBO_software_id_SOFTWARE_id_fk": {
+          "name": "DEVICE_SOFTWARE_COMBO_software_id_SOFTWARE_id_fk",
+          "tableFrom": "DEVICE_SOFTWARE_COMBO",
+          "tableTo": "SOFTWARE",
+          "columnsFrom": [
+            "software_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "DEVICE_SOFTWARE_COMBO_combo_id_COMBO_id_fk": {
+          "name": "DEVICE_SOFTWARE_COMBO_combo_id_COMBO_id_fk",
+          "tableFrom": "DEVICE_SOFTWARE_COMBO",
+          "tableTo": "COMBO",
+          "columnsFrom": [
+            "combo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "DEVICE_SOFTWARE_COMBO_device_id_software_id_combo_id_pk": {
+          "name": "DEVICE_SOFTWARE_COMBO_device_id_software_id_combo_id_pk",
+          "columns": [
+            "device_id",
+            "software_id",
+            "combo_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.DEVICE_SOFTWARE_PROVIDER_FEATURE": {
+      "name": "DEVICE_SOFTWARE_PROVIDER_FEATURE",
+      "schema": "",
+      "columns": {
+        "device_id": {
+          "name": "device_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "software_id": {
+          "name": "software_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provider_id": {
+          "name": "provider_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "feature_id": {
+          "name": "feature_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "idx_dspf_feature_lookup": {
+          "name": "idx_dspf_feature_lookup",
+          "columns": [
+            {
+              "expression": "feature_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "DEVICE_SOFTWARE_PROVIDER_FEATURE_device_id_DEVICE_id_fk": {
+          "name": "DEVICE_SOFTWARE_PROVIDER_FEATURE_device_id_DEVICE_id_fk",
+          "tableFrom": "DEVICE_SOFTWARE_PROVIDER_FEATURE",
+          "tableTo": "DEVICE",
+          "columnsFrom": [
+            "device_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "DEVICE_SOFTWARE_PROVIDER_FEATURE_software_id_SOFTWARE_id_fk": {
+          "name": "DEVICE_SOFTWARE_PROVIDER_FEATURE_software_id_SOFTWARE_id_fk",
+          "tableFrom": "DEVICE_SOFTWARE_PROVIDER_FEATURE",
+          "tableTo": "SOFTWARE",
+          "columnsFrom": [
+            "software_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "DEVICE_SOFTWARE_PROVIDER_FEATURE_provider_id_PROVIDER_id_fk": {
+          "name": "DEVICE_SOFTWARE_PROVIDER_FEATURE_provider_id_PROVIDER_id_fk",
+          "tableFrom": "DEVICE_SOFTWARE_PROVIDER_FEATURE",
+          "tableTo": "PROVIDER",
+          "columnsFrom": [
+            "provider_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "DEVICE_SOFTWARE_PROVIDER_FEATURE_feature_id_FEATURE_id_fk": {
+          "name": "DEVICE_SOFTWARE_PROVIDER_FEATURE_feature_id_FEATURE_id_fk",
+          "tableFrom": "DEVICE_SOFTWARE_PROVIDER_FEATURE",
+          "tableTo": "FEATURE",
+          "columnsFrom": [
+            "feature_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "DEVICE_SOFTWARE_PROVIDER_FEATURE_device_id_software_id_provider_id_feature_id_pk": {
+          "name": "DEVICE_SOFTWARE_PROVIDER_FEATURE_device_id_software_id_provider_id_feature_id_pk",
+          "columns": [
+            "device_id",
+            "software_id",
+            "provider_id",
+            "feature_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.FEATURE": {
+      "name": "FEATURE",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "FEATURE_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "9223372036854775807",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.PROVIDER": {
+      "name": "PROVIDER",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "PROVIDER_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "9223372036854775807",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "country": {
+          "name": "country",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "network_type": {
+          "name": "network_type",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.PROVIDER_DEVICE_SOFTWARE_BAND": {
+      "name": "PROVIDER_DEVICE_SOFTWARE_BAND",
+      "schema": "",
+      "columns": {
+        "provider_id": {
+          "name": "provider_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "device_id": {
+          "name": "device_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "software_id": {
+          "name": "software_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "band_id": {
+          "name": "band_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "idx_pdsb_provider_lookup": {
+          "name": "idx_pdsb_provider_lookup",
+          "columns": [
+            {
+              "expression": "provider_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "band_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_pdsb_device_software": {
+          "name": "idx_pdsb_device_software",
+          "columns": [
+            {
+              "expression": "device_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "software_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "PROVIDER_DEVICE_SOFTWARE_BAND_provider_id_PROVIDER_id_fk": {
+          "name": "PROVIDER_DEVICE_SOFTWARE_BAND_provider_id_PROVIDER_id_fk",
+          "tableFrom": "PROVIDER_DEVICE_SOFTWARE_BAND",
+          "tableTo": "PROVIDER",
+          "columnsFrom": [
+            "provider_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "PROVIDER_DEVICE_SOFTWARE_BAND_device_id_DEVICE_id_fk": {
+          "name": "PROVIDER_DEVICE_SOFTWARE_BAND_device_id_DEVICE_id_fk",
+          "tableFrom": "PROVIDER_DEVICE_SOFTWARE_BAND",
+          "tableTo": "DEVICE",
+          "columnsFrom": [
+            "device_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "PROVIDER_DEVICE_SOFTWARE_BAND_software_id_SOFTWARE_id_fk": {
+          "name": "PROVIDER_DEVICE_SOFTWARE_BAND_software_id_SOFTWARE_id_fk",
+          "tableFrom": "PROVIDER_DEVICE_SOFTWARE_BAND",
+          "tableTo": "SOFTWARE",
+          "columnsFrom": [
+            "software_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "PROVIDER_DEVICE_SOFTWARE_BAND_band_id_BAND_id_fk": {
+          "name": "PROVIDER_DEVICE_SOFTWARE_BAND_band_id_BAND_id_fk",
+          "tableFrom": "PROVIDER_DEVICE_SOFTWARE_BAND",
+          "tableTo": "BAND",
+          "columnsFrom": [
+            "band_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "PROVIDER_DEVICE_SOFTWARE_BAND_provider_id_device_id_software_id_band_id_pk": {
+          "name": "PROVIDER_DEVICE_SOFTWARE_BAND_provider_id_device_id_software_id_band_id_pk",
+          "columns": [
+            "provider_id",
+            "device_id",
+            "software_id",
+            "band_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.PROVIDER_DEVICE_SOFTWARE_COMBO": {
+      "name": "PROVIDER_DEVICE_SOFTWARE_COMBO",
+      "schema": "",
+      "columns": {
+        "provider_id": {
+          "name": "provider_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "device_id": {
+          "name": "device_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "software_id": {
+          "name": "software_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "combo_id": {
+          "name": "combo_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "idx_pdsc_provider_lookup": {
+          "name": "idx_pdsc_provider_lookup",
+          "columns": [
+            {
+              "expression": "provider_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "combo_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "idx_pdsc_device_software": {
+          "name": "idx_pdsc_device_software",
+          "columns": [
+            {
+              "expression": "device_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "software_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "PROVIDER_DEVICE_SOFTWARE_COMBO_provider_id_PROVIDER_id_fk": {
+          "name": "PROVIDER_DEVICE_SOFTWARE_COMBO_provider_id_PROVIDER_id_fk",
+          "tableFrom": "PROVIDER_DEVICE_SOFTWARE_COMBO",
+          "tableTo": "PROVIDER",
+          "columnsFrom": [
+            "provider_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "PROVIDER_DEVICE_SOFTWARE_COMBO_device_id_DEVICE_id_fk": {
+          "name": "PROVIDER_DEVICE_SOFTWARE_COMBO_device_id_DEVICE_id_fk",
+          "tableFrom": "PROVIDER_DEVICE_SOFTWARE_COMBO",
+          "tableTo": "DEVICE",
+          "columnsFrom": [
+            "device_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "PROVIDER_DEVICE_SOFTWARE_COMBO_software_id_SOFTWARE_id_fk": {
+          "name": "PROVIDER_DEVICE_SOFTWARE_COMBO_software_id_SOFTWARE_id_fk",
+          "tableFrom": "PROVIDER_DEVICE_SOFTWARE_COMBO",
+          "tableTo": "SOFTWARE",
+          "columnsFrom": [
+            "software_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "PROVIDER_DEVICE_SOFTWARE_COMBO_combo_id_COMBO_id_fk": {
+          "name": "PROVIDER_DEVICE_SOFTWARE_COMBO_combo_id_COMBO_id_fk",
+          "tableFrom": "PROVIDER_DEVICE_SOFTWARE_COMBO",
+          "tableTo": "COMBO",
+          "columnsFrom": [
+            "combo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "PROVIDER_DEVICE_SOFTWARE_COMBO_provider_id_device_id_software_id_combo_id_pk": {
+          "name": "PROVIDER_DEVICE_SOFTWARE_COMBO_provider_id_device_id_software_id_combo_id_pk",
+          "columns": [
+            "provider_id",
+            "device_id",
+            "software_id",
+            "combo_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.SOFTWARE": {
+      "name": "SOFTWARE",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "SOFTWARE_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "9223372036854775807",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "platform": {
+          "name": "platform",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ptcrb": {
+          "name": "ptcrb",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "svn": {
+          "name": "svn",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "build_number": {
+          "name": "build_number",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "release_date": {
+          "name": "release_date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "device_id": {
+          "name": "device_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "idx_software_device": {
+          "name": "idx_software_device",
+          "columns": [
+            {
+              "expression": "device_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "SOFTWARE_device_id_DEVICE_id_fk": {
+          "name": "SOFTWARE_device_id_DEVICE_id_fk",
+          "tableFrom": "SOFTWARE",
+          "tableTo": "DEVICE",
+          "columnsFrom": [
+            "device_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
