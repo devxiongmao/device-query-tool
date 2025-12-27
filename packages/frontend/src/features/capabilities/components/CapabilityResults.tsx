@@ -123,8 +123,6 @@ export function CapabilityResults({
       : null) ||
     [];
 
-    console.log(results)
-
   if (!results || results.length === 0) {
     return (
       <Card>

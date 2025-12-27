@@ -28,8 +28,18 @@ const mockDevices = [
 ];
 
 const mockProviders = [
-  { id: "provider-1", name: "AT&T", country: "United States" },
-  { id: "provider-2", name: "Verizon", country: "United States" },
+  {
+    id: "provider-1",
+    name: "AT&T",
+    country: "United States",
+    networkType: "LTE",
+  },
+  {
+    id: "provider-2",
+    name: "Verizon",
+    country: "United States",
+    networkType: "LTE",
+  },
 ];
 
 const mockDeviceComplete = {
@@ -78,7 +88,7 @@ const mockDeviceComplete = {
 expect.extend(toHaveNoViolations);
 
 describe("DeviceQueryPage", () => {
-  const createMocks = (overrides = {}) => [
+  const createMocks = (overrides = []) => [
     {
       request: {
         query: SearchDevicesDocument,
@@ -236,7 +246,7 @@ describe("DeviceQueryPage", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Global Capabilities")).toBeInTheDocument();
-      expect(screen.getAllByText("Software Versions")).toHaveLength(2)
+      expect(screen.getAllByText("Software Versions")).toHaveLength(2);
     });
   });
 

@@ -14,8 +14,8 @@ const mockCombos = [
     name: "B2-n66",
     technology: "EN-DC",
     bands: [
-      { id: "band-1", bandNumber: "2" },
-      { id: "band-2", bandNumber: "n66" },
+      { id: "band-1", bandNumber: "2", technology: "LTE" },
+      { id: "band-2", bandNumber: "n66", technology: "NR" },
     ],
   },
   {
@@ -23,8 +23,8 @@ const mockCombos = [
     name: "2A-4A",
     technology: "LTE CA",
     bands: [
-      { id: "band-3", bandNumber: "2" },
-      { id: "band-4", bandNumber: "4" },
+      { id: "band-3", bandNumber: "2", technology: "LTE" },
+      { id: "band-4", bandNumber: "4", technology: "LTE" },
     ],
   },
   {
@@ -32,8 +32,8 @@ const mockCombos = [
     name: "n77A-n78A",
     technology: "NR CA",
     bands: [
-      { id: "band-5", bandNumber: "n77" },
-      { id: "band-6", bandNumber: "n78" },
+      { id: "band-5", bandNumber: "n77", technology: "NR" },
+      { id: "band-6", bandNumber: "n78", technology: "NR" },
     ],
   },
 ];
@@ -49,7 +49,7 @@ const mockComboWithoutBands = [
 
 const createMock = (
   combos = mockCombos,
-  technology?: string,
+  technology: string = "",
   name?: string
 ) => ({
   request: {
@@ -108,8 +108,10 @@ describe("ComboSearch", () => {
 
   describe("Loading state", () => {
     it("displays spinner while loading", () => {
+      const mockWithFilter = createMock(mockCombos);
+
       render(
-        <MockedProvider mocks={[]} addTypename={false}>
+        <MockedProvider mocks={[mockWithFilter]} addTypename={false}>
           <ComboSearch onComboSelect={vi.fn()} />
         </MockedProvider>
       );
@@ -358,11 +360,12 @@ describe("ComboSearch", () => {
   describe("Filtering", () => {
     it("updates query when combo name is entered", async () => {
       const user = userEvent.setup();
-      const mockWithFilter = createMock(mockCombos, undefined, "B2");
+      const mockWithFilter = createMock(mockCombos, undefined, "B");
+      const mockWithFullBand = createMock(mockCombos, undefined, "B2");
 
       render(
         <MockedProvider
-          mocks={[createMock(), mockWithFilter]}
+          mocks={[createMock(mockCombos, ""), mockWithFilter, mockWithFullBand]}
           addTypename={false}
         >
           <ComboSearch onComboSelect={vi.fn()} />
@@ -380,9 +383,15 @@ describe("ComboSearch", () => {
 
     it("clears combo name filter when input is cleared", async () => {
       const user = userEvent.setup();
+      const mockWithFilter = createMock(mockCombos, undefined, undefined);
+      const mockWithBand = createMock(mockCombos, undefined, "B");
+      const mockWithBandName = createMock(mockCombos, undefined, "B2");
 
       render(
-        <MockedProvider mocks={[createMock()]} addTypename={false}>
+        <MockedProvider
+          mocks={[mockWithFilter, mockWithBand, mockWithBandName]}
+          addTypename={false}
+        >
           <ComboSearch onComboSelect={vi.fn()} />
         </MockedProvider>
       );
