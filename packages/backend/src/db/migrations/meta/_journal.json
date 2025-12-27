@@ -22,6 +22,13 @@
       "when": 1765419757838,
       "tag": "0002_puzzling_pixie",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1766802403158,
+      "tag": "0003_overconfident_typhoid_mary",
+      "breakpoints": true
     }
   ]
 }

@@ -247,12 +247,6 @@ export const deviceSoftwareProviderFeature = pgTable(
       ],
     }),
     // Indexes
-    lookupIdx: index("idx_dspf_lookup").on(
-      table.deviceId,
-      table.softwareId,
-      table.providerId,
-      table.featureId
-    ), // XMDEV-534: remove possibly redundant indexes
     featureLookupIdx: index("idx_dspf_feature_lookup").on(table.featureId),
   })
 );
