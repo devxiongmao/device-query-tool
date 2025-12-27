@@ -24,3 +24,15 @@ b-install:
 .PHONY: f-install
 f-install:
 	cd packages/frontend && bun install
+
+.PHONY: db-generate
+db-generate:
+	cd packages/backend && bun run db:generate
+
+.PHONY: db-migrate
+db-migrate:
+	cd packages/backend && bun run db:migrate
+
+.PHONY: db-seed
+db-seed:
+	cd packages/backend && bun run db:seed
