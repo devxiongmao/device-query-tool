@@ -16,3 +16,11 @@ docker-up:
 .PHONY: docker-down
 docker-down: 
 	docker compose -f docker-compose.dev.yml down -v
+
+.PHONY: b-install
+b-install:
+	cd packages/backend && bun install
+
+.PHONY: f-install
+f-install:
+	cd packages/frontend && bun install
