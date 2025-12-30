@@ -42,10 +42,7 @@ DeviceType.implement({
         return ctx.loaders.softwareByDevice.load({
           deviceId: device.id,
           platform: args.platform || undefined,
-          releasedAfter:
-            args.releasedAfter instanceof Date
-              ? args.releasedAfter.toISOString()
-              : args.releasedAfter || undefined,
+          releasedAfter: args.releasedAfter || undefined,
         });
       },
     }),

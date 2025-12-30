@@ -58,11 +58,11 @@ export class DeviceRepository {
     }
 
     if (releasedAfter) {
-      conditions.push(gte(device.releaseDate, releasedAfter)); // XMDEV-544: Fix date casting
+      conditions.push(gte(device.releaseDate, releasedAfter.toISOString()));
     }
 
     if (releasedBefore) {
-      conditions.push(lte(device.releaseDate, releasedBefore)); // XMDEV-544: Fix date casting
+      conditions.push(lte(device.releaseDate, releasedBefore.toISOString()));
     }
 
     if (conditions.length > 0) {

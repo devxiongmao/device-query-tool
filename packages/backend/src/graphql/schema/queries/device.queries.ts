@@ -63,16 +63,8 @@ builder.queryFields((t) => ({
         vendor: args.vendor || undefined,
         modelNum: args.modelNum || undefined,
         marketName: args.marketName || undefined,
-        releasedAfter: args.releasedAfter // XMDEV-544: Fix date casting
-          ? typeof args.releasedAfter === "string"
-            ? args.releasedAfter
-            : args.releasedAfter.toISOString()
-          : undefined,
-        releasedBefore: args.releasedBefore // XMDEV-544: Fix date casting
-          ? typeof args.releasedBefore === "string"
-            ? args.releasedBefore
-            : args.releasedBefore.toISOString()
-          : undefined,
+        releasedAfter: args.releasedAfter || undefined,
+        releasedBefore: args.releasedBefore || undefined,
         limit: args.limit ?? undefined,
         offset: args.offset ?? undefined,
       });
