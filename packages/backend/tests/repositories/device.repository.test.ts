@@ -142,8 +142,8 @@ describe("DeviceRepository", () => {
       mockSelect.orderBy.mockResolvedValue([device]);
 
       const result = await repository.search({
-        releasedAfter: "2023-01-01",
-        releasedBefore: "2023-12-31",
+        releasedAfter: new Date("2023-01-01"),
+        releasedBefore: new Date("2023-12-31"),
       });
 
       expect(mockSelect.where).toHaveBeenCalled();
@@ -161,7 +161,7 @@ describe("DeviceRepository", () => {
       const result = await repository.search({
         vendor: "Samsung",
         modelNum: "SM-G991",
-        releasedAfter: "2023-01-01",
+        releasedAfter: new Date("2023-01-01"),
       });
 
       expect(mockSelect.where).toHaveBeenCalled();
