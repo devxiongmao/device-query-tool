@@ -11,7 +11,7 @@ export const builder = new SchemaBuilder<{
     };
     DateTime: {
       Output: Date | string;
-      Input: Date | string;
+      Input: Date;
     };
   };
 }>({

@@ -232,10 +232,7 @@ describe("Device GraphQL Queries", () => {
         vendor: undefined,
         modelNum: undefined,
         marketName: undefined,
-        releasedAfter:
-          typeof args.releasedAfter === "string"
-            ? args.releasedAfter
-            : args.releasedAfter?.toISOString(),
+        releasedAfter: args.releasedAfter,
         releasedBefore: undefined,
         limit: args.limit ?? undefined,
         offset: args.offset ?? undefined,
@@ -246,42 +243,7 @@ describe("Device GraphQL Queries", () => {
         vendor: undefined,
         modelNum: undefined,
         marketName: undefined,
-        releasedAfter: afterDate.toISOString(),
-        releasedBefore: undefined,
-        limit: 50,
-        offset: 0,
-      });
-    });
-
-    it("should filter by releasedAfter date when provided as string", async () => {
-      const dateString = "2023-01-01";
-      const mockDevices = DeviceFactory.createMany(3, {
-        releaseDate: "2023-06-15",
-      });
-      (deviceRepository.search as ReturnType<typeof vi.fn>).mockResolvedValue(
-        mockDevices
-      );
-
-      const args = { releasedAfter: dateString, limit: 50, offset: 0 };
-      const result = await deviceRepository.search({
-        vendor: undefined,
-        modelNum: undefined,
-        marketName: undefined,
-        releasedAfter:
-          typeof args.releasedAfter === "string"
-            ? args.releasedAfter
-            : undefined,
-        releasedBefore: undefined,
-        limit: args.limit ?? undefined,
-        offset: args.offset ?? undefined,
-      });
-
-      expect(result).toEqual(mockDevices);
-      expect(deviceRepository.search).toHaveBeenCalledWith({
-        vendor: undefined,
-        modelNum: undefined,
-        marketName: undefined,
-        releasedAfter: dateString,
+        releasedAfter: afterDate,
         releasedBefore: undefined,
         limit: 50,
         offset: 0,
@@ -303,10 +265,7 @@ describe("Device GraphQL Queries", () => {
         modelNum: undefined,
         marketName: undefined,
         releasedAfter: undefined,
-        releasedBefore:
-          typeof args.releasedBefore === "string"
-            ? args.releasedBefore
-            : args.releasedBefore?.toISOString(),
+        releasedBefore: args.releasedBefore,
         limit: args.limit ?? undefined,
         offset: args.offset ?? undefined,
       });
@@ -317,42 +276,7 @@ describe("Device GraphQL Queries", () => {
         modelNum: undefined,
         marketName: undefined,
         releasedAfter: undefined,
-        releasedBefore: beforeDate.toISOString(),
-        limit: 50,
-        offset: 0,
-      });
-    });
-
-    it("should filter by releasedBefore date when provided as string", async () => {
-      const dateString = "2023-12-31";
-      const mockDevices = DeviceFactory.createMany(3, {
-        releaseDate: "2023-06-15",
-      });
-      (deviceRepository.search as ReturnType<typeof vi.fn>).mockResolvedValue(
-        mockDevices
-      );
-
-      const args = { releasedBefore: dateString, limit: 50, offset: 0 };
-      const result = await deviceRepository.search({
-        vendor: undefined,
-        modelNum: undefined,
-        marketName: undefined,
-        releasedAfter: undefined,
-        releasedBefore:
-          typeof args.releasedBefore === "string"
-            ? args.releasedBefore
-            : undefined,
-        limit: args.limit ?? undefined,
-        offset: args.offset ?? undefined,
-      });
-
-      expect(result).toEqual(mockDevices);
-      expect(deviceRepository.search).toHaveBeenCalledWith({
-        vendor: undefined,
-        modelNum: undefined,
-        marketName: undefined,
-        releasedAfter: undefined,
-        releasedBefore: dateString,
+        releasedBefore: beforeDate,
         limit: 50,
         offset: 0,
       });
@@ -378,14 +302,8 @@ describe("Device GraphQL Queries", () => {
         vendor: undefined,
         modelNum: undefined,
         marketName: undefined,
-        releasedAfter:
-          typeof args.releasedAfter === "string"
-            ? args.releasedAfter
-            : args.releasedAfter?.toISOString(),
-        releasedBefore:
-          typeof args.releasedBefore === "string"
-            ? args.releasedBefore
-            : args.releasedBefore?.toISOString(),
+        releasedAfter: args.releasedAfter,
+        releasedBefore: args.releasedBefore,
         limit: args.limit ?? undefined,
         offset: args.offset ?? undefined,
       });
@@ -395,8 +313,8 @@ describe("Device GraphQL Queries", () => {
         vendor: undefined,
         modelNum: undefined,
         marketName: undefined,
-        releasedAfter: afterDate.toISOString(),
-        releasedBefore: beforeDate.toISOString(),
+        releasedAfter: afterDate,
+        releasedBefore: beforeDate,
         limit: 50,
         offset: 0,
       });

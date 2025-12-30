@@ -87,7 +87,7 @@ export function createLoaders() {
         keys: readonly {
           deviceId: number;
           platform?: string;
-          releasedAfter?: string;
+          releasedAfter?: Date;
         }[]
       ) => {
         // Get unique device IDs
@@ -99,10 +99,12 @@ export function createLoaders() {
         // Group by device ID
         const softwareByDeviceMap = new Map<number, typeof allSoftware>();
         for (const sw of allSoftware) {
-          if (!softwareByDeviceMap.has(sw.deviceId)) {
-            softwareByDeviceMap.set(sw.deviceId, []);
+          const existing = softwareByDeviceMap.get(sw.deviceId);
+          if (existing) {
+            existing.push(sw);
+          } else {
+            softwareByDeviceMap.set(sw.deviceId, [sw]);
           }
-          softwareByDeviceMap.get(sw.deviceId)!.push(sw);
         }
 
         // Return software for each key, applying filters
@@ -115,9 +117,8 @@ export function createLoaders() {
           }
 
           if (key.releasedAfter) {
-            software = software.filter(
-              (s) => s.releaseDate >= key.releasedAfter!
-            );
+            const dateStr = key.releasedAfter.toISOString();
+            software = software.filter((s) => s.releaseDate >= dateStr);
           }
 
           return software;
@@ -125,10 +126,10 @@ export function createLoaders() {
       },
       {
         // Custom cache key that includes filters
-        cacheKeyFn: (key) =>
-          `${key.deviceId}-${key.platform || "all"}-${
-            key.releasedAfter || "any"
-          }`,
+        cacheKeyFn: (key) => {
+          const dateKey = key.releasedAfter?.toISOString() || "any";
+          return `${key.deviceId}-${key.platform || "all"}-${dateKey}`;
+        },
       }
     ),
 
@@ -308,10 +309,12 @@ export function createLoaders() {
       // Group by combo ID
       const bandsByComboMap = new Map<number, typeof allResults>();
       for (const result of allResults) {
-        if (!bandsByComboMap.has(result.comboId)) {
-          bandsByComboMap.set(result.comboId, []);
+        const existing = bandsByComboMap.get(result.comboId);
+        if (existing) {
+          existing.push(result);
+        } else {
+          bandsByComboMap.set(result.comboId, [result]);
         }
-        bandsByComboMap.get(result.comboId)!.push(result);
       }
 
       // Return bands for each combo

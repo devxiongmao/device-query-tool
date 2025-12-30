@@ -143,7 +143,7 @@ describe("SoftwareRepository", () => {
       mockSelect.orderBy.mockResolvedValue(mockSoftware);
 
       const result = await repository.findByDevice(deviceId, {
-        releasedAfter: "2024-01-01",
+        releasedAfter: new Date("2024-01-01"),
       });
 
       expect(result[0].releaseDate).toBe("2024-06-01");
@@ -161,7 +161,7 @@ describe("SoftwareRepository", () => {
 
       const result = await repository.findByDevice(deviceId, {
         platform: "iOS",
-        releasedAfter: "2024-01-01",
+        releasedAfter: new Date("2024-01-01"),
       });
 
       expect(result[0].platform).toBe("iOS");
@@ -300,7 +300,7 @@ describe("SoftwareRepository", () => {
       mockSelect.orderBy.mockResolvedValue(mockSoftware);
 
       const result = await repository.findByDevice(1, {
-        releasedAfter: "2009-01-01",
+        releasedAfter: new Date("2009-01-01"),
       });
 
       expect(result[0].releaseDate).toBe(oldDate);

@@ -32,7 +32,7 @@ export class SoftwareRepository {
     deviceId: number,
     filters?: {
       platform?: string;
-      releasedAfter?: string;
+      releasedAfter?: Date;
     }
   ) {
     const conditions = [eq(software.deviceId, deviceId)];
@@ -42,7 +42,9 @@ export class SoftwareRepository {
     }
 
     if (filters?.releasedAfter) {
-      conditions.push(gte(software.releaseDate, filters.releasedAfter));
+      conditions.push(
+        gte(software.releaseDate, filters.releasedAfter.toISOString())
+      );
     }
 
     return db
