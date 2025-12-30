@@ -1,9 +1,9 @@
-.PHONY: start-frontend
-start-frontend:
+.PHONY: f-start
+f-start:
 	cd packages/frontend && bun run dev
 
-.PHONY: start-backend
-start-backend:
+.PHONY: b-start
+b-start:
 	cd packages/backend && bun run dev
 
 .PHONY: start-all
