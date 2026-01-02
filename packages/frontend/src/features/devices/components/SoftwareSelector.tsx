@@ -20,6 +20,10 @@ export function SoftwareSelector({
     skip: !selectedDeviceId, // Don't query unless device is selected
   });
 
+  if (!selectedDeviceId) {
+    return null;
+  }
+
   if (loading) {
     return (
       <Card>

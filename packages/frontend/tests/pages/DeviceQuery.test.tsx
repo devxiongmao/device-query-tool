@@ -6,6 +6,7 @@ import {
   GetProvidersDocument,
   GetDeviceCompleteDocument,
   GetProviderDeviceCompleteDocument,
+  GetDeviceDocument,
 } from "../../src/graphql/generated/graphql";
 import { DeviceQueryPage } from "../../src/pages/DeviceQuery";
 import { axe, toHaveNoViolations } from "jest-axe";
@@ -42,6 +43,23 @@ const mockProviders = [
   },
 ];
 
+const mockSoftwareVersions = [
+  {
+    id: "sw-1",
+    name: "iOS 17.0",
+    platform: "iOS",
+    buildNumber: "21A329",
+    releaseDate: "2023-09-18",
+  },
+  {
+    id: "sw-2",
+    name: "iOS 17.1",
+    platform: "iOS",
+    buildNumber: "21B74",
+    releaseDate: "2023-10-25",
+  },
+];
+
 const mockDeviceComplete = {
   device: {
     id: "device-1",
@@ -49,15 +67,7 @@ const mockDeviceComplete = {
     modelNum: "iPhone 15 Pro",
     marketName: "iPhone 15 Pro",
     releaseDate: "2023-09-22",
-    software: [
-      {
-        id: "sw-1",
-        name: "iOS 17",
-        platform: "iOS",
-        buildNumber: "21A329",
-        releaseDate: "2023-09-18",
-      },
-    ],
+    software: mockSoftwareVersions,
     supportedBands: [
       {
         id: "band-1",
@@ -112,9 +122,40 @@ describe("DeviceQueryPage", () => {
     },
     {
       request: {
+        query: GetDeviceDocument,
+        variables: {
+          id: "device-1",
+        },
+      },
+      result: {
+        data: {
+          device: {
+            id: "device-1",
+            software: mockSoftwareVersions,
+          },
+        },
+      },
+    },
+    {
+      request: {
         query: GetDeviceCompleteDocument,
         variables: {
           id: "device-1",
+          softwareId: null,
+          bandTechnology: undefined,
+          comboTechnology: undefined,
+        },
+      },
+      result: {
+        data: mockDeviceComplete,
+      },
+    },
+    {
+      request: {
+        query: GetDeviceCompleteDocument,
+        variables: {
+          id: "device-1",
+          softwareId: "sw-1",
           bandTechnology: undefined,
           comboTechnology: undefined,
         },
@@ -129,6 +170,29 @@ describe("DeviceQueryPage", () => {
         variables: {
           id: "device-1",
           providerId: "provider-1",
+          softwareId: null,
+          bandTechnology: undefined,
+          comboTechnology: undefined,
+        },
+      },
+      result: {
+        data: {
+          device: {
+            ...mockDeviceComplete.device,
+            supportedBandsForProvider: mockDeviceComplete.device.supportedBands,
+            supportedCombosForProvider:
+              mockDeviceComplete.device.supportedCombos,
+          },
+        },
+      },
+    },
+    {
+      request: {
+        query: GetProviderDeviceCompleteDocument,
+        variables: {
+          id: "device-1",
+          providerId: "provider-1",
+          softwareId: "sw-2",
           bandTechnology: undefined,
           comboTechnology: undefined,
         },
@@ -183,10 +247,12 @@ describe("DeviceQueryPage", () => {
     ).toBeInTheDocument();
   });
 
-  it("does not show provider selector before device is selected", () => {
+  it("does not show software selector or provider selector before device is selected", () => {
     renderPage();
 
-    expect(screen.queryByText("2. Select Provider")).not.toBeInTheDocument();
+    expect(screen.queryByText("2. Select Software")).not.toBeInTheDocument();
+    expect(screen.queryByText("3. Select Provider")).not.toBeInTheDocument();
+    expect(screen.queryByText("All software")).not.toBeInTheDocument();
     expect(screen.queryByText("Global")).not.toBeInTheDocument();
   });
 
@@ -224,9 +290,13 @@ describe("DeviceQueryPage", () => {
 
     await user.click(screen.getByText("Apple iPhone 15 Pro"));
 
-    expect(screen.getByText("2. Select Provider")).toBeInTheDocument();
-    expect(screen.getByText("3. Filter Technologies")).toBeInTheDocument();
-    expect(screen.getByText("4. Select Fields")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText("2. Select Software")).toBeInTheDocument();
+    });
+
+    expect(screen.getByText("3. Select Provider")).toBeInTheDocument();
+    expect(screen.getByText("4. Filter Technologies")).toBeInTheDocument();
+    expect(screen.getByText("5. Select Fields")).toBeInTheDocument();
   });
 
   it("displays device results after selection", async () => {
@@ -246,7 +316,185 @@ describe("DeviceQueryPage", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Global Capabilities")).toBeInTheDocument();
-      expect(screen.getAllByText("Software Versions")).toHaveLength(2);
+    });
+
+    // Should show Software Versions in both FieldSelector and DeviceResults
+    await waitFor(() => {
+      expect(screen.getAllByText("Software Versions").length).toBeGreaterThan(
+        0
+      );
+    });
+  });
+
+  describe("Software Selection", () => {
+    it("displays software selector after device selection", async () => {
+      const user = userEvent.setup();
+      renderPage();
+
+      const searchInput = screen.getByPlaceholderText(
+        /Enter vendor or model number/
+      );
+      await user.click(searchInput);
+      await user.paste("Apple");
+
+      await waitFor(() => {
+        expect(screen.getByText("Apple iPhone 15 Pro")).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByText("Apple iPhone 15 Pro"));
+
+      await waitFor(() => {
+        expect(screen.getByText("2. Select Software")).toBeInTheDocument();
+        expect(screen.getByText("All software")).toBeInTheDocument();
+      });
+    });
+
+    it("loads and displays software versions", async () => {
+      const user = userEvent.setup();
+      renderPage();
+
+      const searchInput = screen.getByPlaceholderText(
+        /Enter vendor or model number/
+      );
+      await user.click(searchInput);
+      await user.paste("Apple");
+
+      await waitFor(() => {
+        expect(screen.getByText("Apple iPhone 15 Pro")).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByText("Apple iPhone 15 Pro"));
+
+      await waitFor(() => {
+        expect(screen.getAllByText("iOS 17.0").length).toBeGreaterThan(0);
+        expect(screen.getAllByText("iOS 17.1").length).toBeGreaterThan(0);
+      });
+    });
+
+    it("defaults to 'All software' selection", async () => {
+      const user = userEvent.setup();
+      renderPage();
+
+      const searchInput = screen.getByPlaceholderText(
+        /Enter vendor or model number/
+      );
+      await user.click(searchInput);
+      await user.paste("Apple");
+
+      await waitFor(() => {
+        expect(screen.getByText("Apple iPhone 15 Pro")).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByText("Apple iPhone 15 Pro"));
+
+      await waitFor(() => {
+        const allSoftwareButton = screen
+          .getByText("All software")
+          .closest("button");
+        expect(allSoftwareButton).toHaveClass("border-primary-500");
+      });
+    });
+
+    it("allows selecting a specific software version", async () => {
+      const user = userEvent.setup();
+      renderPage();
+
+      const searchInput = screen.getByPlaceholderText(
+        /Enter vendor or model number/
+      );
+      await user.click(searchInput);
+      await user.paste("Apple");
+
+      await waitFor(() => {
+        expect(screen.getByText("Apple iPhone 15 Pro")).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByText("Apple iPhone 15 Pro"));
+
+      await waitFor(() => {
+        expect(screen.getAllByText("iOS 17.0").length).toBeGreaterThan(0);
+      });
+
+      await user.click(screen.getAllByText("iOS 17.0")[0]);
+
+      await waitFor(() => {
+        const softwareButton = screen
+          .getAllByText("iOS 17.0")[0]
+          .closest("button");
+        expect(softwareButton).toHaveClass("border-primary-500");
+      });
+    });
+
+    it("hides Software Versions field selector when specific software is selected", async () => {
+      const user = userEvent.setup();
+      renderPage();
+
+      const searchInput = screen.getByPlaceholderText(
+        /Enter vendor or model number/
+      );
+      await user.click(searchInput);
+      await user.paste("Apple");
+
+      await waitFor(() => {
+        expect(screen.getByText("Apple iPhone 15 Pro")).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByText("Apple iPhone 15 Pro"));
+
+      await waitFor(() => {
+        expect(screen.getByLabelText("Software Versions")).toBeInTheDocument();
+      });
+
+      // Select specific software
+      await user.click(screen.getAllByText("iOS 17.0")[0]);
+
+      await waitFor(() => {
+        // Software Versions checkbox should be hidden in FieldSelector
+        expect(
+          screen.queryByLabelText("Software Versions")
+        ).not.toBeInTheDocument();
+      });
+
+      // Other field options should still be visible
+      expect(screen.getByLabelText("Supported Bands")).toBeInTheDocument();
+      expect(screen.getByLabelText("Carrier Aggregation")).toBeInTheDocument();
+      expect(screen.getByLabelText("Features")).toBeInTheDocument();
+    });
+
+    it("shows Software Versions field selector when 'All software' is selected", async () => {
+      const user = userEvent.setup();
+      renderPage();
+
+      const searchInput = screen.getByPlaceholderText(
+        /Enter vendor or model number/
+      );
+      await user.click(searchInput);
+      await user.paste("Apple");
+
+      await waitFor(() => {
+        expect(screen.getByText("Apple iPhone 15 Pro")).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByText("Apple iPhone 15 Pro"));
+
+      // Select specific software first
+      await waitFor(() => {
+        expect(screen.getAllByText("iOS 17.0").length).toBeGreaterThan(0);
+      });
+      await user.click(screen.getAllByText("iOS 17.0")[0]);
+
+      await waitFor(() => {
+        expect(
+          screen.queryByLabelText("Software Versions")
+        ).not.toBeInTheDocument();
+      });
+
+      // Switch back to "All software"
+      await user.click(screen.getAllByText("All software")[0]);
+
+      await waitFor(() => {
+        expect(screen.getByLabelText("Software Versions")).toBeInTheDocument();
+      });
     });
   });
 
@@ -300,6 +548,48 @@ describe("DeviceQueryPage", () => {
     });
   });
 
+  it("maintains software selection when switching providers", async () => {
+    const user = userEvent.setup();
+    renderPage();
+
+    const searchInput = screen.getByPlaceholderText(
+      /Enter vendor or model number/
+    );
+    await user.click(searchInput);
+    await user.paste("Apple");
+
+    await waitFor(() => {
+      expect(screen.getByText("Apple iPhone 15 Pro")).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByText("Apple iPhone 15 Pro"));
+
+    await waitFor(() => {
+      expect(screen.getAllByText("iOS 17.1").length).toBeGreaterThan(0);
+    });
+
+    // Select software
+    await user.click(screen.getAllByText("iOS 17.1")[0]);
+
+    await waitFor(() => {
+      const softwareButton = screen
+        .getAllByText("iOS 17.1")[0]
+        .closest("button");
+      expect(softwareButton).toHaveClass("border-primary-500");
+    });
+
+    // Select provider
+    await user.click(screen.getByText("AT&T"));
+
+    await waitFor(() => {
+      expect(screen.getByText("Provider-Specific")).toBeInTheDocument();
+    });
+
+    // Software selection should be maintained
+    const softwareButton = screen.getAllByText("iOS 17.1")[0].closest("button");
+    expect(softwareButton).toHaveClass("border-primary-500");
+  });
+
   it("allows filtering by technology", async () => {
     const user = userEvent.setup();
     renderPage();
@@ -320,16 +610,13 @@ describe("DeviceQueryPage", () => {
       expect(screen.getByText("Filter by Technology")).toBeInTheDocument();
     });
 
-    // Check all technology options are present
     expect(screen.getByLabelText("5G NR")).toBeInTheDocument();
     expect(screen.getByLabelText("LTE / 4G")).toBeInTheDocument();
     expect(screen.getByLabelText("HSPA / 3G")).toBeInTheDocument();
     expect(screen.getByLabelText("GSM")).toBeInTheDocument();
 
-    // Toggle a technology
     await user.click(screen.getByLabelText("5G NR"));
 
-    // Technology filter is applied (checkbox is checked)
     expect(screen.getByLabelText("5G NR")).toBeChecked();
   });
 
@@ -353,16 +640,14 @@ describe("DeviceQueryPage", () => {
       expect(screen.getByText("Select Data to Display")).toBeInTheDocument();
     });
 
-    // All fields should be checked by default
     expect(screen.getByLabelText("Software Versions")).toBeChecked();
     expect(screen.getByLabelText("Supported Bands")).toBeChecked();
     expect(screen.getByLabelText("Carrier Aggregation")).toBeChecked();
     expect(screen.getByLabelText("Features")).toBeChecked();
 
-    // Toggle software field off
-    await user.click(screen.getByLabelText("Software Versions"));
+    await user.click(screen.getByLabelText("Supported Bands"));
 
-    expect(screen.getByLabelText("Software Versions")).not.toBeChecked();
+    expect(screen.getByLabelText("Supported Bands")).not.toBeChecked();
   });
 
   it("maintains selected device when switching providers", async () => {
@@ -386,14 +671,12 @@ describe("DeviceQueryPage", () => {
       expect(screen.getByText("AT&T")).toBeInTheDocument();
     });
 
-    // Switch to provider view
     await user.click(screen.getByText("AT&T"));
 
     await waitFor(() => {
       expect(screen.getByText("Provider-Specific")).toBeInTheDocument();
     });
 
-    // Device should still be selected
     expect(deviceButton.closest("button")).toHaveClass("border-primary-500");
   });
 });

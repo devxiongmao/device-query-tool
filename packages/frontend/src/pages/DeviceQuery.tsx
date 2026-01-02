@@ -27,6 +27,11 @@ export function DeviceQueryPage() {
     features: true,
   });
 
+  const handleDeviceSelect = (deviceId: string | null) => {
+    setSelectedDeviceId(deviceId);
+    setSelectedSoftwareId(null);
+  };
+
   const handleToggleTechnology = (technology: string) => {
     setSelectedTechnologies((prev) =>
       prev.includes(technology)
@@ -71,7 +76,7 @@ export function DeviceQueryPage() {
             </CardHeader>
             <CardContent>
               <DeviceSearch
-                onDeviceSelect={setSelectedDeviceId}
+                onDeviceSelect={handleDeviceSelect}
                 selectedDeviceId={selectedDeviceId || undefined}
               />
             </CardContent>
