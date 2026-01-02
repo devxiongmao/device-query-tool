@@ -1282,54 +1282,121 @@ async function seed() {
     // 7. DEVICE_SOFTWARE_BAND (global capabilities)
     console.log("📡 Mapping device/software/band global capabilities...");
 
-    // Helper function to get bands by technology
-    // const getBandsByTech = (tech: string) => bands.filter(b => b.technology === tech);
-
     for (const sw of softwares) {
       const dev = devices.find((d) => d.id === sw.deviceId)!;
-      // const isApple = dev.vendor === 'Apple';
       const isFlagship =
         dev.marketName?.includes("Pro") || dev.marketName?.includes("Ultra");
 
-      // All devices support basic LTE bands 2, 4, 5, 12
-      const basicLteBands = bands.filter(
-        (b) =>
-          b.technology === "LTE" && ["2", "4", "5", "12"].includes(b.bandNumber)
-      );
+      // Parse software version to determine capability level
+      const versionMatch = sw.name.match(/(?:iOS|Android)\s+(\d+)\.(\d+)/);
+      const majorVersion = versionMatch ? parseInt(versionMatch[1]) : 0;
 
-      // Flagship devices support more bands
-      const lteBands = isFlagship
-        ? bands.filter((b) => b.technology === "LTE")
-        : basicLteBands;
+      const isIOS = sw.platform === "iOS";
 
-      // 5G support (newer devices and flagships)
-      const deviceYear = parseInt(dev.releaseDate.split("-")[0]);
-      const has5G = deviceYear >= 2023 || isFlagship;
+      // Determine software capability tier based on version
+      // iOS: 15.x (old), 16.x (mid), 17.x (new)
+      // Android: 11.x (old), 12.x (old), 13.x (mid), 14.x (new)
+      let tier: "old" | "mid" | "new";
 
-      const nrBands = has5G
-        ? bands.filter(
-            (b) =>
-              b.technology === "NR" &&
-              (isFlagship ? true : ["n66", "n71", "n77"].includes(b.bandNumber))
-          )
-        : [];
+      if (isIOS) {
+        if (majorVersion <= 15) tier = "old";
+        else if (majorVersion === 16) tier = "mid";
+        else tier = "new"; // 17+
+      } else {
+        // Android
+        if (majorVersion <= 12) tier = "old";
+        else if (majorVersion === 13) tier = "mid";
+        else tier = "new"; // 14+
+      }
 
-      // HSPA bands (all devices)
-      const hspaBands = bands.filter(
-        (b) =>
-          b.technology === "HSPA" &&
-          ["I", "II", "IV", "V"].includes(b.bandNumber)
-      );
-
-      // GSM bands (all devices)
+      // GSM bands (all devices, all versions)
       const gsmBands = bands.filter(
         (b) =>
           b.technology === "GSM" &&
           ["850", "900", "1800", "1900"].includes(b.bandNumber)
       );
 
+      // HSPA bands - progressively add more
+      const hspaBandNumbers = ["I", "II", "IV"];
+      if (tier === "mid" || tier === "new") {
+        hspaBandNumbers.push("V");
+      }
+
+      const hspaBands = bands.filter(
+        (b) => b.technology === "HSPA" && hspaBandNumbers.includes(b.bandNumber)
+      );
+
+      // LTE bands - start with basics and add more with newer software
+      let lteBandNumbers = ["2", "4", "5", "12"];
+
+      if (tier === "old") {
+        // Old versions: basic bands only
+        lteBandNumbers = ["2", "4", "5", "12"];
+      } else if (tier === "mid") {
+        // Mid versions: add more bands
+        lteBandNumbers = ["2", "4", "5", "12", "13", "17", "25", "26"];
+      } else {
+        // New versions: comprehensive support
+        lteBandNumbers = [
+          "2",
+          "4",
+          "5",
+          "12",
+          "13",
+          "17",
+          "25",
+          "26",
+          "30",
+          "41",
+          "66",
+        ];
+
+        // Flagship devices on latest software get all LTE bands
+        if (isFlagship) {
+          lteBandNumbers = bands
+            .filter((b) => b.technology === "LTE")
+            .map((b) => b.bandNumber);
+        }
+      }
+
+      const lteBands = bands.filter(
+        (b) => b.technology === "LTE" && lteBandNumbers.includes(b.bandNumber)
+      );
+
+      // 5G support - only on newer software versions and capable hardware
+      const deviceYear = parseInt(dev.releaseDate.split("-")[0]);
+      const has5GCapableHardware = deviceYear >= 2023 || isFlagship;
+
+      let nrBands: typeof bands = [];
+
+      if (has5GCapableHardware) {
+        if (tier === "mid") {
+          // Mid versions: basic sub-6 5G bands
+          nrBands = bands.filter(
+            (b) =>
+              b.technology === "NR" &&
+              ["n66", "n71", "n77"].includes(b.bandNumber)
+          );
+        } else if (tier === "new") {
+          // Newer versions: comprehensive 5G support
+          const nrBandNumbers = ["n66", "n71", "n77", "n78", "n79"];
+
+          // Add mmWave support for flagships
+          if (isFlagship) {
+            nrBandNumbers.push("n260", "n261");
+          }
+
+          nrBands = bands.filter(
+            (b) => b.technology === "NR" && nrBandNumbers.includes(b.bandNumber)
+          );
+        }
+        // Old tier doesn't get 5G even if hardware supports it (software limitation)
+      }
+
       // Insert band mappings
-      for (const band of [...gsmBands, ...hspaBands, ...lteBands, ...nrBands]) {
+      const allBands = [...gsmBands, ...hspaBands, ...lteBands, ...nrBands];
+
+      for (const band of allBands) {
         await db.insert(deviceSoftwareBand).values({
           deviceId: dev.id,
           softwareId: sw.id,
@@ -1532,13 +1599,30 @@ async function seed() {
     // 10. PROVIDER-SPECIFIC BAND RESTRICTIONS
     console.log("📡 Mapping provider-specific band capabilities...");
 
-    // Telus: Supports most bands, n77 restricted
-    // Rogers: Full n77 support, limited n71
-    // Bell: Similar to Telus
-    // Freedom: Limited to basic bands
+    // Provider certification strategies:
+    // Telus: Conservative, slower to certify new bands, n77 restricted
+    // Rogers: Aggressive, fast certification, full n77 support, limited n71
+    // Bell: Similar to Telus, cautious approach
+    // Freedom: Budget carrier, limited bands, slower certification cycles
 
     for (const sw of softwares) {
       const dev = devices.find((d) => d.id === sw.deviceId)!;
+
+      // Parse software tier for provider certification logic
+      const versionMatch = sw.name.match(/(?:iOS|Android)\s+(\d+)\.(\d+)/);
+      const majorVersion = versionMatch ? parseInt(versionMatch[1]) : 0;
+      const isIOS = sw.platform === "iOS";
+
+      let tier: "old" | "mid" | "new";
+      if (isIOS) {
+        if (majorVersion <= 15) tier = "old";
+        else if (majorVersion === 16) tier = "mid";
+        else tier = "new";
+      } else {
+        if (majorVersion <= 12) tier = "old";
+        else if (majorVersion === 13) tier = "mid";
+        else tier = "new";
+      }
 
       // Get all global bands for this device/software
       const globalBands = await db
@@ -1555,24 +1639,133 @@ async function seed() {
         for (const globalBand of globalBands) {
           const bandInfo = bands.find((b) => b.id === globalBand.bandId)!;
 
-          // Provider-specific restrictions
           let supported = true;
 
-          if (prov.name === "Telus" && bandInfo.bandNumber === "n77") {
-            supported = Math.random() > 0.5; // 50% of devices certified
-          } else if (prov.name === "Rogers" && bandInfo.bandNumber === "n71") {
-            supported = Math.random() > 0.3; // 70% of devices certified
-          } else if (
-            prov.name === "Freedom Mobile" &&
-            bandInfo.technology === "NR" &&
-            bandInfo.bandNumber === "n78"
-          ) {
-            supported = false; // Freedom doesn't use n78
-          } else if (
-            prov.name === "Freedom Mobile" &&
-            ["n77", "n41"].includes(bandInfo.bandNumber)
-          ) {
-            supported = Math.random() > 0.4; // Limited C-band
+          // Legacy technologies (GSM, HSPA) - generally well supported
+          if (bandInfo.technology === "GSM" || bandInfo.technology === "HSPA") {
+            // All providers support these on all software versions
+            supported = true;
+          }
+
+          // LTE bands - mature technology, but some provider variations
+          else if (bandInfo.technology === "LTE") {
+            // Core LTE bands (2, 4, 5, 12) - universal support
+            if (["2", "4", "5", "12"].includes(bandInfo.bandNumber)) {
+              supported = true;
+            }
+            // Extended LTE bands - certification varies
+            else {
+              if (prov.name === "Freedom Mobile") {
+                // Freedom slower to certify extended LTE bands
+                if (tier === "old")
+                  supported = Math.random() > 0.6; // 40% certified
+                else if (tier === "mid")
+                  supported = Math.random() > 0.4; // 60% certified
+                else supported = Math.random() > 0.2; // 80% certified
+              } else if (prov.name === "Telus" || prov.name === "Bell") {
+                // Telus/Bell more conservative
+                if (tier === "old")
+                  supported = Math.random() > 0.4; // 60% certified
+                else if (tier === "mid")
+                  supported = Math.random() > 0.2; // 80% certified
+                else supported = Math.random() > 0.1; // 90% certified
+              } else if (prov.name === "Rogers") {
+                // Rogers most aggressive with LTE certification
+                if (tier === "old")
+                  supported = Math.random() > 0.2; // 80% certified
+                else supported = Math.random() > 0.05; // 95% certified
+              }
+            }
+          }
+
+          // 5G NR bands - newest technology, highest variability
+          else if (bandInfo.technology === "NR") {
+            // Old software versions: providers hesitant to certify 5G
+            if (tier === "old") {
+              supported = false; // No 5G certification on old software
+            }
+            // Mid-tier software: selective certification
+            else if (tier === "mid") {
+              if (prov.name === "Freedom Mobile") {
+                // Freedom very limited 5G on mid-tier
+                if (["n66", "n71"].includes(bandInfo.bandNumber)) {
+                  supported = Math.random() > 0.7; // 30% certified
+                } else {
+                  supported = false;
+                }
+              } else if (prov.name === "Telus") {
+                // Telus restrictive on n77
+                if (bandInfo.bandNumber === "n77") {
+                  supported = Math.random() > 0.7; // 30% certified
+                } else if (["n66", "n71"].includes(bandInfo.bandNumber)) {
+                  supported = Math.random() > 0.3; // 70% certified
+                } else {
+                  supported = Math.random() > 0.5; // 50% for others
+                }
+              } else if (prov.name === "Bell") {
+                // Bell similar to Telus
+                if (bandInfo.bandNumber === "n77") {
+                  supported = Math.random() > 0.6; // 40% certified
+                } else if (["n66", "n71"].includes(bandInfo.bandNumber)) {
+                  supported = Math.random() > 0.3; // 70% certified
+                } else {
+                  supported = Math.random() > 0.5; // 50% for others
+                }
+              } else if (prov.name === "Rogers") {
+                // Rogers aggressive, but limited n71
+                if (bandInfo.bandNumber === "n71") {
+                  supported = Math.random() > 0.5; // 50% certified
+                } else if (bandInfo.bandNumber === "n77") {
+                  supported = Math.random() > 0.2; // 80% certified (full support)
+                } else {
+                  supported = Math.random() > 0.3; // 70% for others
+                }
+              }
+            }
+            // New software: best certification rates
+            else {
+              if (prov.name === "Freedom Mobile") {
+                // Freedom still limited, but improving
+                if (bandInfo.bandNumber === "n78") {
+                  supported = false; // Never uses n78
+                } else if (["n77", "n41"].includes(bandInfo.bandNumber)) {
+                  supported = Math.random() > 0.5; // 50% C-band certification
+                } else if (["n66", "n71"].includes(bandInfo.bandNumber)) {
+                  supported = Math.random() > 0.3; // 70% certified
+                } else if (["n260", "n261"].includes(bandInfo.bandNumber)) {
+                  supported = false; // No mmWave support
+                } else {
+                  supported = Math.random() > 0.6; // 40% for others
+                }
+              } else if (prov.name === "Telus") {
+                // Telus still restrictive on n77, but better overall
+                if (bandInfo.bandNumber === "n77") {
+                  supported = Math.random() > 0.4; // 60% certified (improving)
+                } else if (["n260", "n261"].includes(bandInfo.bandNumber)) {
+                  supported = Math.random() > 0.3; // 70% mmWave
+                } else {
+                  supported = Math.random() > 0.15; // 85% for other bands
+                }
+              } else if (prov.name === "Bell") {
+                // Bell similar to Telus but slightly better n77
+                if (bandInfo.bandNumber === "n77") {
+                  supported = Math.random() > 0.35; // 65% certified
+                } else if (["n260", "n261"].includes(bandInfo.bandNumber)) {
+                  supported = Math.random() > 0.3; // 70% mmWave
+                } else {
+                  supported = Math.random() > 0.15; // 85% for other bands
+                }
+              } else if (prov.name === "Rogers") {
+                // Rogers most aggressive certification
+                if (bandInfo.bandNumber === "n71") {
+                  supported = Math.random() > 0.3; // 70% certified (limited deployment)
+                } else if (["n260", "n261"].includes(bandInfo.bandNumber)) {
+                  supported = Math.random() > 0.2; // 80% mmWave
+                } else {
+                  supported = Math.random() > 0.1; // 90% for other bands
+                }
+              }
+            }
           }
 
           if (supported) {

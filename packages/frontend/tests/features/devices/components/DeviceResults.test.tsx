@@ -102,6 +102,7 @@ expect.extend(toHaveNoViolations);
 describe("DeviceResults", () => {
   const defaultProps = {
     deviceId: "device-1",
+    softwareId: null,
     providerId: null,
     selectedTechnologies: [],
     selectedFields: {
@@ -122,11 +123,13 @@ describe("DeviceResults", () => {
           ? {
               id: "device-1",
               providerId: "provider-1",
+              softwareId: null,
               bandTechnology: undefined,
               comboTechnology: undefined,
             }
           : {
               id: "device-1",
+              softwareId: null,
               bandTechnology: undefined,
               comboTechnology: undefined,
             },
@@ -148,7 +151,6 @@ describe("DeviceResults", () => {
 
   it("should have no accessibility violations", async () => {
     const { container } = renderComponent({}, createMocks());
-    // Wait for the async query to complete before running accessibility check
     await waitFor(() => {
       expect(screen.getByText("Apple iPhone 15 Pro")).toBeInTheDocument();
     });
@@ -216,6 +218,174 @@ describe("DeviceResults", () => {
     expect(screen.queryByText("Software Versions")).not.toBeInTheDocument();
   });
 
+  // NEW TEST: Software section hidden when softwareId is provided
+  it("hides software section when softwareId is provided even if field is selected", async () => {
+    const mocksWithSoftware = [
+      {
+        request: {
+          query: GetDeviceCompleteDocument,
+          variables: {
+            id: "device-1",
+            softwareId: "sw-1",
+            bandTechnology: undefined,
+            comboTechnology: undefined,
+          },
+        },
+        result: {
+          data: mockGlobalDevice,
+        },
+      },
+    ];
+
+    renderComponent(
+      {
+        softwareId: "sw-1",
+        selectedFields: {
+          software: true,
+          bands: true,
+          combos: true,
+          features: true,
+        },
+      },
+      mocksWithSoftware
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Supported Bands")).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText("Software Versions")).not.toBeInTheDocument();
+  });
+
+  // NEW TEST: Software section shown when softwareId is null and field is selected
+  it("displays software section when softwareId is null and field is selected", async () => {
+    renderComponent(
+      {
+        softwareId: null,
+        selectedFields: {
+          software: true,
+          bands: true,
+          combos: true,
+          features: true,
+        },
+      },
+      createMocks()
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Software Versions")).toBeInTheDocument();
+    });
+
+    expect(screen.getByText("iOS 17.0")).toBeInTheDocument();
+    expect(screen.getByText("iOS 17.1")).toBeInTheDocument();
+  });
+
+  // NEW TEST: Software section hidden when no software data exists
+  it("hides software section when device has no software data", async () => {
+    const mockDeviceNoSoftware = {
+      device: {
+        ...mockGlobalDevice.device,
+        software: [],
+      },
+    };
+
+    const mocksNoSoftware = [
+      {
+        request: {
+          query: GetDeviceCompleteDocument,
+          variables: {
+            id: "device-1",
+            softwareId: null,
+            bandTechnology: undefined,
+            comboTechnology: undefined,
+          },
+        },
+        result: {
+          data: mockDeviceNoSoftware,
+        },
+      },
+    ];
+
+    renderComponent(
+      {
+        selectedFields: {
+          software: true,
+          bands: true,
+          combos: true,
+          features: true,
+        },
+      },
+      mocksNoSoftware
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Supported Bands")).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText("Software Versions")).not.toBeInTheDocument();
+  });
+
+  // NEW TEST: Query includes softwareId when provided
+  it("includes softwareId in query variables when provided", async () => {
+    const mocksWithSoftwareId = [
+      {
+        request: {
+          query: GetDeviceCompleteDocument,
+          variables: {
+            id: "device-1",
+            softwareId: "sw-2",
+            bandTechnology: undefined,
+            comboTechnology: undefined,
+          },
+        },
+        result: {
+          data: mockGlobalDevice,
+        },
+      },
+    ];
+
+    renderComponent({ softwareId: "sw-2" }, mocksWithSoftwareId);
+
+    await waitFor(() => {
+      expect(screen.getByText("Apple iPhone 15 Pro")).toBeInTheDocument();
+    });
+  });
+
+  // NEW TEST: Provider query includes softwareId
+  it("includes softwareId in provider query variables when provided", async () => {
+    const mocksWithSoftwareId = [
+      {
+        request: {
+          query: GetProviderDeviceCompleteDocument,
+          variables: {
+            id: "device-1",
+            providerId: "provider-1",
+            softwareId: "sw-1",
+            bandTechnology: undefined,
+            comboTechnology: undefined,
+          },
+        },
+        result: {
+          data: mockProviderDevice,
+        },
+      },
+    ];
+
+    renderComponent(
+      {
+        providerId: "provider-1",
+        softwareId: "sw-1",
+      },
+      mocksWithSoftwareId
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Apple iPhone 15 Pro")).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText("Software Versions")).not.toBeInTheDocument();
+  });
+
   it("displays software versions with correct data", async () => {
     renderComponent({}, createMocks());
 
@@ -238,7 +408,6 @@ describe("DeviceResults", () => {
     expect(screen.getByText("66")).toBeInTheDocument();
     expect(screen.getByText("12")).toBeInTheDocument();
 
-    // Check for technology badges
     const nrBadges = screen.getAllByText("NR");
     const lteBadges = screen.getAllByText("LTE");
     expect(nrBadges.length).toBeGreaterThan(0);
@@ -260,6 +429,7 @@ describe("DeviceResults", () => {
           query: GetDeviceCompleteDocument,
           variables: {
             id: "device-1",
+            softwareId: null,
             bandTechnology: "NR",
             comboTechnology: "NR",
           },
@@ -299,6 +469,7 @@ describe("DeviceResults", () => {
           query: GetDeviceCompleteDocument,
           variables: {
             id: "device-1",
+            softwareId: null,
             bandTechnology: "LTE",
             comboTechnology: "LTE",
           },
@@ -339,6 +510,7 @@ describe("DeviceResults", () => {
           query: GetDeviceCompleteDocument,
           variables: {
             id: "device-1",
+            softwareId: null,
             bandTechnology: "GSM",
             comboTechnology: "GSM",
           },
@@ -380,6 +552,7 @@ describe("DeviceResults", () => {
           query: GetDeviceCompleteDocument,
           variables: {
             id: "device-1",
+            softwareId: null,
             bandTechnology: undefined,
             comboTechnology: undefined,
           },
@@ -404,6 +577,7 @@ describe("DeviceResults", () => {
           query: GetDeviceCompleteDocument,
           variables: {
             id: "device-1",
+            softwareId: null,
             bandTechnology: undefined,
             comboTechnology: undefined,
           },
@@ -432,7 +606,6 @@ describe("DeviceResults", () => {
       expect(screen.getByText("2 bands")).toBeInTheDocument();
     });
 
-    // Provider data only has 2 bands vs 3 in global
     expect(screen.getByText("n77")).toBeInTheDocument();
     expect(screen.getByText("66")).toBeInTheDocument();
     expect(screen.queryByText("12")).not.toBeInTheDocument();
@@ -445,6 +618,7 @@ describe("DeviceResults", () => {
           query: GetDeviceCompleteDocument,
           variables: {
             id: "device-1",
+            softwareId: null,
             bandTechnology: "NR",
             comboTechnology: "NR",
           },
