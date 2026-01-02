@@ -17,6 +17,18 @@ docker-up:
 docker-down: 
 	docker compose -f docker-compose.dev.yml down -v
 
+.PHONY: docker-logs
+docker-logs:
+	docker compose -f docker-compose.dev.yml logs
+
+.PHONY: docker-restart
+docker-restart:
+	docker compose -f docker-compose.dev.yml restart
+
+.PHONY: docker-clean
+docker-clean:
+	docker compose -f docker-compose.dev.yml down -v
+
 .PHONY: b-install
 b-install:
 	cd packages/backend && bun install
