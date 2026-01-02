@@ -7,9 +7,13 @@ import { FieldSelector } from "../features/devices/components/FieldSelector";
 import type { SelectedFields } from "../features/devices/components/FieldSelector";
 import { DeviceResults } from "../features/devices/components/DeviceResults";
 import { Smartphone } from "lucide-react";
+import { SoftwareSelector } from "../features/devices/components/SoftwareSelector";
 
 export function DeviceQueryPage() {
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
+  const [selectedSoftwareId, setSelectedSoftwareId] = useState<string | null>(
+    null
+  );
   const [selectedProviderId, setSelectedProviderId] = useState<string | null>(
     null
   );
@@ -73,11 +77,27 @@ export function DeviceQueryPage() {
             </CardContent>
           </Card>
 
+          {/* Software Selection */}
+          {selectedDeviceId && (
+            <Card>
+              <CardHeader>
+                <CardTitle>2. Select Software</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <SoftwareSelector
+                  selectedDeviceId={selectedDeviceId}
+                  selectedSoftwareId={selectedSoftwareId}
+                  onSoftwareChange={setSelectedSoftwareId}
+                />
+              </CardContent>
+            </Card>
+          )}
+
           {/* Provider Selection */}
           {selectedDeviceId && (
             <Card>
               <CardHeader>
-                <CardTitle>2. Select Provider</CardTitle>
+                <CardTitle>3. Select Provider</CardTitle>
               </CardHeader>
               <CardContent>
                 <ProviderSelector
@@ -92,7 +112,7 @@ export function DeviceQueryPage() {
           {selectedDeviceId && (
             <Card>
               <CardHeader>
-                <CardTitle>3. Filter Technologies</CardTitle>
+                <CardTitle>4. Filter Technologies</CardTitle>
               </CardHeader>
               <CardContent>
                 <TechnologyFilter
@@ -107,10 +127,11 @@ export function DeviceQueryPage() {
           {selectedDeviceId && (
             <Card>
               <CardHeader>
-                <CardTitle>4. Select Fields</CardTitle>
+                <CardTitle>5. Select Fields</CardTitle>
               </CardHeader>
               <CardContent>
                 <FieldSelector
+                  selectedSoftwareId={selectedSoftwareId}
                   selectedFields={selectedFields}
                   onToggleField={handleToggleField}
                 />
@@ -125,6 +146,7 @@ export function DeviceQueryPage() {
             <DeviceResults
               deviceId={selectedDeviceId}
               providerId={selectedProviderId}
+              softwareId={selectedSoftwareId}
               selectedTechnologies={selectedTechnologies}
               selectedFields={selectedFields}
             />

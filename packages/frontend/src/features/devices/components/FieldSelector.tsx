@@ -8,6 +8,7 @@ export interface SelectedFields {
 }
 
 interface FieldSelectorProps {
+  selectedSoftwareId: string | null;
   selectedFields: SelectedFields;
   onToggleField: (field: keyof SelectedFields) => void;
 }
@@ -36,16 +37,21 @@ const FIELDS = [
 ];
 
 export function FieldSelector({
+  selectedSoftwareId,
   selectedFields,
   onToggleField,
 }: FieldSelectorProps) {
+  const visibleFields = selectedSoftwareId
+    ? FIELDS.filter((field) => field.key !== "software")
+    : FIELDS;
+
   return (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-3">
         Select Data to Display
       </label>
       <div className="space-y-3">
-        {FIELDS.map((field) => (
+        {visibleFields.map((field) => (
           <div key={field.key} className="flex items-start">
             <Checkbox
               id={`field-${field.key}`}

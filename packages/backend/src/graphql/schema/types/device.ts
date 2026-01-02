@@ -62,27 +62,20 @@ DeviceType.implement({
         }),
       },
       resolve: async (device, args, ctx) => {
-        // If no specific software version, get all software and aggregate bands
-        if (!args.softwareId) {
-          const softwares = await ctx.loaders.softwareByDevice.load({
-            deviceId: device.id,
-          });
+        const softwares = await ctx.loaders.softwareByDevice.load({
+          deviceId: device.id,
+        });
 
-          if (softwares.length === 0) return [];
+        if (softwares.length === 0) return [];
 
-          // Get bands for the latest software version
-          const latestSoftware = softwares[softwares.length - 1];
-          return ctx.loaders.bandsByDeviceSoftware.load({
-            deviceId: device.id,
-            softwareId: latestSoftware.id,
-            technology: args.technology || undefined,
-          });
-        }
+        // Use provided softwareId if available, otherwise use latest software
+        const softwareId = args.softwareId
+          ? Number(args.softwareId)
+          : softwares[softwares.length - 1].id;
 
-        // Get bands for specific software version
         return ctx.loaders.bandsByDeviceSoftware.load({
           deviceId: device.id,
-          softwareId: Number(args.softwareId),
+          softwareId,
           technology: args.technology || undefined,
         });
       },

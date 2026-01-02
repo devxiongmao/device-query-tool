@@ -525,6 +525,7 @@ export type GetDeviceCompleteQueryVariables = Exact<{
   id: Scalars['ID']['input'];
   bandTechnology?: InputMaybe<Scalars['String']['input']>;
   comboTechnology?: InputMaybe<Scalars['String']['input']>;
+  softwareId?: InputMaybe<Scalars['ID']['input']>;
 }>;
 
 
@@ -535,10 +536,11 @@ export type GetProviderDeviceCompleteQueryVariables = Exact<{
   providerId: Scalars['ID']['input'];
   bandTechnology?: InputMaybe<Scalars['String']['input']>;
   comboTechnology?: InputMaybe<Scalars['String']['input']>;
+  softwareId?: InputMaybe<Scalars['ID']['input']>;
 }>;
 
 
-export type GetProviderDeviceCompleteQuery = { __typename?: 'Query', device?: { __typename?: 'Device', id?: string | null, vendor?: string | null, modelNum?: string | null, marketName?: string | null, releaseDate?: string | null, software?: Array<{ __typename?: 'Software', id?: string | null, name?: string | null, platform?: string | null, buildNumber?: string | null, releaseDate?: string | null }> | null, supportedBandsForProvider?: Array<{ __typename?: 'Band', id?: string | null, bandNumber?: string | null, technology?: string | null, dlBandClass?: string | null, ulBandClass?: string | null }> | null, supportedCombosForProvider?: Array<{ __typename?: 'Combo', id?: string | null, name?: string | null, technology?: string | null }> | null, features?: Array<{ __typename?: 'Feature', id?: string | null, name?: string | null, description?: string | null }> | null } | null };
+export type GetProviderDeviceCompleteQuery = { __typename?: 'Query', device?: { __typename?: 'Device', id?: string | null, vendor?: string | null, modelNum?: string | null, marketName?: string | null, releaseDate?: string | null, software?: Array<{ __typename?: 'Software', id?: string | null, name?: string | null, platform?: string | null, buildNumber?: string | null, releaseDate?: string | null }> | null, supportedBandsForProvider?: Array<{ __typename?: 'Band', id?: string | null, bandNumber?: string | null, technology?: string | null, dlBandClass?: string | null, ulBandClass?: string | null }> | null, supportedCombosForProvider?: Array<{ __typename?: 'Combo', id?: string | null, name?: string | null, technology?: string | null }> | null, featuresForProvider?: Array<{ __typename?: 'Feature', id?: string | null, name?: string | null, description?: string | null }> | null } | null };
 
 export type GetProvidersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1457,7 +1459,7 @@ export type GetDeviceWithProviderFeaturesLazyQueryHookResult = ReturnType<typeof
 export type GetDeviceWithProviderFeaturesSuspenseQueryHookResult = ReturnType<typeof useGetDeviceWithProviderFeaturesSuspenseQuery>;
 export type GetDeviceWithProviderFeaturesQueryResult = Apollo.QueryResult<GetDeviceWithProviderFeaturesQuery, GetDeviceWithProviderFeaturesQueryVariables>;
 export const GetDeviceCompleteDocument = gql`
-    query GetDeviceComplete($id: ID!, $bandTechnology: String, $comboTechnology: String) {
+    query GetDeviceComplete($id: ID!, $bandTechnology: String, $comboTechnology: String, $softwareId: ID) {
   device(id: $id) {
     id
     vendor
@@ -1471,19 +1473,19 @@ export const GetDeviceCompleteDocument = gql`
       buildNumber
       releaseDate
     }
-    supportedBands(technology: $bandTechnology) {
+    supportedBands(technology: $bandTechnology, softwareId: $softwareId) {
       id
       bandNumber
       technology
       dlBandClass
       ulBandClass
     }
-    supportedCombos(technology: $comboTechnology) {
+    supportedCombos(technology: $comboTechnology, softwareId: $softwareId) {
       id
       name
       technology
     }
-    features {
+    features(softwareId: $softwareId) {
       id
       name
       description
@@ -1507,6 +1509,7 @@ export const GetDeviceCompleteDocument = gql`
  *      id: // value for 'id'
  *      bandTechnology: // value for 'bandTechnology'
  *      comboTechnology: // value for 'comboTechnology'
+ *      softwareId: // value for 'softwareId'
  *   },
  * });
  */
@@ -1530,7 +1533,7 @@ export type GetDeviceCompleteLazyQueryHookResult = ReturnType<typeof useGetDevic
 export type GetDeviceCompleteSuspenseQueryHookResult = ReturnType<typeof useGetDeviceCompleteSuspenseQuery>;
 export type GetDeviceCompleteQueryResult = Apollo.QueryResult<GetDeviceCompleteQuery, GetDeviceCompleteQueryVariables>;
 export const GetProviderDeviceCompleteDocument = gql`
-    query GetProviderDeviceComplete($id: ID!, $providerId: ID!, $bandTechnology: String, $comboTechnology: String) {
+    query GetProviderDeviceComplete($id: ID!, $providerId: ID!, $bandTechnology: String, $comboTechnology: String, $softwareId: ID) {
   device(id: $id) {
     id
     vendor
@@ -1544,7 +1547,11 @@ export const GetProviderDeviceCompleteDocument = gql`
       buildNumber
       releaseDate
     }
-    supportedBandsForProvider(technology: $bandTechnology, providerId: $providerId) {
+    supportedBandsForProvider(
+      technology: $bandTechnology
+      providerId: $providerId
+      softwareId: $softwareId
+    ) {
       id
       bandNumber
       technology
@@ -1554,12 +1561,13 @@ export const GetProviderDeviceCompleteDocument = gql`
     supportedCombosForProvider(
       technology: $comboTechnology
       providerId: $providerId
+      softwareId: $softwareId
     ) {
       id
       name
       technology
     }
-    features {
+    featuresForProvider(providerId: $providerId, softwareId: $softwareId) {
       id
       name
       description
@@ -1584,6 +1592,7 @@ export const GetProviderDeviceCompleteDocument = gql`
  *      providerId: // value for 'providerId'
  *      bandTechnology: // value for 'bandTechnology'
  *      comboTechnology: // value for 'comboTechnology'
+ *      softwareId: // value for 'softwareId'
  *   },
  * });
  */

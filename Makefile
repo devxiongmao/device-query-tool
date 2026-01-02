@@ -68,3 +68,11 @@ f-types:
 .PHONY: f-test
 f-test:
 	cd packages/frontend && bun run test
+
+.PHONY: graphql-codegen
+graphql-codegen:
+	cd packages/frontend && bun run codegen
+
+.PHONY: graphql-codegen-watch
+graphql-codegen-watch:
+	cd packages/frontend && bun run codegen:watch

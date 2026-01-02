@@ -24,6 +24,7 @@ import type { SelectedFields } from "./FieldSelector";
 interface DeviceResultsProps {
   deviceId: string;
   providerId: string | null;
+  softwareId: string | null;
   selectedTechnologies: string[];
   selectedFields: SelectedFields;
 }
@@ -31,6 +32,7 @@ interface DeviceResultsProps {
 export function DeviceResults({
   deviceId,
   providerId,
+  softwareId,
   selectedTechnologies,
   selectedFields,
 }: DeviceResultsProps) {
@@ -47,6 +49,7 @@ export function DeviceResults({
       // When providerId is null we skip this query, but the variable
       // is still required by the generated hook type.
       providerId: providerId ?? "",
+      softwareId: softwareId,
       bandTechnology: singleSelectedTechnology,
       comboTechnology: singleSelectedTechnology,
     },
@@ -60,6 +63,7 @@ export function DeviceResults({
   } = useGetDeviceCompleteQuery({
     variables: {
       id: deviceId,
+      softwareId: softwareId,
       bandTechnology: singleSelectedTechnology,
       comboTechnology: singleSelectedTechnology,
     },
@@ -174,6 +178,7 @@ export function DeviceResults({
 
       {/* Software Versions */}
       {selectedFields.software &&
+        softwareId === null &&
         device.software &&
         device.software.length > 0 && (
           <Card>

@@ -67,7 +67,10 @@ query GetDeviceWithProviderBands(
     vendor
     modelNum
     marketName
-    supportedBandsForProvider(providerId: $providerId, technology: $technology) {
+    supportedBandsForProvider(
+      providerId: $providerId
+      technology: $technology
+    ) {
       id
       bandNumber
       technology
@@ -104,7 +107,10 @@ query GetDeviceWithProviderCombos(
     id
     vendor
     modelNum
-    supportedCombosForProvider(providerId: $providerId, technology: $technology) {
+    supportedCombosForProvider(
+      providerId: $providerId
+      technology: $technology
+    ) {
       id
       name
       technology
@@ -145,6 +151,7 @@ query GetDeviceComplete(
   $id: ID!
   $bandTechnology: String
   $comboTechnology: String
+  $softwareId: ID
 ) {
   device(id: $id) {
     id
@@ -152,7 +159,7 @@ query GetDeviceComplete(
     modelNum
     marketName
     releaseDate
-    
+
     software {
       id
       name
@@ -160,23 +167,23 @@ query GetDeviceComplete(
       buildNumber
       releaseDate
     }
-    
+
     # Global capabilities
-    supportedBands(technology: $bandTechnology) {
+    supportedBands(technology: $bandTechnology, softwareId: $softwareId) {
       id
       bandNumber
       technology
       dlBandClass
       ulBandClass
     }
-    
-    supportedCombos(technology: $comboTechnology) {
+
+    supportedCombos(technology: $comboTechnology, softwareId: $softwareId) {
       id
       name
       technology
     }
-    
-    features {
+
+    features(softwareId: $softwareId) {
       id
       name
       description
@@ -190,6 +197,7 @@ query GetProviderDeviceComplete(
   $providerId: ID!
   $bandTechnology: String
   $comboTechnology: String
+  $softwareId: ID
 ) {
   device(id: $id) {
     id
@@ -197,7 +205,7 @@ query GetProviderDeviceComplete(
     modelNum
     marketName
     releaseDate
-    
+
     software {
       id
       name
@@ -205,23 +213,31 @@ query GetProviderDeviceComplete(
       buildNumber
       releaseDate
     }
-    
+
     # Provider capabilities
-    supportedBandsForProvider(technology: $bandTechnology, providerId: $providerId) {
+    supportedBandsForProvider(
+      technology: $bandTechnology
+      providerId: $providerId
+      softwareId: $softwareId
+    ) {
       id
       bandNumber
       technology
       dlBandClass
       ulBandClass
     }
-    
-    supportedCombosForProvider(technology: $comboTechnology, providerId: $providerId) {
+
+    supportedCombosForProvider(
+      technology: $comboTechnology
+      providerId: $providerId
+      softwareId: $softwareId
+    ) {
       id
       name
       technology
     }
-    
-    features {
+
+    featuresForProvider(providerId: $providerId, softwareId: $softwareId) {
       id
       name
       description
