@@ -1,6 +1,7 @@
 import {
   useGetDeviceCompleteQuery,
   useGetProviderDeviceCompleteQuery,
+  type Device,
 } from "../../../graphql/generated/graphql";
 import {
   Card,
@@ -18,7 +19,10 @@ import {
   EmptyState,
 } from "../../../components/ui";
 import { Smartphone, Calendar, Code, Radio, Zap, Settings } from "lucide-react";
-import { formatDate } from "../../../lib/utils";
+import {
+  formatDate,
+  groupBandsByNumberAndTechnology,
+} from "../../../lib/utils";
 import type { SelectedFields } from "./FieldSelector";
 
 interface DeviceResultsProps {
@@ -115,7 +119,7 @@ export function DeviceResults({
     );
   }
 
-  const device = data.device;
+  const device = data.device as Device;
 
   // Filter bands by selected technologies
   const filteredBands = providerId
@@ -141,6 +145,9 @@ export function DeviceResults({
         selectedTechnologies.includes(combo.technology)
       )
     : device.supportedCombos;
+
+  // Group bands by bandNumber and technology, combining dlBandClass and ulBandClass
+  const groupedBands = groupBandsByNumberAndTechnology(filteredBands);
 
   return (
     <div className="space-y-6">
@@ -218,13 +225,13 @@ export function DeviceResults({
         )}
 
       {/* Supported Bands */}
-      {selectedFields.bands && filteredBands && filteredBands.length > 0 && (
+      {selectedFields.bands && groupedBands.length > 0 && (
         <Card>
           <CardHeader>
             <div className="flex items-center space-x-2">
               <Radio className="w-5 h-5 text-gray-600" />
               <CardTitle>Supported Bands</CardTitle>
-              <Badge variant="outline">{filteredBands.length} bands</Badge>
+              <Badge variant="outline">{groupedBands.length} bands</Badge>
             </div>
           </CardHeader>
           <CardContent>
@@ -238,7 +245,7 @@ export function DeviceResults({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredBands.map((band) => (
+                {groupedBands.map((band) => (
                   <TableRow key={band.id}>
                     <TableCell className="font-semibold">
                       {band.bandNumber}
@@ -260,7 +267,7 @@ export function DeviceResults({
                       {band.dlBandClass}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
-                      {band.ulBandClass || "-"}
+                      {band.ulBandClass}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -286,7 +293,6 @@ export function DeviceResults({
                 <TableRow>
                   <TableHead>Combo Name</TableHead>
                   <TableHead>Technology</TableHead>
-                  <TableHead>Component Bands</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -297,10 +303,6 @@ export function DeviceResults({
                     </TableCell>
                     <TableCell>
                       <Badge variant="default">{combo.technology}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      {/* We'll need to query bands separately or use a fragment */}
-                      <span className="text-sm text-gray-600">-</span>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -348,7 +350,7 @@ export function DeviceResults({
 
       {/* Empty state for filtered results */}
       {selectedFields.bands &&
-        (!filteredBands || filteredBands.length === 0) &&
+        groupedBands.length === 0 &&
         selectedFields.combos &&
         (!filteredCombos || filteredCombos.length === 0) &&
         selectedTechnologies.length > 0 && (

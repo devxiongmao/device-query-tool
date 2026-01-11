@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import type { Band } from "../graphql/generated/graphql";
 
 /**
  * Merge Tailwind classes without conflicts
@@ -44,4 +45,62 @@ export function debounce<T extends (...args: unknown[]) => unknown>( // Should/c
     }
     timeout = setTimeout(later, wait);
   };
+}
+
+/**
+ * Group bands by bandNumber and technology, combining multiple
+ * dlBandClass and ulBandClass values with slashes.
+ *
+ * @param bands Array of bands to group
+ * @returns Array of grouped bands with combined band classes
+ */
+export function groupBandsByNumberAndTechnology(
+  bands: Band[] | null | undefined
+): Band[] {
+  if (!bands || bands.length === 0) {
+    return [];
+  }
+
+  const groups = new Map<
+    string,
+    {
+      bandNumber: string;
+      technology: string;
+      dlBandClasses: Set<string>;
+      ulBandClasses: Set<string>;
+      id: string;
+    }
+  >();
+
+  bands.forEach((band) => {
+    if (!band.bandNumber || !band.technology) return;
+
+    const key = `${band.bandNumber}-${band.technology}`;
+    const existing = groups.get(key);
+
+    if (existing) {
+      if (band.dlBandClass) {
+        existing.dlBandClasses.add(band.dlBandClass);
+      }
+      if (band.ulBandClass) {
+        existing.ulBandClasses.add(band.ulBandClass);
+      }
+    } else {
+      groups.set(key, {
+        bandNumber: band.bandNumber,
+        technology: band.technology,
+        dlBandClasses: new Set(band.dlBandClass ? [band.dlBandClass] : []),
+        ulBandClasses: new Set(band.ulBandClass ? [band.ulBandClass] : []),
+        id: band.id ?? key,
+      });
+    }
+  });
+
+  return Array.from(groups.values()).map((group) => ({
+    id: group.id,
+    bandNumber: group.bandNumber,
+    technology: group.technology,
+    dlBandClass: Array.from(group.dlBandClasses).sort().join("/") || "-",
+    ulBandClass: Array.from(group.ulBandClasses).sort().join("/") || "-",
+  }));
 }
