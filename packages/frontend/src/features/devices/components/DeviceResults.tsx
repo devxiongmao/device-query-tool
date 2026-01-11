@@ -1,7 +1,9 @@
 import {
   useGetDeviceCompleteQuery,
   useGetProviderDeviceCompleteQuery,
+  type Device,
 } from "../../../graphql/generated/graphql";
+import { useState } from "react";
 import {
   Card,
   CardHeader,
@@ -16,9 +18,13 @@ import {
   TableCell,
   Spinner,
   EmptyState,
+  Button,
 } from "../../../components/ui";
 import { Smartphone, Calendar, Code, Radio, Zap, Settings } from "lucide-react";
-import { formatDate } from "../../../lib/utils";
+import {
+  formatDate,
+  groupBandsByNumberAndTechnology,
+} from "../../../lib/utils";
 import type { SelectedFields } from "./FieldSelector";
 
 interface DeviceResultsProps {
@@ -36,6 +42,9 @@ export function DeviceResults({
   selectedTechnologies,
   selectedFields,
 }: DeviceResultsProps) {
+  // State for toggling between grouped and original view
+  const [showGroupedView, setShowGroupedView] = useState(true);
+
   const singleSelectedTechnology =
     selectedTechnologies.length === 1 ? selectedTechnologies[0] : undefined;
 
@@ -115,32 +124,45 @@ export function DeviceResults({
     );
   }
 
-  const device = data.device;
+  const device = data.device as Device;
 
   // Filter bands by selected technologies
   const filteredBands = providerId
     ? selectedTechnologies.length > 0
-      ? device.supportedBandsForProvider?.filter((band) =>
-          selectedTechnologies.includes(band.technology)
+      ? device.supportedBandsForProvider?.filter(
+          (band) =>
+            band.technology && selectedTechnologies.includes(band.technology)
         )
       : device.supportedBandsForProvider
     : selectedTechnologies.length > 0
-    ? device.supportedBands?.filter((band) =>
-        selectedTechnologies.includes(band.technology)
+    ? device.supportedBands?.filter(
+        (band) =>
+          band.technology && selectedTechnologies.includes(band.technology)
       )
     : device.supportedBands;
 
   const filteredCombos = providerId
     ? selectedTechnologies.length > 0
-      ? device.supportedCombosForProvider?.filter((combo) =>
-          selectedTechnologies.includes(combo.technology)
+      ? device.supportedCombosForProvider?.filter(
+          (combo) =>
+            combo.technology && selectedTechnologies.includes(combo.technology)
         )
       : device.supportedCombosForProvider
     : selectedTechnologies.length > 0
-    ? device.supportedCombos?.filter((combo) =>
-        selectedTechnologies.includes(combo.technology)
+    ? device.supportedCombos?.filter(
+        (combo) =>
+          combo.technology && selectedTechnologies.includes(combo.technology)
       )
     : device.supportedCombos;
+
+  // Group bands by bandNumber and technology, combining dlBandClass and ulBandClass
+  const groupedBands = groupBandsByNumberAndTechnology(filteredBands);
+
+  // Determine which bands to display and their count
+  const displayBands = showGroupedView ? groupedBands : filteredBands || [];
+  const bandCount = showGroupedView
+    ? groupedBands.length
+    : filteredBands?.length || 0;
 
   return (
     <div className="space-y-6">
@@ -164,7 +186,10 @@ export function DeviceResults({
                 <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
                   <span className="flex items-center">
                     <Calendar className="w-4 h-4 mr-1" />
-                    Released {formatDate(device.releaseDate)}
+                    Released{" "}
+                    {device.releaseDate
+                      ? formatDate(device.releaseDate)
+                      : "Unknown"}
                   </span>
                 </div>
               </div>
@@ -208,7 +233,9 @@ export function DeviceResults({
                       <TableCell className="font-mono text-sm">
                         {sw.buildNumber}
                       </TableCell>
-                      <TableCell>{formatDate(sw.releaseDate)}</TableCell>
+                      <TableCell>
+                        {sw.releaseDate ? formatDate(sw.releaseDate) : "-"}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -218,13 +245,38 @@ export function DeviceResults({
         )}
 
       {/* Supported Bands */}
-      {selectedFields.bands && filteredBands && filteredBands.length > 0 && (
+      {selectedFields.bands && bandCount > 0 && (
         <Card>
           <CardHeader>
-            <div className="flex items-center space-x-2">
-              <Radio className="w-5 h-5 text-gray-600" />
-              <CardTitle>Supported Bands</CardTitle>
-              <Badge variant="outline">{filteredBands.length} bands</Badge>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Radio className="w-5 h-5 text-gray-600" />
+                <CardTitle>Supported Bands</CardTitle>
+                <Badge variant="outline">
+                  {bandCount} {showGroupedView ? "bands" : "band variations"}
+                </Badge>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-600">View:</span>
+                <div className="inline-flex rounded-lg border border-gray-300 bg-white p-1">
+                  <Button
+                    variant={showGroupedView ? "primary" : "ghost"}
+                    size="sm"
+                    onClick={() => setShowGroupedView(true)}
+                    className="h-7 px-3 text-xs"
+                  >
+                    Grouped
+                  </Button>
+                  <Button
+                    variant={!showGroupedView ? "primary" : "ghost"}
+                    size="sm"
+                    onClick={() => setShowGroupedView(false)}
+                    className="h-7 px-3 text-xs"
+                  >
+                    Detailed
+                  </Button>
+                </div>
+              </div>
             </div>
           </CardHeader>
           <CardContent>
@@ -238,7 +290,7 @@ export function DeviceResults({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredBands.map((band) => (
+                {displayBands.map((band) => (
                   <TableRow key={band.id}>
                     <TableCell className="font-semibold">
                       {band.bandNumber}
@@ -257,7 +309,7 @@ export function DeviceResults({
                       </Badge>
                     </TableCell>
                     <TableCell className="text-sm">
-                      {band.dlBandClass}
+                      {band.dlBandClass || "-"}
                     </TableCell>
                     <TableCell className="text-sm text-gray-600">
                       {band.ulBandClass || "-"}
@@ -286,7 +338,6 @@ export function DeviceResults({
                 <TableRow>
                   <TableHead>Combo Name</TableHead>
                   <TableHead>Technology</TableHead>
-                  <TableHead>Component Bands</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -297,10 +348,6 @@ export function DeviceResults({
                     </TableCell>
                     <TableCell>
                       <Badge variant="default">{combo.technology}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      {/* We'll need to query bands separately or use a fragment */}
-                      <span className="text-sm text-gray-600">-</span>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -348,7 +395,7 @@ export function DeviceResults({
 
       {/* Empty state for filtered results */}
       {selectedFields.bands &&
-        (!filteredBands || filteredBands.length === 0) &&
+        bandCount === 0 &&
         selectedFields.combos &&
         (!filteredCombos || filteredCombos.length === 0) &&
         selectedTechnologies.length > 0 && (
