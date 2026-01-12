@@ -38,13 +38,21 @@ export class FeatureRepository {
    * Search features by name
    */
   async search(filters?: { name?: string }) {
-    let query = db.select().from(feature);
+    const conditions = [];
 
     if (filters?.name) {
-      query = query.where(like(feature.name, `%${filters.name}%`)) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+      conditions.push(like(feature.name, `%${filters.name}%`));
     }
 
-    return query.orderBy(feature.name);
+    if (conditions.length > 0) {
+      return db
+        .select()
+        .from(feature)
+        .where(and(...conditions))
+        .orderBy(feature.name);
+    }
+
+    return db.select().from(feature).orderBy(feature.name);
   }
 
   /**
@@ -97,8 +105,8 @@ export class FeatureRepository {
         });
       }
 
-      const entry = deviceMap.get(row.device.id)!;
-      if (!entry.software.find((s) => s.id === row.software.id)) {
+      const entry = deviceMap.get(row.device.id);
+      if (entry && !entry.software.find((s) => s.id === row.software.id)) {
         entry.software.push(row.software);
       }
     }

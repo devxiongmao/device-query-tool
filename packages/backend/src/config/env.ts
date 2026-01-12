@@ -88,8 +88,8 @@ export const env = new Proxy({} as Env, {
       if (!cachedEnv) {
         loadEnv(); // Ensure cache is initialized
       }
-      if (cachedEnv) {
-        (cachedEnv as any)[prop] = value; // eslint-disable-line @typescript-eslint/no-explicit-any
+      if (cachedEnv && typeof prop === "string") {
+        (cachedEnv as Record<string, unknown>)[prop] = value;
       }
       return true;
     }

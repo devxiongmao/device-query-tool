@@ -1,10 +1,21 @@
 import { builder } from "../builder";
 import { DeviceCapabilityResultType } from "../types/capability-results";
+import type { DeviceType } from "../types/device";
+import type { SoftwareType } from "../types/software";
+import type { ProviderType } from "../types/provider";
 import {
   bandRepository,
   comboRepository,
   featureRepository,
 } from "../../../repositories";
+
+// Type representing the resolved state after provider is populated
+type ResolvedDeviceCapabilityResult = {
+  device: typeof DeviceType.$inferType;
+  software: Array<typeof SoftwareType.$inferType>;
+  supportStatus: "global" | "provider-specific";
+  provider: typeof ProviderType.$inferType | null;
+};
 
 builder.queryFields((t) => ({
   /**
@@ -45,7 +56,8 @@ builder.queryFields((t) => ({
         });
       }
 
-      return results;
+      // After mutation, provider is either the full type or null (never partial)
+      return results as ResolvedDeviceCapabilityResult[];
     },
   }),
 
@@ -87,7 +99,8 @@ builder.queryFields((t) => ({
         });
       }
 
-      return results;
+      // After mutation, provider is either the full type or null (never partial)
+      return results as ResolvedDeviceCapabilityResult[];
     },
   }),
 
@@ -124,7 +137,8 @@ builder.queryFields((t) => ({
         });
       }
 
-      return results;
+      // After mutation, provider is either the full type or null (never partial)
+      return results as ResolvedDeviceCapabilityResult[];
     },
   }),
 

@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing";
+import type { MockedResponse } from "@apollo/client/testing";
 import { CapabilityQueryPage } from "../../src/pages/CapabilityQuery";
 import {
   SearchBandsDocument,
@@ -171,7 +172,7 @@ const mockDevicesForBandProvider = [
 expect.extend(toHaveNoViolations);
 
 describe("CapabilityQueryPage", () => {
-  const createMocks = (overrides: any[] = []) => [ // eslint-disable-line @typescript-eslint/no-explicit-any
+  const createMocks = (overrides: MockedResponse[] = []): MockedResponse[] => [
     {
       request: {
         query: SearchBandsDocument,
@@ -298,7 +299,7 @@ describe("CapabilityQueryPage", () => {
     ...overrides,
   ];
 
-  const renderPage = (mocks: any[] = []) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+  const renderPage = (mocks: MockedResponse[] = []) => {
     return render(
       <MockedProvider mocks={createMocks(mocks)} addTypename={false}>
         <CapabilityQueryPage />
