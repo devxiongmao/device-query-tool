@@ -40,8 +40,6 @@ export class DeviceRepository {
       offset = 0,
     } = params;
 
-    let query = db.select().from(device);
-
     // Build WHERE conditions
     const conditions = [];
 
@@ -66,10 +64,21 @@ export class DeviceRepository {
     }
 
     if (conditions.length > 0) {
-      query = query.where(or(...conditions)) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+      return db
+        .select()
+        .from(device)
+        .where(or(...conditions))
+        .limit(limit)
+        .offset(offset)
+        .orderBy(device.releaseDate);
     }
 
-    return query.limit(limit).offset(offset).orderBy(device.releaseDate);
+    return db
+      .select()
+      .from(device)
+      .limit(limit)
+      .offset(offset)
+      .orderBy(device.releaseDate);
   }
 
   /**

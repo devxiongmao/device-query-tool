@@ -1,3 +1,10 @@
+import type { DeviceType } from "../graphql/schema/types/device";
+import type { SoftwareType } from "../graphql/schema/types/software";
+import type { ProviderType } from "../graphql/schema/types/provider";
+import type { BandType } from "../graphql/schema/types/band";
+import type { ComboType } from "../graphql/schema/types/combo";
+import type { FeatureType } from "../graphql/schema/types/feature";
+
 // Common repository types and interfaces
 
 export interface PaginationParams {
@@ -31,12 +38,14 @@ export interface FindDevicesByFeatureParams {
 }
 
 export interface DeviceCapabilityResult {
-  device: any; // eslint-disable-line @typescript-eslint/no-explicit-any -- Will be typed from Drizzle schema
-  software: any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
+  device: typeof DeviceType.$inferType;
+  software: Array<typeof SoftwareType.$inferType>;
   supportStatus: "global" | "provider-specific";
-  provider: any | null; // eslint-disable-line @typescript-eslint/no-explicit-any
+  // Provider can be a partial object (with just providerId) that gets populated by DataLoader,
+  // or the full provider type, or null for global support
+  provider: typeof ProviderType.$inferType | { providerId: number } | null;
   // Optional capability-specific properties (used in tests and GraphQL resolvers)
-  band?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-  combo?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-  feature?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  band?: typeof BandType.$inferType;
+  combo?: typeof ComboType.$inferType;
+  feature?: typeof FeatureType.$inferType;
 }

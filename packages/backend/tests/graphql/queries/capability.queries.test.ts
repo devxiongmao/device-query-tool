@@ -9,6 +9,19 @@ import {
   comboRepository,
   featureRepository,
 } from "../../../src/repositories";
+import type { DeviceCapabilityResult } from "../../../src/repositories/types";
+
+// Type guard to check if provider is the full type (not partial)
+function isFullProvider(
+  provider: DeviceCapabilityResult["provider"]
+): provider is {
+  id: number;
+  name: string;
+  country: string;
+  networkType: string;
+} {
+  return provider !== null && "name" in provider;
+}
 
 // Mock the repositories
 vi.mock("../../../src/repositories", () => ({
@@ -104,7 +117,11 @@ describe("Capability Results GraphQL Queries", () => {
       });
 
       expect(result).toHaveLength(2);
-      expect(result.every((r) => r.provider?.name === "Verizon")).toBe(true);
+      expect(
+        result.every(
+          (r) => isFullProvider(r.provider) && r.provider.name === "Verizon"
+        )
+      ).toBe(true);
       expect(mockDataLoader.load).toHaveBeenCalledWith(1);
     });
 
@@ -247,7 +264,11 @@ describe("Capability Results GraphQL Queries", () => {
       });
 
       expect(result).toHaveLength(2);
-      expect(result.every((r) => r.provider?.name === "AT&T")).toBe(true);
+      expect(
+        result.every(
+          (r) => isFullProvider(r.provider) && r.provider.name === "AT&T"
+        )
+      ).toBe(true);
       expect(mockDataLoader.load).toHaveBeenCalledWith(1);
     });
 
@@ -422,7 +443,11 @@ describe("Capability Results GraphQL Queries", () => {
       });
 
       expect(result).toHaveLength(2);
-      expect(result.every((r) => r.provider?.name === "T-Mobile")).toBe(true);
+      expect(
+        result.every(
+          (r) => isFullProvider(r.provider) && r.provider.name === "T-Mobile"
+        )
+      ).toBe(true);
       expect(mockDataLoader.load).toHaveBeenCalledWith(1);
     });
 
@@ -453,9 +478,10 @@ describe("Capability Results GraphQL Queries", () => {
       const devices = DeviceFactory.createMany(2);
       const mockResults = devices.map((device) => ({
         device,
-        feature: voNRFeature,
+        software: [],
+        supportStatus: "global" as const,
         provider: null,
-        isGlobal: true,
+        feature: voNRFeature,
       }));
       (
         featureRepository.findDevicesSupportingFeature as ReturnType<
@@ -470,7 +496,7 @@ describe("Capability Results GraphQL Queries", () => {
       });
 
       expect(result).toEqual(mockResults);
-      expect(result[0].feature.name).toBe("VoNR");
+      expect(result[0]?.feature?.name).toBe("VoNR");
     });
 
     it("should find devices with provider-specific feature support for major carriers", async () => {
@@ -515,13 +541,17 @@ describe("Capability Results GraphQL Queries", () => {
       });
 
       expect(result).toHaveLength(5);
-      expect(result.every((r) => r.provider?.name === "Verizon")).toBe(true);
+      expect(
+        result.every(
+          (r) => isFullProvider(r.provider) && r.provider.name === "Verizon"
+        )
+      ).toBe(true);
     });
   });
 
   describe("devicesByCapabilities query", () => {
     it("should return empty array (not yet implemented)", async () => {
-       // const _args = { bandIds: ["1", "2"], comboIds: ["1"], featureIds: ["1", "2", "3"], providerId: "1", };
+      // const _args = { bandIds: ["1", "2"], comboIds: ["1"], featureIds: ["1", "2", "3"], providerId: "1", };
 
       // This query returns empty array as it's a future enhancement
       const result: any[] = [];
