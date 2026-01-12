@@ -42,13 +42,15 @@ export class BandRepository {
       conditions.push(like(band.bandNumber, `%${filters.bandNumber}%`));
     }
 
-    let query = db.select().from(band);
-
     if (conditions.length > 0) {
-      query = query.where(and(...conditions)) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+      return db
+        .select()
+        .from(band)
+        .where(and(...conditions))
+        .orderBy(band.technology, band.bandNumber);
     }
 
-    return query.orderBy(band.technology, band.bandNumber);
+    return db.select().from(band).orderBy(band.technology, band.bandNumber);
   }
 
   /**
@@ -104,8 +106,8 @@ export class BandRepository {
           });
         }
 
-        const entry = deviceMap.get(row.device.id)!;
-        if (!entry.software.find((s) => s.id === row.software.id)) {
+        const entry = deviceMap.get(row.device.id);
+        if (entry && !entry.software.find((s) => s.id === row.software.id)) {
           entry.software.push(row.software);
         }
       }
@@ -143,8 +145,8 @@ export class BandRepository {
           });
         }
 
-        const entry = deviceMap.get(row.device.id)!;
-        if (!entry.software.find((s) => s.id === row.software.id)) {
+        const entry = deviceMap.get(row.device.id);
+        if (entry && !entry.software.find((s) => s.id === row.software.id)) {
           entry.software.push(row.software);
         }
       }

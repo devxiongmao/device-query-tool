@@ -48,13 +48,15 @@ export class ComboRepository {
       conditions.push(like(combo.name, `%${filters.name}%`));
     }
 
-    let query = db.select().from(combo);
-
     if (conditions.length > 0) {
-      query = query.where(and(...conditions)) as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+      return db
+        .select()
+        .from(combo)
+        .where(and(...conditions))
+        .orderBy(combo.technology, combo.name);
     }
 
-    return query.orderBy(combo.technology, combo.name);
+    return db.select().from(combo).orderBy(combo.technology, combo.name);
   }
 
   /**
@@ -140,8 +142,8 @@ export class ComboRepository {
           });
         }
 
-        const entry = deviceMap.get(row.device.id)!;
-        if (!entry.software.find((s) => s.id === row.software.id)) {
+        const entry = deviceMap.get(row.device.id);
+        if (entry && !entry.software.find((s) => s.id === row.software.id)) {
           entry.software.push(row.software);
         }
       }
@@ -179,8 +181,8 @@ export class ComboRepository {
           });
         }
 
-        const entry = deviceMap.get(row.device.id)!;
-        if (!entry.software.find((s) => s.id === row.software.id)) {
+        const entry = deviceMap.get(row.device.id);
+        if (entry && !entry.software.find((s) => s.id === row.software.id)) {
           entry.software.push(row.software);
         }
       }
