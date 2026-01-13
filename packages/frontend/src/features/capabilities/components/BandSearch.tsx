@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchBandsQuery } from "../../../graphql/generated/graphql";
 import {
   Select,
@@ -25,6 +25,8 @@ const TECHNOLOGIES = [
 export function BandSearch({ onBandSelect, selectedBandId }: BandSearchProps) {
   const [technology, setTechnology] = useState("");
   const [bandNumber, setBandNumber] = useState("");
+  const [dlBandClass, setDlBandClass] = useState("");
+  const [ulBandClass, setUlBandClass] = useState("");
 
   const { data, loading, error } = useSearchBandsQuery({
     variables: {
@@ -33,12 +35,64 @@ export function BandSearch({ onBandSelect, selectedBandId }: BandSearchProps) {
     },
   });
 
+  // Extract unique bandwidth class values from the fetched data
+  const { dlBandClassOptions, ulBandClassOptions } = useMemo(() => {
+    if (!data?.bands) {
+      return { dlBandClassOptions: [], ulBandClassOptions: [] };
+    }
+
+    const dlSet = new Set<string>();
+    const ulSet = new Set<string>();
+
+    data.bands.forEach((band) => {
+      if (band.dlBandClass) {
+        dlSet.add(band.dlBandClass);
+      }
+      if (band.ulBandClass) {
+        ulSet.add(band.ulBandClass);
+      }
+    });
+
+    const dlOptions = Array.from(dlSet)
+      .sort()
+      .map((value) => ({ value, label: value }));
+    const ulOptions = Array.from(ulSet)
+      .sort()
+      .map((value) => ({ value, label: value }));
+
+    return {
+      dlBandClassOptions: [
+        { value: "", label: "All DL Bandwidth Classes" },
+        ...dlOptions,
+      ],
+      ulBandClassOptions: [
+        { value: "", label: "All UL Bandwidth Classes" },
+        ...ulOptions,
+      ],
+    };
+  }, [data]);
+
+  // Filter bands based on bandwidth class selections
+  const filteredBands = useMemo(() => {
+    if (!data?.bands) return [];
+
+    return data.bands.filter((band) => {
+      if (dlBandClass && band.dlBandClass !== dlBandClass) {
+        return false;
+      }
+      if (ulBandClass && band.ulBandClass !== ulBandClass) {
+        return false;
+      }
+      return true;
+    });
+  }, [data, dlBandClass, ulBandClass]);
+
   // Auto-select if only one result
   useEffect(() => {
-    if (data?.bands && data.bands.length === 1 && !selectedBandId) {
-      onBandSelect(data.bands[0].id);
+    if (filteredBands.length === 1 && !selectedBandId && filteredBands[0].id) {
+      onBandSelect(filteredBands[0].id);
     }
-  }, [data, selectedBandId, onBandSelect]);
+  }, [filteredBands, selectedBandId, onBandSelect]);
 
   return (
     <div className="space-y-4">
@@ -57,6 +111,20 @@ export function BandSearch({ onBandSelect, selectedBandId }: BandSearchProps) {
         helperText="Enter band number to filter results"
       />
 
+      <Select
+        label="DL Bandwidth Class"
+        options={dlBandClassOptions}
+        value={dlBandClass}
+        onChange={setDlBandClass}
+      />
+
+      <Select
+        label="UL Bandwidth Class"
+        options={ulBandClassOptions}
+        value={ulBandClass}
+        onChange={setUlBandClass}
+      />
+
       {loading && (
         <div className="flex justify-center py-8">
           <Spinner size="md" />
@@ -69,16 +137,17 @@ export function BandSearch({ onBandSelect, selectedBandId }: BandSearchProps) {
         </div>
       )}
 
-      {!loading && !error && data?.bands && (
+      {!loading && !error && filteredBands.length > 0 && (
         <div className="space-y-2">
           <p className="text-sm text-gray-600">
-            Found {data.bands.length} band{data.bands.length !== 1 ? "s" : ""}
+            Found {filteredBands.length} band
+            {filteredBands.length !== 1 ? "s" : ""}
           </p>
           <div className="space-y-2 max-h-96 overflow-y-auto">
-            {data.bands.map((band) => (
+            {filteredBands.map((band) => (
               <button
                 key={band.id}
-                onClick={() => onBandSelect(band.id)}
+                onClick={() => band.id && onBandSelect(band.id)}
                 className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
                   selectedBandId === band.id
                     ? "border-primary-500 bg-primary-50"
@@ -107,12 +176,16 @@ export function BandSearch({ onBandSelect, selectedBandId }: BandSearchProps) {
                           {band.technology}
                         </Badge>
                       </div>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {band.dlBandClass}
-                      </p>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {band.ulBandClass}
-                      </p>
+                      {band.dlBandClass !== null && (
+                        <p className="text-sm text-gray-600 mt-1">
+                          {`DL: ${band.dlBandClass}`}
+                        </p>
+                      )}
+                      {band.ulBandClass !== null && (
+                        <p className="text-sm text-gray-600 mt-1">
+                          {`UL: ${band.ulBandClass}`}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -122,7 +195,7 @@ export function BandSearch({ onBandSelect, selectedBandId }: BandSearchProps) {
         </div>
       )}
 
-      {!loading && !error && data?.bands && data.bands.length === 0 && (
+      {!loading && !error && filteredBands.length === 0 && (
         <EmptyState
           icon={Radio}
           title="No bands found"
